@@ -20,14 +20,21 @@ app.post('/bloggers', (req: Request, res: Response) => {
     const {name} = req.body;
     const {youtubeUrl} = req.body;
 
-    if (!name || name.length > 15 || typeof name !== 'string') {
+    const nameVal = !name || name.length > 15 || typeof name !== 'string'
+    const urlVal = !validateUrl(youtubeUrl) || !youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string'
+
+    if (nameVal) {
         res.status(400).send(sendError('name', 'name is incorrect'))
         return
     }
 
-    if (!validateUrl(youtubeUrl) || !youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string') {
+    if (urlVal) {
         res.status(400).send(sendError('youtubeUrl', 'youtubeUrl is incorrect'))
         return
+    }
+
+    if(nameVal || urlVal) {
+        res.status(400).send({ errorsMessages: [{ message: "string", field: "youtubeUrl" }, { message: "string", field: "name" }], resultCode: 1 })
     }
 
     const newBlogger: BloggerType = {
