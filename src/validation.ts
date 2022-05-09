@@ -18,7 +18,7 @@ export const sendError = (field:string,message:string): ErrorsMessagesType => {
             }
 
         ],
-        resultCode: 0
+        resultCode: 1
     }
 }
 
