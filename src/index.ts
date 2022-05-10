@@ -20,21 +20,14 @@ app.post('/bloggers', (req: Request, res: Response) => {
     const {name} = req.body;
     const {youtubeUrl} = req.body;
 
-    const nameVal = !name || name.length > 15 || typeof name !== 'string'
-    const urlVal = !validateUrl(youtubeUrl) || !youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string'
-
-    if (nameVal) {
+    if (!name || name.length > 15 || typeof name !== 'string') {
         res.status(400).send(sendError('name', 'name is incorrect'))
         return
     }
 
-    if (urlVal) {
+    if (!validateUrl(youtubeUrl) || !youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string') {
         res.status(400).send(sendError('youtubeUrl', 'youtubeUrl is incorrect'))
         return
-    }
-
-    if(nameVal || urlVal) {
-        res.status(400).send({ errorsMessages: [{ message: "string", field: "youtubeUrl" }, { message: "string", field: "name" }], resultCode: 1 })
     }
 
     const newBlogger: BloggerType = {
@@ -53,18 +46,37 @@ app.get('/bloggers/:id', (req: Request, res: Response) => {
     blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
 })
 app.put('/bloggers/:id', (req: Request, res: Response) => {
-    const {name} = req.body;
+    const {name, youtubeUrl} = req.body;
     const {id} = req.params
-    const {youtubeUrl} = req.body;
 
-    if (!name || name.length > 15 || typeof name !== 'string') {
+    const nameValidation = !name || name.length > 15 || typeof name !== 'string'
+    const urlValidation = !validateUrl(youtubeUrl) || (!youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string')
+
+    if (nameValidation) {
         res.status(400).send(sendError('name', 'name is incorrect'))
         return
     }
 
-    if (!validateUrl(youtubeUrl) || (!youtubeUrl || youtubeUrl.length > 100 || typeof youtubeUrl !== 'string')) {
+    if (urlValidation) {
         res.status(400).send(sendError('youtubeUrl', 'youtubeUrl is incorrect'))
         return
+    }
+
+    if(nameValidation || urlValidation) {
+        res.status(400).send({
+            errorsMessages: [
+                {
+                    message: "string",
+                    field: "name"
+                },
+                {
+                    message: "string",
+                    field: "youtubeUrl"
+                },
+
+            ],
+            resultCode: 1
+        })
     }
 
     const blogger = BLOGGERS.find(b => b.id === +id)
