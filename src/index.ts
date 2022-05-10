@@ -77,6 +77,7 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
             ],
             resultCode: 1
         })
+        return;
     }
 
     const blogger = BLOGGERS.find(b => b.id === +id)
