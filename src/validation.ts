@@ -24,6 +24,7 @@ export const sendError = (field:string,message:string): ErrorsMessagesType => {
 
 
 
+
 export const validateUrl = (url:string) => {
     return /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(url);
 }
