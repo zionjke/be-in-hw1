@@ -1,21 +1,12 @@
 import {Request, Response, Router} from "express";
-import {BLOGGERS, BloggerType} from "../constants";
 import {sendError, validateUrl} from "../validation";
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const bloggersRouter = Router()
 
 bloggersRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).send(BLOGGERS)
-})
-bloggersRouter.get('/:bloggerName', (req: Request, res: Response) => {
-    const {bloggerName} = req.params
-    const blogger = BLOGGERS.find(b => b.name === bloggerName)
-    if (blogger) {
-        res.status(200).send(blogger)
-    } else {
-        res.status(404).send('Not Found')
-    }
-
+    const bloggers = bloggersRepository.geBloggers()
+    res.status(200).send(bloggers)
 })
 bloggersRouter.post('/', (req: Request, res: Response) => {
     const {name, youtubeUrl} = req.body;
@@ -34,18 +25,13 @@ bloggersRouter.post('/', (req: Request, res: Response) => {
     }
 
 
-    const newBlogger: BloggerType = {
-        id: +(new Date()),
-        name,
-        youtubeUrl
-    }
-    BLOGGERS.push(newBlogger)
+    const newBlogger = bloggersRepository.createNewBlogger(name, youtubeUrl)
     res.status(201).send(newBlogger)
 })
 bloggersRouter.get('/:id', (req: Request, res: Response) => {
     const {id} = req.params
 
-    const blogger = BLOGGERS.find(blogger => blogger.id === +id)
+    const blogger = bloggersRepository.getBloggerById(+id)
 
     blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
 })
@@ -66,29 +52,11 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
         return
     }
 
-    if (nameValidation || urlValidation) {
-        res.status(400).send({
-            errorsMessages: [
-                {
-                    message: "string",
-                    field: "name"
-                },
-                {
-                    message: "string",
-                    field: "youtubeUrl"
-                },
 
-            ],
-            resultCode: 1
-        })
-        return;
-    }
+    const isUpdated = bloggersRepository.updateBlogger(+id, name, youtubeUrl)
 
-    const blogger = BLOGGERS.find(b => b.id === +id)
-
-    if (blogger) {
-        blogger.name = name;
-        blogger.youtubeUrl = youtubeUrl;
+    if (isUpdated) {
+        const blogger = bloggersRepository.getBloggerById(+id)
         res.status(204).send(blogger)
     } else {
         res.status(404).send('Not found')
@@ -97,11 +65,10 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
 bloggersRouter.delete('/:id', (req: Request, res: Response) => {
     const {id} = req.params
 
-    const bloggerIndex = BLOGGERS.findIndex(b => b.id === +id)
+    const isDeleted = bloggersRepository.deleteBlogger(+id)
 
-    if (bloggerIndex >= 0) {
-        BLOGGERS.splice(bloggerIndex, 1)
-        res.sendStatus(204)
+    if (isDeleted) {
+        res.send(204)
     } else {
         res.sendStatus(404).send('Not found')
     }

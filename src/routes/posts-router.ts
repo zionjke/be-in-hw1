@@ -1,11 +1,13 @@
 import {Request, Response, Router} from "express";
-import {BLOGGERS, POSTS, PostType} from "../constants";
 import {sendError} from "../validation";
+import {postsRepository} from "../repositories/posts-repository";
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const postsRouter = Router()
 
 postsRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).send(POSTS)
+    const posts = postsRepository.getAllPosts()
+    res.status(200).send(posts)
 })
 postsRouter.post('/', (req: Request, res: Response) => {
     const {title, shortDescription, content, bloggerId} = req.body
@@ -30,18 +32,12 @@ postsRouter.post('/', (req: Request, res: Response) => {
         return;
     }
 
-    const blogger = BLOGGERS.find(b => b.id === bloggerId)
+
+    const blogger = bloggersRepository.getBloggerById(bloggerId)
+
+    const newPost = postsRepository.createPost(title, shortDescription, content, blogger)
 
     if (blogger) {
-        const newPost: PostType = {
-            id: +(new Date()),
-            title,
-            content,
-            shortDescription,
-            bloggerId: blogger.id,
-            bloggerName: blogger.name
-        }
-        POSTS.push(newPost)
         res.status(201).send(newPost)
     } else {
         res.status(404).send('Not found')
@@ -50,15 +46,12 @@ postsRouter.post('/', (req: Request, res: Response) => {
 postsRouter.get('/:id', (req: Request, res: Response) => {
     const {id} = req.params
 
-    try {
-        const post = POSTS.find(p => p.id === +id)
-        if (post) {
-            res.status(200).send(post)
-        } else {
-            res.status(404).send('Not found')
-        }
-    } catch {
-        res.send(400)
+    const post = postsRepository.getPostById(+id)
+
+    if (post) {
+        res.status(200).send(post)
+    } else {
+        res.status(404).send('Not found')
     }
 })
 postsRouter.put('/:id', (req: Request, res: Response) => {
@@ -85,13 +78,10 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
         return;
     }
 
-    const post = POSTS.find(p => p.id === +id)
-    if (post) {
-        post.title = title,
-            post.shortDescription = shortDescription,
-            post.content = content,
-            post.bloggerId = bloggerId
-        res.status(204).send(post)
+    const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, bloggerId)
+
+    if (isUpdated) {
+        res.send(204)
     } else {
         res.status(404).send('Not Found')
     }
@@ -99,10 +89,9 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
 postsRouter.delete('/:id', (req: Request, res: Response) => {
     const {id} = req.params
 
-    const postIndex = POSTS.findIndex(p => p.id === +id)
+    const isDeleted = postsRepository.deletePost(+id)
 
-    if (postIndex >= 0) {
-        POSTS.splice(postIndex, 1)
+    if (isDeleted) {
         res.sendStatus(204)
     } else {
         res.sendStatus(404).send('Not found')

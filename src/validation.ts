@@ -10,6 +10,7 @@ type ErrorsMessagesType = {
 }
 
 export const sendError = (field:string,message:string): ErrorsMessagesType => {
+    const errors = []
     return {
         errorsMessages: [
             {
