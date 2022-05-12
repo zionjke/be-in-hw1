@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {
     bloggerIdValidation,
-    contentValidation,
+    contentValidation, sendError,
     shortDescriptionValidation,
     titleValidation
 } from "../middlewares/validationMiddleware";
@@ -19,12 +19,23 @@ postsRouter.post('/',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation.custom((value,{req}) => {
-        if(value !== req.body.bloggerId) throw new Error('BloggerId not found')
-    }),
+    bloggerIdValidation,
     validationMiddleware,
     (req: Request, res: Response) => {
         const {title, shortDescription, content, bloggerId} = req.body
+        const blogger = bloggersRepository.getBloggerById(+bloggerId)
+        if (!blogger) {
+            res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "string",
+                        field: "bloggerId",
+                    }
+
+                ],
+                resultCode: 1
+            })
+        }
         const newPost = postsRepository.createPost(title, shortDescription, content, +bloggerId)
         res.status(201).send(newPost)
     })
@@ -43,13 +54,25 @@ postsRouter.put('/:id',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation.custom((value,{req}) => {
-        if(value !== req.body.bloggerId) throw new Error('BloggerId not found')
-    }),
+    bloggerIdValidation,
     validationMiddleware,
     (req: Request, res: Response) => {
         const {id} = req.params
         const {title, shortDescription, content, bloggerId} = req.body
+
+        const blogger = bloggersRepository.getBloggerById(+bloggerId)
+        if (!blogger) {
+            res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "string",
+                        field: "bloggerId",
+                    }
+
+                ],
+                resultCode: 1
+            })
+        }
 
         const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, +bloggerId)
 
