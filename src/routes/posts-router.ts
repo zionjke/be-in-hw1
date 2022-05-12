@@ -6,8 +6,8 @@ import {
     titleValidation
 } from "../middlewares/validationMiddleware";
 import {postsRepository} from "../repositories/posts-repository";
-import {bloggersRepository} from "../repositories/bloggers-repository";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const postsRouter = Router()
 
@@ -23,11 +23,13 @@ postsRouter.post('/',
     validationMiddleware,
     (req: Request, res: Response) => {
         const {title, shortDescription, content, bloggerId} = req.body
+        const blogger = bloggersRepository.getBloggerById(+bloggerId)
 
-        const blogger = bloggersRepository.getBloggerById(bloggerId)
-
+        if (!blogger) {
+            res.status(400).send('Not found')
+            return
+        }
         const newPost = postsRepository.createPost(title, shortDescription, content, blogger)
-
         res.status(201).send(newPost)
     })
 postsRouter.get('/:id', (req: Request, res: Response) => {
@@ -51,7 +53,14 @@ postsRouter.put('/:id',
         const {id} = req.params
         const {title, shortDescription, content, bloggerId} = req.body
 
-        const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, bloggerId)
+        const blogger = bloggersRepository.getBloggerById(+bloggerId)
+
+        if (!blogger) {
+            res.status(400).send('Not found')
+            return
+        }
+
+        const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, blogger)
 
         if (isUpdated) {
             res.send(204)
