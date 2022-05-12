@@ -28,11 +28,7 @@ postsRouter.post('/',
 
         const newPost = postsRepository.createPost(title, shortDescription, content, blogger)
 
-        if (blogger) {
-            res.status(201).send(newPost)
-        } else {
-            res.status(404).send('Not found')
-        }
+        res.status(201).send(newPost)
     })
 postsRouter.get('/:id', (req: Request, res: Response) => {
     const {id} = req.params
@@ -59,8 +55,6 @@ postsRouter.put('/:id',
 
         if (isUpdated) {
             res.send(204)
-        } else {
-            res.status(404).send('Not Found')
         }
     })
 postsRouter.delete('/:id', (req: Request, res: Response) => {
