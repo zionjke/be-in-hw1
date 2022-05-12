@@ -19,17 +19,13 @@ postsRouter.post('/',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
+    bloggerIdValidation.custom((value,{req}) => {
+        if(value !== req.body.bloggerId) throw new Error('BloggerId not found')
+    }),
     validationMiddleware,
     (req: Request, res: Response) => {
         const {title, shortDescription, content, bloggerId} = req.body
-        const blogger = bloggersRepository.getBloggerById(+bloggerId)
-
-        if (!blogger) {
-            res.status(400).send('Not found')
-            return
-        }
-        const newPost = postsRepository.createPost(title, shortDescription, content, blogger)
+        const newPost = postsRepository.createPost(title, shortDescription, content, +bloggerId)
         res.status(201).send(newPost)
     })
 postsRouter.get('/:id', (req: Request, res: Response) => {
@@ -47,23 +43,20 @@ postsRouter.put('/:id',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
+    bloggerIdValidation.custom((value,{req}) => {
+        if(value !== req.body.bloggerId) throw new Error('BloggerId not found')
+    }),
     validationMiddleware,
     (req: Request, res: Response) => {
         const {id} = req.params
         const {title, shortDescription, content, bloggerId} = req.body
 
-        const blogger = bloggersRepository.getBloggerById(+bloggerId)
-
-        if (!blogger) {
-            res.status(400).send('Not found')
-            return
-        }
-
-        const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, blogger)
+        const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, +bloggerId)
 
         if (isUpdated) {
             res.send(204)
+        } else {
+            res.send(404)
         }
     })
 postsRouter.delete('/:id', (req: Request, res: Response) => {

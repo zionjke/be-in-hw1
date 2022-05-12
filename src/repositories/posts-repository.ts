@@ -4,29 +4,32 @@ export const postsRepository = {
     getAllPosts() {
         return POSTS
     },
-    createPost(title: string, shortDescription: string, content: string, blogger:BloggerType) {
+    createPost(title: string, shortDescription: string, content: string, bloggerId: number) {
+        const blogger = BLOGGERS.find(b => b.id === bloggerId)
+        if (blogger) {
             const newPost: PostType = {
                 id: +(new Date()),
                 title,
                 shortDescription,
                 content,
-                bloggerId:blogger.id,
+                bloggerId: blogger.id,
                 bloggerName: blogger.name
             }
             POSTS.push(newPost)
             return newPost
+        }
     },
     getPostById(id: number) {
         const post = POSTS.find(p => p.id === id)
         return post
     },
-    updatePost(id: number, title: string, shortDescription: string, content: string, blogger:BloggerType) {
+    updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number) {
         const post = POSTS.find(p => p.id === id)
         if (post) {
             post.title = title,
                 post.shortDescription = shortDescription,
                 post.content = content,
-                post.bloggerId = blogger.id
+                post.bloggerId = bloggerId
             return true
         } else {
             return false
