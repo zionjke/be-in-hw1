@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {myValidationResult, nameValidation, sendError, urlValidation, validateUrl} from "../validation";
+import { nameValidation, urlValidation} from "../middlewares/validationMiddleware";
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 

@@ -1,11 +1,10 @@
 import {Request, Response, Router} from "express";
 import {
     bloggerIdValidation,
-    contentValidation, myValidationResult,
-    sendError,
+    contentValidation,
     shortDescriptionValidation,
     titleValidation
-} from "../validation";
+} from "../middlewares/validationMiddleware";
 import {postsRepository} from "../repositories/posts-repository";
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
