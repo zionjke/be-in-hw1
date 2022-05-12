@@ -19,23 +19,29 @@ postsRouter.post('/',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
+    bloggerIdValidation.custom((value) => {
+        const blogger = bloggersRepository.getBloggerById(+value)
+        if (!blogger) {
+            throw new Error()
+        }
+        return true
+    }),
     validationMiddleware,
     (req: Request, res: Response) => {
         const {title, shortDescription, content, bloggerId} = req.body
-        const blogger = bloggersRepository.getBloggerById(+bloggerId)
-        if (!blogger) {
-            res.status(400).send({
-                errorsMessages: [
-                    {
-                        message: "string",
-                        field: "bloggerId",
-                    }
-
-                ],
-                resultCode: 1
-            })
-        }
+        // const blogger = bloggersRepository.getBloggerById(+bloggerId)
+        // if (!blogger) {
+        //     res.status(400).send({
+        //         errorsMessages: [
+        //             {
+        //                 message: "string",
+        //                 field: "bloggerId",
+        //             }
+        //
+        //         ],
+        //         resultCode: 1
+        //     })
+        // }
         const newPost = postsRepository.createPost(title, shortDescription, content, +bloggerId)
         res.status(201).send(newPost)
     })
@@ -54,25 +60,31 @@ postsRouter.put('/:id',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
+    bloggerIdValidation.custom((value) => {
+        const blogger = bloggersRepository.getBloggerById(+value)
+        if (!blogger) {
+            throw new Error()
+        }
+        return true
+    }),
     validationMiddleware,
     (req: Request, res: Response) => {
         const {id} = req.params
         const {title, shortDescription, content, bloggerId} = req.body
-
-        const blogger = bloggersRepository.getBloggerById(+bloggerId)
-        if (!blogger) {
-            res.status(400).send({
-                errorsMessages: [
-                    {
-                        message: "string",
-                        field: "bloggerId",
-                    }
-
-                ],
-                resultCode: 1
-            })
-        }
+        //
+        // const blogger = bloggersRepository.getBloggerById(+bloggerId)
+        // if (!blogger) {
+        //     res.status(400).send({
+        //         errorsMessages: [
+        //             {
+        //                 message: "string",
+        //                 field: "bloggerId",
+        //             }
+        //
+        //         ],
+        //         resultCode: 1
+        //     })
+        // }
 
         const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, +bloggerId)
 
