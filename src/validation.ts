@@ -36,7 +36,7 @@ export const myValidationResult = validationResult.withDefaults({
 
 export const sendError = (errors:any):ErrorsMessagesType => {
     return {
-        errorsMessages: errors.array(),
+        errorsMessages: errors.array({onlyFirstError:true}),
         resultCode: 1
     }
 }

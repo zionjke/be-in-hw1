@@ -8,6 +8,7 @@ import {
 } from "../validation";
 import {postsRepository} from "../repositories/posts-repository";
 import {bloggersRepository} from "../repositories/bloggers-repository";
+import {validationMiddleware} from "../middlewares/validationMiddleware";
 
 export const postsRouter = Router()
 
@@ -20,15 +21,10 @@ postsRouter.post('/',
     shortDescriptionValidation,
     contentValidation,
     bloggerIdValidation,
+    validationMiddleware,
     (req: Request, res: Response) => {
         const {title, shortDescription, content, bloggerId} = req.body
 
-        const errors = myValidationResult(req)
-
-        if (!errors.isEmpty()) {
-            res.status(400).json(sendError(errors))
-            return
-        }
         const blogger = bloggersRepository.getBloggerById(bloggerId)
 
         const newPost = postsRepository.createPost(title, shortDescription, content, blogger)
@@ -55,16 +51,10 @@ postsRouter.put('/:id',
     shortDescriptionValidation,
     contentValidation,
     bloggerIdValidation,
+    validationMiddleware,
     (req: Request, res: Response) => {
         const {id} = req.params
         const {title, shortDescription, content, bloggerId} = req.body
-
-        const errors = myValidationResult(req)
-
-        if (!errors.isEmpty()) {
-            res.status(400).json(sendError(errors))
-            return
-        }
 
         const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, bloggerId)
 
