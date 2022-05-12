@@ -48,5 +48,5 @@ export const urlValidation = body('youtubeUrl').matches(/^https:\/\/([a-zA-Z0-9_
 
 export const titleValidation = body('title').notEmpty().isString().isLength({max: 30})
 export const shortDescriptionValidation = body('shortDescription').notEmpty().isString().isLength({max: 100})
-export const contentValidation = body('shortDescription').notEmpty().isString().isLength({max: 1000})
+export const contentValidation = body('content').notEmpty().isString().isLength({max: 1000})
 export const bloggerIdValidation = body('bloggerId').isNumeric().notEmpty()
