@@ -27,6 +27,7 @@ postsRouter.post('/',
 
         if (!errors.isEmpty()) {
             res.status(400).json(sendError(errors))
+            return
         }
         const blogger = bloggersRepository.getBloggerById(bloggerId)
 
@@ -62,6 +63,7 @@ postsRouter.put('/:id',
 
         if (!errors.isEmpty()) {
             res.status(400).json(sendError(errors))
+            return
         }
 
         const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, bloggerId)

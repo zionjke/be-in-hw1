@@ -16,6 +16,7 @@ bloggersRouter.post('/', nameValidation, urlValidation, (req: Request, res: Resp
 
     if (!errors.isEmpty()) {
         res.status(400).json(sendError(errors))
+        return
     }
 
     const newBlogger = bloggersRepository.createNewBlogger(name, youtubeUrl)
@@ -36,6 +37,7 @@ bloggersRouter.put('/:id', nameValidation, urlValidation, (req: Request, res: Re
 
     if (!errors.isEmpty()) {
         res.status(400).json(sendError(errors))
+        return
     }
 
     const isUpdated = bloggersRepository.updateBlogger(+id, name, youtubeUrl)
