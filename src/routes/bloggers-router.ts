@@ -25,7 +25,7 @@ bloggersRouter
 
         blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
     })
-    .put('/:id', nameValidation, urlValidation, validationMiddleware, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body;
         const {id} = req.params
 
@@ -39,7 +39,7 @@ bloggersRouter
             res.status(404).send('Not found')
         }
     })
-    .delete('/:id', (req: Request, res: Response) => {
+    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
         const {id} = req.params
 
         const isDeleted = bloggersRepository.deleteBlogger(+id)

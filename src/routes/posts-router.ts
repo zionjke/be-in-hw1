@@ -8,6 +8,7 @@ import {
 import {postsRepository} from "../repositories/posts-repository";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 import {bloggersRepository} from "../repositories/bloggers-repository";
+import {authMiddleware} from "../middlewares/auth-middleware";
 
 export const postsRouter = Router()
 
@@ -18,6 +19,7 @@ postsRouter
     })
 
     .post('/',
+        authMiddleware,
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
@@ -41,6 +43,7 @@ postsRouter
         }
     })
     .put('/:id',
+        authMiddleware,
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
@@ -65,7 +68,7 @@ postsRouter
             }
         })
 
-    .delete('/:id', (req: Request, res: Response) => {
+    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
         const {id} = req.params
 
         const isDeleted = postsRepository.deletePost(+id)
