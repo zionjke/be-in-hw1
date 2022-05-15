@@ -7,7 +7,15 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         return
     }
 
+    const tokenVersion = req.headers.authorization.split(' ')[0]
+
+    if(tokenVersion === 'Bearer') {
+        res.status(401).send('Please provide WWW-Authorization using basic in headers with base 64 encoding');
+        return;
+    }
+
     const encoded = req.headers.authorization.split(' ')[1];
+
 
     const decoded = new Buffer(encoded, 'base64').toString();
 
