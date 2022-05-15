@@ -3,14 +3,14 @@ import {NextFunction, Request, Response} from "express";
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     if (req.headers.authorization === undefined) {
-        res.status(401).send('Please provide WWW-Authorization using basic in headers with base 64 encoding');
+        res.status(401).send('Please provide WWW-Authorization using BASIC in headers with base 64 encoding');
         return
     }
 
     const tokenVersion = req.headers.authorization.split(' ')[0]
 
     if(tokenVersion === 'Bearer') {
-        res.status(401).send('Please provide WWW-Authorization using basic in headers with base 64 encoding');
+        res.status(401).send('Please provide WWW-Authorization using BASIC in headers with base 64 encoding');
         return;
     }
 
@@ -25,6 +25,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     if (name === 'admin' && password === 'qwerty') {
         next()
     } else {
-        res.status(401).send('You are not authenticated!')
+        res.status(403).send('Invalid authorization data provided. Please check username and pwd')
     }
 }
