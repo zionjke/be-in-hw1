@@ -11,97 +11,68 @@ import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const postsRouter = Router()
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const posts = postsRepository.getAllPosts()
-    res.status(200).send(posts)
-})
-postsRouter.post('/',
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdValidation.custom((value) => {
-        const blogger = bloggersRepository.getBloggerById(+value)
-        if (!blogger) {
-            throw new Error()
-        }
-        return true
-    }),
-    validationMiddleware,
-    (req: Request, res: Response) => {
-        const {title, shortDescription, content, bloggerId} = req.body
-        // const blogger = bloggersRepository.getBloggerById(+bloggerId)
-        // if (!blogger) {
-        //     res.status(400).send({
-        //         errorsMessages: [
-        //             {
-        //                 message: "string",
-        //                 field: "bloggerId",
-        //             }
-        //
-        //         ],
-        //         resultCode: 1
-        //     })
-        // }
-        const newPost = postsRepository.createPost(title, shortDescription, content, +bloggerId)
-        res.status(201).send(newPost)
+postsRouter
+    .get('/', (req: Request, res: Response) => {
+        const posts = postsRepository.getAllPosts()
+        res.status(200).send(posts)
     })
-postsRouter.get('/:id', (req: Request, res: Response) => {
-    const {id} = req.params
 
-    const post = postsRepository.getPostById(+id)
+    .post('/',
+        titleValidation,
+        shortDescriptionValidation,
+        contentValidation,
+        bloggerIdValidation,
+        validationMiddleware,
+        (req: Request, res: Response) => {
+            const {title, shortDescription, content, bloggerId} = req.body
+            const newPost = postsRepository.createPost(title, shortDescription, content, +bloggerId)
+            res.status(201).send(newPost)
+        })
 
-    if (post) {
-        res.status(200).send(post)
-    } else {
-        res.status(404).send('Not found')
-    }
-})
-postsRouter.put('/:id',
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdValidation.custom((value) => {
-        const blogger = bloggersRepository.getBloggerById(+value)
-        if (!blogger) {
-            throw new Error()
-        }
-        return true
-    }),
-    validationMiddleware,
-    (req: Request, res: Response) => {
+    .get('/:id', (req: Request, res: Response) => {
         const {id} = req.params
-        const {title, shortDescription, content, bloggerId} = req.body
-        //
-        // const blogger = bloggersRepository.getBloggerById(+bloggerId)
-        // if (!blogger) {
-        //     res.status(400).send({
-        //         errorsMessages: [
-        //             {
-        //                 message: "string",
-        //                 field: "bloggerId",
-        //             }
-        //
-        //         ],
-        //         resultCode: 1
-        //     })
-        // }
 
-        const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, +bloggerId)
+        const post = postsRepository.getPostById(+id)
 
-        if (isUpdated) {
-            res.send(204)
+        if (post) {
+            res.status(200).send(post)
         } else {
-            res.send(404)
+            res.status(404).send('Not found')
         }
     })
-postsRouter.delete('/:id', (req: Request, res: Response) => {
-    const {id} = req.params
+    .put('/:id',
+        titleValidation,
+        shortDescriptionValidation,
+        contentValidation,
+        bloggerIdValidation.custom((value) => {
+            const blogger = bloggersRepository.getBloggerById(+value)
+            if (!blogger) {
+                throw new Error()
+            }
+            return true
+        }),
+        validationMiddleware,
+        (req: Request, res: Response) => {
+            const {id} = req.params
+            const {title, shortDescription, content, bloggerId} = req.body
 
-    const isDeleted = postsRepository.deletePost(+id)
+            const isUpdated = postsRepository.updatePost(+id, title, shortDescription, content, +bloggerId)
 
-    if (isDeleted) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(404).send('Not found')
-    }
-})
+            if (isUpdated) {
+                res.send(204)
+            } else {
+                res.send(404)
+            }
+        })
+
+    .delete('/:id', (req: Request, res: Response) => {
+        const {id} = req.params
+
+        const isDeleted = postsRepository.deletePost(+id)
+
+        if (isDeleted) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404).send('Not found')
+        }
+    })

@@ -17,6 +17,8 @@ export const postsRepository = {
             }
             POSTS.push(newPost)
             return newPost
+        } else {
+            throw new Error('123')
         }
     },
     getPostById(id: number) {
