@@ -9,7 +9,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     const tokenVersion = req.headers.authorization.split(' ')[0]
 
-    if(tokenVersion === 'Bearer') {
+    if (tokenVersion === 'Bearer') {
         res.status(401).send('Please provide WWW-Authorization using BASIC in headers with base 64 encoding');
         return;
     }
@@ -22,9 +22,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     const name = decoded.split(':')[0];
     const password = decoded.split(':')[1];
 
-    if (name === 'admin' && password === 'qwerty') {
-        next()
-    } else {
+    if (name !== 'admin' || password !== 'qwerty') {
         res.status(403).send('Invalid authorization data provided. Please check username and pwd')
+        return;
     }
+    next()
 }

@@ -1,39 +1,42 @@
-import {BLOGGERS, BloggerType} from "../constants";
+import {BloggersResponseType, BloggerType} from "../constants";
+import {bloggersCollection} from "../db";
 
 export const bloggersRepository = {
-    geBloggers() {
-        return BLOGGERS
-    },
-    getBloggerById(id: number) {
-        const blogger = BLOGGERS.find(b => b.id === id)
-        return blogger
-    },
-    createNewBlogger(name: string, youtubeUrl: string) {
-        const newBlogger: BloggerType = {
-            id: +(new Date()),
-            name,
-            youtubeUrl
+    async getBloggers(name: string | undefined | null): Promise<BloggerType[]> {
+        const filter: any = {}
+
+        if (name) {
+            filter.name = {$regex:name}
         }
-        BLOGGERS.push(newBlogger)
+
+        const data = await bloggersCollection.find(filter).toArray()
+        return data
+    },
+
+    async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
+
+        await bloggersCollection.insertOne(newBlogger)
+
         return newBlogger
     },
-    updateBlogger(id: number, name: string, youtubeUrl: string) {
-        const blogger = BLOGGERS.find(b => b.id === id)
-        if (blogger) {
-            blogger.name = name,
-                blogger.youtubeUrl = youtubeUrl
-            return true
-        } else {
-            return false
-        }
+
+    async getBloggerById(id: number): Promise<BloggerType | null> {
+        const blogger: BloggerType | null = await bloggersCollection.findOne({id})
+        return blogger
     },
-    deleteBlogger(id: number) {
-        const bloggerIndex = BLOGGERS.findIndex(b => b.id === id)
-        if (bloggerIndex >= 0) {
-            BLOGGERS.splice(bloggerIndex, 1)
-            return true
-        } else {
-            return false
-        }
+
+    async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+        const result = await bloggersCollection.updateOne(
+            {id},
+            {$set: {name, youtubeUrl}}
+        )
+
+        return result.matchedCount !== 0;
+    },
+
+    async deleteBlogger(id: number): Promise<boolean> {
+        const result = await bloggersCollection.deleteOne({id})
+
+        return result.deletedCount !== 0;
     }
 }

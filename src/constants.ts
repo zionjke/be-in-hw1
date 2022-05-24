@@ -13,6 +13,14 @@ export type PostType = {
     bloggerName: string
 }
 
+export type BloggersResponseType = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: BloggerType[]
+}
+
 export const BLOGGERS: BloggerType[] = [
     {id: 0, name: 'Artem', youtubeUrl: 'https://www.youtube.com/c/satansdeer1'},
     {id: 1, name: 'Dima', youtubeUrl: 'https://www.youtube.com/c/satansdeer2'},

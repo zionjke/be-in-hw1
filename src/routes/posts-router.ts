@@ -7,7 +7,7 @@ import {
 } from "../middlewares/validationMiddleware";
 import {postsRepository} from "../repositories/posts-repository";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
-import {bloggersRepository} from "../repositories/bloggers-repository";
+import {bloggersRepositoryWithMock} from "../repositories/bloggers-repository-withMock";
 import {authMiddleware} from "../middlewares/auth-middleware";
 
 export const postsRouter = Router()
@@ -48,7 +48,7 @@ postsRouter
         shortDescriptionValidation,
         contentValidation,
         bloggerIdValidation.custom((value) => {
-            const blogger = bloggersRepository.getBloggerById(+value)
+            const blogger = bloggersRepositoryWithMock.getBloggerById(+value)
             if (!blogger) {
                 throw new Error()
             }

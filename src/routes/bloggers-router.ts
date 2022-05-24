@@ -1,6 +1,7 @@
 import {Request, Response, Router} from "express";
 import {nameValidation, urlValidation} from "../middlewares/validationMiddleware";
 import {bloggersRepository} from "../repositories/bloggers-repository";
+import {bloggersService} from "../domain/bloggers-service";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 import {authMiddleware} from "../middlewares/auth-middleware";
 
@@ -8,41 +9,44 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 export const bloggersRouter = Router()
 
 bloggersRouter
-    .get('/', (req: Request, res: Response) => {
-        const bloggers = bloggersRepository.geBloggers()
+    .get('/', async (req: Request, res: Response) => {
+        const {name} = req.query
+
+        const bloggers = await bloggersService.getBloggers(name?.toString())
+
         res.status(200).send(bloggers)
     })
-    .post('/', authMiddleware, nameValidation, urlValidation, validationMiddleware, (req: Request, res: Response) => {
+    .post('/', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
+        debugger;
         const {name, youtubeUrl} = req.body;
 
-        const newBlogger = bloggersRepository.createNewBlogger(name, youtubeUrl)
-        res.status(201).send(newBlogger)
+        const blogger = await bloggersService.createNewBlogger(name, youtubeUrl)
+
+        res.status(201).send(blogger)
     })
-    .get('/:id', (req: Request, res: Response) => {
+    .get('/:id', async (req: Request, res: Response) => {
         const {id} = req.params
 
-        const blogger = bloggersRepository.getBloggerById(+id)
+        const blogger = await bloggersService.getBloggerById(+id)
 
         blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
     })
-    .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body;
         const {id} = req.params
 
-
-        const isUpdated = bloggersRepository.updateBlogger(+id, name, youtubeUrl)
+        const isUpdated = await bloggersService.updateBlogger(+id, name, youtubeUrl)
 
         if (isUpdated) {
-            const blogger = bloggersRepository.getBloggerById(+id)
-            res.status(204).send(blogger)
+            res.status(204).send('Blogger is updated')
         } else {
             res.status(404).send('Not found')
         }
     })
-    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
+    .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
         const {id} = req.params
 
-        const isDeleted = bloggersRepository.deleteBlogger(+id)
+        const isDeleted = await bloggersService.deleteBlogger(+id)
 
         if (isDeleted) {
             res.send(204)
