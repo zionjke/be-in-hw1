@@ -15,10 +15,10 @@ export const bloggersRouter = Router()
 
 bloggersRouter
     .get('/', async (req: Request, res: Response) => {
-        const {searchNameTerm, pageNumber, pageSize} = req.query
+        const {SearchNameTerm, PageNumber, PageSize} = req.query
 
         // @ts-ignore
-        const data = await bloggersService.getBloggers(searchNameTerm?.toString(), +pageNumber, +pageSize)
+        const data = await bloggersService.getBloggers(SearchNameTerm?.toString(), +PageNumber, +PageSize)
 
         res.status(200).send(data)
     })

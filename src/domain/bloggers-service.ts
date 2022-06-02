@@ -3,8 +3,8 @@ import {bloggersRepository} from "../repositories/bloggers-repository";
 import {postsRepository} from "../repositories/posts-repository";
 
 export const bloggersService = {
-    async getBloggers(searchNameTerm: string | undefined | null, pageNumber: number | undefined , pageSize: number | undefined ): Promise<ResponseType<BloggerType[]>> {
-        return bloggersRepository.getBloggers(searchNameTerm, pageNumber, pageSize)
+    async getBloggers(SearchNameTerm: string | undefined | null, PageNumber: number | undefined , PageSize: number | undefined ): Promise<ResponseType<BloggerType[]>> {
+        return bloggersRepository.getBloggers(SearchNameTerm, PageNumber, PageSize)
     },
 
     async createNewBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {

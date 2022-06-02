@@ -2,17 +2,17 @@ import {BloggerType, PostType, ResponseType} from "../types";
 import {bloggersCollection, postsCollection} from "../db";
 
 export const bloggersRepository = {
-    async getBloggers(searchNameTerm: string | undefined | null, pageNumber: number | null | undefined, pageSize: number | null | undefined): Promise<ResponseType<BloggerType[]>> {
+    async getBloggers(SearchNameTerm: string | undefined | null, PageNumber: number | null | undefined, PageSize: number | null | undefined): Promise<ResponseType<BloggerType[]>> {
 
         const filter: any = {}
 
-        if (searchNameTerm) {
-            filter.name = {$regex: searchNameTerm}
+        if (SearchNameTerm) {
+            filter.name = {$regex: SearchNameTerm}
         }
 
-        const page = pageNumber || 1
+        const page = PageNumber || 1
 
-        pageSize = pageSize || 10
+        const pageSize = PageSize || 10
 
         const startFrom = (page - 1) * pageSize
 
