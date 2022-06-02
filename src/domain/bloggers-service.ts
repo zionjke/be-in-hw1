@@ -15,8 +15,7 @@ export const bloggersService = {
             youtubeUrl
         }
 
-        const createdBlogger = bloggersRepository.createNewBlogger(newBlogger)
-        return createdBlogger
+        return await bloggersRepository.createNewBlogger(newBlogger)
     },
 
     async getBloggerById(id: number): Promise<BloggerType | null> {

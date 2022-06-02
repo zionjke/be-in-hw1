@@ -15,8 +15,7 @@ export const postsRepository = {
         const startFrom = (page - 1) * pageSize
 
         const posts = await postsCollection
-            .find({})
-            .project<PostType>({_id: 0})
+            .find({}, {projection: {_id:false}})
             .skip(startFrom)
             .limit(pageSize)
             .toArray()
@@ -28,23 +27,23 @@ export const postsRepository = {
             items: posts
         }
     },
-    async createPost(newPost:PostType): Promise<PostType> {
-        await postsCollection.insertOne(newPost)
+    async createPost(newPost: PostType): Promise<PostType> {
+        await postsCollection.insertOne({...newPost})
         return newPost
     },
-    async getPostById(id: number):Promise<PostType | null> {
-        const post: PostType | null = await postsCollection.findOne({id})
+    async getPostById(id: number): Promise<PostType | null> {
+        const post: PostType | null = await postsCollection.findOne({id}, {projection: {_id: false}})
         return post
     },
-    async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number):Promise<boolean> {
+    async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number): Promise<boolean> {
         const result = await postsCollection.updateOne(
             {id},
-            {$set:{title,shortDescription,content, bloggerId}}
+            {$set: {title, shortDescription, content, bloggerId}}
         )
         return result.matchedCount !== 0
     },
-    async deletePost(id: number):Promise<boolean> {
-       const result = await postsCollection.deleteOne({id})
+    async deletePost(id: number): Promise<boolean> {
+        const result = await postsCollection.deleteOne({id})
         return result.deletedCount !== 0
     }
 }

@@ -21,8 +21,7 @@ export const bloggersRepository = {
         const pagesCount = Math.ceil(totalCount / pageSize)
 
         const bloggers = await bloggersCollection
-            .find(filter)
-            .project<BloggerType>({_id: false})
+            .find(filter, {projection: {_id:false}})
             .skip(startFrom)
             .limit(pageSize)
             .toArray()
@@ -38,13 +37,13 @@ export const bloggersRepository = {
 
     async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
-         await bloggersCollection.insertOne(newBlogger)
+         await bloggersCollection.insertOne({...newBlogger})
 
         return newBlogger
     },
 
     async getBloggerById(id: number): Promise<BloggerType | null> {
-        const blogger: BloggerType | null = await bloggersCollection.findOne({id})
+        const blogger: BloggerType | null = await bloggersCollection.findOne({id},{projection: {_id: false}})
         return blogger
     },
 
