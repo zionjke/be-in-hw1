@@ -1,6 +1,11 @@
 import {Request, Response, Router} from "express";
-import {nameValidation, urlValidation} from "../middlewares/validationMiddleware";
-import {bloggersRepository} from "../repositories/bloggers-repository";
+import {
+    contentValidation,
+    nameValidation,
+    shortDescriptionValidation,
+    titleValidation,
+    urlValidation
+} from "../middlewares/validationMiddleware";
 import {bloggersService} from "../domain/bloggers-service";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 import {authMiddleware} from "../middlewares/auth-middleware";
@@ -10,11 +15,12 @@ export const bloggersRouter = Router()
 
 bloggersRouter
     .get('/', async (req: Request, res: Response) => {
-        const {name} = req.query
+        const {searchNameTerm, pageNumber, pageSize} = req.query
 
-        const bloggers = await bloggersService.getBloggers(name?.toString())
+        // @ts-ignore
+        const data = await bloggersService.getBloggers(searchNameTerm?.toString(), +pageNumber, +pageSize)
 
-        res.status(200).send(bloggers)
+        res.status(200).send(data)
     })
     .post('/', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
         debugger;
@@ -54,3 +60,39 @@ bloggersRouter
             res.sendStatus(404).send('Not found')
         }
     })
+    .get('/:bloggerId/posts', async (req: Request, res: Response) => {
+        const {bloggerId} = req.params
+
+        const {pageNumber, pageSize} = req.query
+
+        const blogger = await bloggersService.getBloggerById(+bloggerId)
+
+        // @ts-ignore
+        const data = await bloggersService.getAllBloggerPosts(+bloggerId, +pageNumber, +pageSize)
+
+        if (blogger) {
+            res.status(200).send(data)
+        } else {
+            res.status(404).send('blogger is not exists')
+        }
+
+    })
+    .post('/:bloggerId/posts',
+        authMiddleware,
+        titleValidation,
+        shortDescriptionValidation,
+        contentValidation,
+        async (req: Request, res: Response) => {
+            const {bloggerId} = req.params
+
+            const {title, shortDescription, content} = req.body
+
+            const blogger = await bloggersService.getBloggerById(+bloggerId)
+
+            if (blogger) {
+                const post = await bloggersService.createNewBloggerPost(title, shortDescription, content, blogger)
+                res.status(201).send(post)
+            } else {
+                res.status(404).send('blogger doesn\'t exists')
+            }
+        })

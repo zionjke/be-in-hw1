@@ -4,6 +4,7 @@ import cors from 'cors'
 import {runDb} from "./db";
 
 import {bloggersRouter} from "./routes/bloggers-router";
+import {postsRouter} from "./routes/posts-router";
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,10 +19,11 @@ app.get('/', (req: Request, res: Response) => {
 
 //with Mockdata
 // app.use('/bloggers', bloggersRouterWithMock)
-// app.use('/posts', postsRouter)
+// app.use('/posts', postsRouterWithMock)
 
 //with NativeMongo
 app.use('/bloggers', bloggersRouter)
+app.use('/posts', postsRouter)
 
 
 const start = async () => {

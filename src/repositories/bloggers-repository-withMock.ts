@@ -1,4 +1,4 @@
-import {BLOGGERS, BloggerType} from "../constants";
+import {BLOGGERS, BloggerType} from "../types";
 
 export const bloggersRepositoryWithMock = {
     geBloggers() {

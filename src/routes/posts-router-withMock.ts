@@ -5,20 +5,17 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../middlewares/validationMiddleware";
+import {postsRepositoryWithMock} from "../repositories/posts-repository-withMock";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
+import {bloggersRepositoryWithMock} from "../repositories/bloggers-repository-withMock";
 import {authMiddleware} from "../middlewares/auth-middleware";
-import {postsService} from "../domain/posts-service";
-import {bloggersService} from "../domain/bloggers-service";
 
-export const postsRouter = Router()
+export const postsRouterWithMock = Router()
 
-postsRouter
-    .get('/', async (req: Request, res: Response) => {
-        const {pageNumber, pageSize} = req.query
-        // @ts-ignore
-        const data = await postsService.getAllPosts(+pageNumber,+pageSize)
-
-        res.status(200).send(data)
+postsRouterWithMock
+    .get('/', (req: Request, res: Response) => {
+        const posts = postsRepositoryWithMock.getAllPosts()
+        res.status(200).send(posts)
     })
 
     .post('/',
@@ -26,28 +23,18 @@ postsRouter
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
-        bloggerIdValidation.custom((value) => {
-
-            const blogger = bloggersService.getBloggerById(+value)
-
-            if (!blogger) {
-                throw new Error()
-            }
-            return true
-        }),
+        bloggerIdValidation,
         validationMiddleware,
-       async  (req: Request, res: Response) => {
+        (req: Request, res: Response) => {
             const {title, shortDescription, content, bloggerId} = req.body
-
-            const newPost = await postsService.createPost(title, shortDescription, content, +bloggerId)
-
+            const newPost = postsRepositoryWithMock.createPost(title, shortDescription, content, +bloggerId)
             res.status(201).send(newPost)
         })
 
-    .get('/:id', async (req: Request, res: Response) => {
+    .get('/:id', (req: Request, res: Response) => {
         const {id} = req.params
 
-        const post = await postsService.getPostById(+id)
+        const post = postsRepositoryWithMock.getPostById(+id)
 
         if (post) {
             res.status(200).send(post)
@@ -61,21 +48,18 @@ postsRouter
         shortDescriptionValidation,
         contentValidation,
         bloggerIdValidation.custom((value) => {
-
-            const blogger = bloggersService.getBloggerById(+value)
-
+            const blogger = bloggersRepositoryWithMock.getBloggerById(+value)
             if (!blogger) {
                 throw new Error()
             }
             return true
         }),
         validationMiddleware,
-        async (req: Request, res: Response) => {
+        (req: Request, res: Response) => {
             const {id} = req.params
-
             const {title, shortDescription, content, bloggerId} = req.body
 
-            const isUpdated = await postsService.updatePost(+id, title, shortDescription, content, +bloggerId)
+            const isUpdated = postsRepositoryWithMock.updatePost(+id, title, shortDescription, content, +bloggerId)
 
             if (isUpdated) {
                 res.send(204)
@@ -84,10 +68,10 @@ postsRouter
             }
         })
 
-    .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
         const {id} = req.params
 
-        const isDeleted = await postsService.deletePost(+id)
+        const isDeleted = postsRepositoryWithMock.deletePost(+id)
 
         if (isDeleted) {
             res.sendStatus(204)

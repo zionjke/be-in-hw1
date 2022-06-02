@@ -13,12 +13,13 @@ export type PostType = {
     bloggerName: string
 }
 
-export type BloggersResponseType = {
+
+export type ResponseType<T> = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items: BloggerType[]
+    items: T
 }
 
 export const BLOGGERS: BloggerType[] = [

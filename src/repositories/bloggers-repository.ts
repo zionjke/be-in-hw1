@@ -1,21 +1,44 @@
-import {BloggersResponseType, BloggerType} from "../constants";
-import {bloggersCollection} from "../db";
+import {BloggerType, PostType, ResponseType} from "../types";
+import {bloggersCollection, postsCollection} from "../db";
 
 export const bloggersRepository = {
-    async getBloggers(name: string | undefined | null): Promise<BloggerType[]> {
+    async getBloggers(searchNameTerm: string | undefined | null, pageNumber: number | null | undefined, pageSize: number | null | undefined): Promise<ResponseType<BloggerType[]>> {
+
         const filter: any = {}
 
-        if (name) {
-            filter.name = {$regex:name}
+        if (searchNameTerm) {
+            filter.name = {$regex: searchNameTerm}
         }
 
-        const data = await bloggersCollection.find(filter).toArray()
-        return data
+        const page = pageNumber || 1
+
+        pageSize = pageSize || 10
+
+        const startFrom = (page - 1) * pageSize
+
+        const totalCount = await bloggersCollection.find(filter).count()
+
+        const pagesCount = Math.ceil(totalCount / pageSize)
+
+        const bloggers = await bloggersCollection
+            .find(filter)
+            .project<BloggerType>({_id: false})
+            .skip(startFrom)
+            .limit(pageSize)
+            .toArray()
+
+        return {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items: bloggers
+        }
     },
 
     async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
-        await bloggersCollection.insertOne(newBlogger)
+         await bloggersCollection.insertOne(newBlogger)
 
         return newBlogger
     },
@@ -38,5 +61,33 @@ export const bloggersRepository = {
         const result = await bloggersCollection.deleteOne({id})
 
         return result.deletedCount !== 0;
-    }
+    },
+
+    async getAllBloggerPosts(bloggerId: number, pageNumber: number | undefined, pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+        const page = pageNumber || 1
+
+        pageSize = pageSize || 10
+
+        const startFrom = (page - 1) * pageSize
+
+        const totalCount = await postsCollection.find({bloggerId}).count()
+
+        const pagesCount = Math.ceil(totalCount / pageSize)
+
+        const posts = await postsCollection
+            .find({bloggerId})
+            .project<PostType>({_id: false})
+            .skip(startFrom)
+            .limit(pageSize)
+            .toArray()
+
+        return {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items: posts
+        }
+
+    },
 }
