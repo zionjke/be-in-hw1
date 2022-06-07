@@ -82,6 +82,7 @@ bloggersRouter
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
+        validationMiddleware,
         async (req: Request, res: Response) => {
             const {bloggerId} = req.params
 
