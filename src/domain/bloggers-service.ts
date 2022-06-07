@@ -30,8 +30,8 @@ export const bloggersService = {
         return await bloggersRepository.deleteBlogger(id)
     },
 
-    async getAllBloggerPosts(bloggerId: number, pageNumber: number | undefined, pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
-        return await bloggersRepository.getAllBloggerPosts(bloggerId, pageNumber, pageSize)
+    async getAllBloggerPosts(bloggerId: number, PageNumber: number | undefined, PageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+        return await bloggersRepository.getAllBloggerPosts(bloggerId, PageNumber, PageSize)
     },
 
     async createNewBloggerPost(title: string, shortDescription: string, content: string, blogger: BloggerType) {

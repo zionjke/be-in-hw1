@@ -62,10 +62,10 @@ export const bloggersRepository = {
         return result.deletedCount !== 0;
     },
 
-    async getAllBloggerPosts(bloggerId: number, pageNumber: number | undefined, pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
-        const page = pageNumber || 1
+    async getAllBloggerPosts(bloggerId: number, PageNumber: number | undefined, PageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+        const page = PageNumber || 1
 
-        pageSize = pageSize || 10
+        const pageSize = PageSize || 10
 
         const startFrom = (page - 1) * pageSize
 

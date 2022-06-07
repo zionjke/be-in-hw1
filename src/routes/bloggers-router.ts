@@ -38,8 +38,8 @@ bloggersRouter
         blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
     })
     .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
-        const {name, youtubeUrl} = req.body;
         const {id} = req.params
+        const {name, youtubeUrl} = req.body;
 
         const isUpdated = await bloggersService.updateBlogger(+id, name, youtubeUrl)
 
@@ -60,15 +60,15 @@ bloggersRouter
             res.sendStatus(404).send('Not found')
         }
     })
-    .get('/:bloggerId/posts', async (req: Request, res: Response) => {
+    .get('/:bloggerId/posts', authMiddleware, async (req: Request, res: Response) => {
         const {bloggerId} = req.params
 
-        const {pageNumber, pageSize} = req.query
+        const {PageNumber, PageSize} = req.query
 
         const blogger = await bloggersService.getBloggerById(+bloggerId)
 
         // @ts-ignore
-        const data = await bloggersService.getAllBloggerPosts(+bloggerId, +pageNumber, +pageSize)
+        const data = await bloggersService.getAllBloggerPosts(+bloggerId, +PageNumber, +PageSize)
 
         if (blogger) {
             res.status(200).send(data)
