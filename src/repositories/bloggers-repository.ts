@@ -74,8 +74,7 @@ export const bloggersRepository = {
         const pagesCount = Math.ceil(totalCount / pageSize)
 
         const posts = await postsCollection
-            .find({bloggerId})
-            .project<PostType>({_id: false})
+            .find({bloggerId}, {projection: {_id: false}})
             .skip(startFrom)
             .limit(pageSize)
             .toArray()

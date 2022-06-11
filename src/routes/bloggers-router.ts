@@ -15,15 +15,17 @@ export const bloggersRouter = Router()
 
 bloggersRouter
     .get('/', async (req: Request, res: Response) => {
-        const {SearchNameTerm, PageNumber, PageSize} = req.query
+        const {SearchNameTerm} = req.query
 
-        // @ts-ignore
-        const data = await bloggersService.getBloggers(SearchNameTerm?.toString(), +PageNumber, +PageSize)
+        const PageNumber: number = +req.query.PageNumber!
+
+        const PageSize: number = +req.query.PageSize!
+
+        const data = await bloggersService.getBloggers(SearchNameTerm?.toString(), PageNumber, PageSize)
 
         res.status(200).send(data)
     })
     .post('/', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
-        debugger;
         const {name, youtubeUrl} = req.body;
 
         const blogger = await bloggersService.createNewBlogger(name, youtubeUrl)
@@ -39,14 +41,19 @@ bloggersRouter
     })
     .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
         const {id} = req.params
+
         const {name, youtubeUrl} = req.body;
+
+        const blogger = await bloggersService.getBloggerById(+id)
+
+        if (!blogger) {
+            return res.status(404).send('Not found')
+        }
 
         const isUpdated = await bloggersService.updateBlogger(+id, name, youtubeUrl)
 
         if (isUpdated) {
             res.status(204).send('Blogger is updated')
-        } else {
-            res.status(404).send('Not found')
         }
     })
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
@@ -60,22 +67,22 @@ bloggersRouter
             res.sendStatus(404).send('Not found')
         }
     })
-    .get('/:bloggerId/posts', authMiddleware, async (req: Request, res: Response) => {
+    .get('/:bloggerId/posts', async (req: Request, res: Response) => {
         const {bloggerId} = req.params
 
-        const {PageNumber, PageSize} = req.query
+        const PageNumber: number = +req.query.PageNumber!
+
+        const PageSize: number = +req.query.PageSize!
 
         const blogger = await bloggersService.getBloggerById(+bloggerId)
 
-        // @ts-ignore
-        const data = await bloggersService.getAllBloggerPosts(+bloggerId, +PageNumber, +PageSize)
-
-        if (blogger) {
-            res.status(200).send(data)
-        } else {
-            res.status(404).send('blogger is not exists')
+        if (!blogger) {
+            return res.status(404).send('blogger is not exists')
         }
 
+        const data = await bloggersService.getAllBloggerPosts(+bloggerId, PageNumber, PageSize)
+
+        res.status(200).send(data)
     })
     .post('/:bloggerId/posts',
         authMiddleware,
