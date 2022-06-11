@@ -42,6 +42,10 @@ bloggersRouter
     .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
         const {id} = req.params
 
+        if (!id) {
+            return res.send(404)
+        }
+
         const {name, youtubeUrl} = req.body;
 
         const blogger = await bloggersService.getBloggerById(+id)
