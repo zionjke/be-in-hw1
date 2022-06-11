@@ -46,14 +46,17 @@ bloggersRouter
 
         const blogger = await bloggersService.getBloggerById(id)
 
-        if (blogger === null) {
-            return res.status(404).send('Not found')
+        if (!blogger) {
+            res.status(404).send('Not found')
+            return
         }
 
         const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
 
         if (isUpdated) {
             res.status(204).send('Blogger is updated')
+        } else {
+            res.status(500).send('Not updated')
         }
     })
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
