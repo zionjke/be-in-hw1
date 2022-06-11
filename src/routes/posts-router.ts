@@ -16,7 +16,7 @@ postsRouter
     .get('/', async (req: Request, res: Response) => {
         const {pageNumber, pageSize} = req.query
         // @ts-ignore
-        const data = await postsService.getAllPosts(+pageNumber,+pageSize)
+        const data = await postsService.getAllPosts(+pageNumber, +pageSize)
 
         res.status(200).send(data)
     })
@@ -26,9 +26,9 @@ postsRouter
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
-        bloggerIdValidation.custom((value) => {
+        bloggerIdValidation.custom( async (value) => {
 
-            const blogger = bloggersService.getBloggerById(+value)
+            const blogger = await bloggersService.getBloggerById(+value)
 
             if (!blogger) {
                 throw new Error()
@@ -36,7 +36,7 @@ postsRouter
             return true
         }),
         validationMiddleware,
-       async  (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const {title, shortDescription, content, bloggerId} = req.body
 
             const newPost = await postsService.createPost(title, shortDescription, content, +bloggerId)
@@ -60,9 +60,9 @@ postsRouter
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
-        bloggerIdValidation.custom((value) => {
+        bloggerIdValidation.custom(async (value) => {
 
-            const blogger = bloggersService.getBloggerById(+value)
+            const blogger = await bloggersService.getBloggerById(+value)
 
             if (!blogger) {
                 throw new Error()
@@ -75,12 +75,16 @@ postsRouter
 
             const {title, shortDescription, content, bloggerId} = req.body
 
+            const post = await postsService.getPostById(+id)
+
+            if (!post) {
+                return res.status(404).send('Post not Found')
+            }
+
             const isUpdated = await postsService.updatePost(+id, title, shortDescription, content, +bloggerId)
 
             if (isUpdated) {
-                res.send(204)
-            } else {
-                res.send(404)
+                res.status(204).send('Post updated')
             }
         })
 
