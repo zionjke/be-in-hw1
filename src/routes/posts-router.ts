@@ -14,9 +14,9 @@ export const postsRouter = Router()
 
 postsRouter
     .get('/', async (req: Request, res: Response) => {
-        const PageNumber = +req.query.PageNumber!
+        const PageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
 
-        const PageSize = +req.query.PageSize!
+        const PageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
         const data = await postsService.getAllPosts(PageNumber, PageSize)
 

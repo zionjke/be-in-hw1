@@ -9,7 +9,7 @@ type ErrorsMessagesType = {
         }
 
     ],
-    resultCode: number
+    resultCode?: number
 }
 
 
@@ -34,7 +34,7 @@ export const myValidationResult = validationResult.withDefaults({
 export const sendError = (errors:any):ErrorsMessagesType => {
     return {
         errorsMessages: errors.array({onlyFirstError:true}),
-        resultCode: 1
+        // resultCode: 1
     }
 }
 
