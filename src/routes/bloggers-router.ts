@@ -46,14 +46,14 @@ bloggersRouter
 
         const blogger = await bloggersService.getBloggerById(id)
 
-        if (blogger) {
-            const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
-
-            if (isUpdated) {
-                res.status(204).send('Blogger is updated')
-            }
-        } else {
+        if (blogger === null) {
             return res.status(404).send('Not found')
+        }
+
+        const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
+
+        if (isUpdated) {
+            res.status(204).send('Blogger is updated')
         }
     })
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
@@ -68,17 +68,17 @@ bloggersRouter
         }
     })
     .get('/:bloggerId/posts', async (req: Request, res: Response) => {
-        const {bloggerId} = req.params
+        const bloggerId = +req.params.bloggerId
 
         const PageNumber: number = +req.query.PageNumber!
 
         const PageSize: number = +req.query.PageSize!
 
-        const blogger = await bloggersService.getBloggerById(+bloggerId)
+        const blogger = await bloggersService.getBloggerById(bloggerId)
 
         if (blogger) {
 
-            const data = await bloggersService.getAllBloggerPosts(+bloggerId, PageNumber, PageSize)
+            const data = await bloggersService.getAllBloggerPosts(bloggerId, PageNumber, PageSize)
 
             res.status(200).send(data)
         } else {
