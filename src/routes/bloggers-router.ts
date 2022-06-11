@@ -37,7 +37,12 @@ bloggersRouter
 
         const blogger = await bloggersService.getBloggerById(+id)
 
-        blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
+        if (blogger) {
+            res.status(200).send(blogger)
+        } else {
+            res.status(404).send('Not found')
+        }
+
     })
     .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
         const id = +req.params.id

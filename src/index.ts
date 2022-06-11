@@ -5,6 +5,7 @@ import {runDb} from "./db";
 
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
+import {globalCatch} from "./m5-catchErrors";
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -25,6 +26,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 
+
+globalCatch()
 
 const start = async () => {
     await runDb()
