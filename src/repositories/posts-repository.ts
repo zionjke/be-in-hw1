@@ -1,4 +1,4 @@
-import {ResponseType, PostType} from "../types";
+import {ResponseType, PostType, BloggerType} from "../types";
 import {postsCollection} from "../db";
 
 export const postsRepository = {
@@ -35,10 +35,10 @@ export const postsRepository = {
         const post: PostType | null = await postsCollection.findOne({id}, {projection: {_id: false}})
         return post
     },
-    async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number): Promise<boolean> {
+    async updatePost(id: number, title: string, shortDescription: string, content: string, blogger:BloggerType): Promise<boolean> {
         const result = await postsCollection.updateOne(
             {id},
-            {$set: {title, shortDescription, content, bloggerId}}
+            {$set: {title, shortDescription, content, bloggerId: blogger.id, bloggerName: blogger.name}}
         )
         return result.matchedCount !== 0
     },

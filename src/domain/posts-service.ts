@@ -1,4 +1,4 @@
-import {PostType, ResponseType} from "../types";
+import {BloggerType, PostType, ResponseType} from "../types";
 import {postsRepository} from "../repositories/posts-repository";
 import {bloggersRepository} from "../repositories/bloggers-repository";
 
@@ -25,8 +25,10 @@ export const postsService = {
     async getPostById(id: number): Promise<PostType | null> {
         return await postsRepository.getPostById(id)
     },
-    async updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number): Promise<boolean> {
-        return await postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
+    async updatePost(id: number, title: string, shortDescription: string, content: string, blogger:BloggerType): Promise<boolean> {
+
+
+        return await postsRepository.updatePost(id, title, shortDescription, content, blogger)
     },
     async deletePost(id: number): Promise<boolean> {
         return await postsRepository.deletePost(id)

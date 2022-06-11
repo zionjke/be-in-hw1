@@ -60,15 +60,7 @@ postsRouter
         titleValidation,
         shortDescriptionValidation,
         contentValidation,
-        bloggerIdValidation.custom(async (value) => {
-
-            const blogger = await bloggersService.getBloggerById(+value)
-
-            if (!blogger) {
-                throw new Error()
-            }
-            return true
-        }),
+        bloggerIdValidation,
         validationMiddleware,
         async (req: Request, res: Response) => {
             const {id} = req.params
@@ -81,7 +73,13 @@ postsRouter
                 return res.status(404).send('Post not Found')
             }
 
-            const isUpdated = await postsService.updatePost(+id, title, shortDescription, content, +bloggerId)
+            const blogger = await bloggersService.getBloggerById(+bloggerId)
+
+            if(!blogger) {
+                return res.status(404).send('Blogger not found')
+            }
+
+            const isUpdated = await postsService.updatePost(+id, title, shortDescription, content, blogger)
 
             if (isUpdated) {
                 res.status(204).send('Post updated')
