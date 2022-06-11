@@ -14,11 +14,11 @@ export const postsRouter = Router()
 
 postsRouter
     .get('/', async (req: Request, res: Response) => {
-        const PageNumber = +req.query.pageNumber!
+        const PageNumber = +req.query.PageNumber!
 
-        const PageSize = +req.query.pageSize!
+        const PageSize = +req.query.PageSize!
 
-        const data = await postsService.getAllPosts(PageNumber, +PageSize)
+        const data = await postsService.getAllPosts(PageNumber, PageSize)
 
         res.status(200).send(data)
     })
