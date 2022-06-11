@@ -72,7 +72,8 @@ postsRouter
             const post = await postsService.getPostById(+id)
 
             if (!post) {
-                return res.status(404).send('Post not Found')
+                res.status(404).send('Post not Found')
+                return
             }
 
             const blogger = await bloggersService.getBloggerById(+bloggerId)
@@ -85,6 +86,8 @@ postsRouter
 
             if (isUpdated) {
                 res.status(204).send('Post updated')
+            } else {
+                res.status(404).send('Post not updated')
             }
         })
 
