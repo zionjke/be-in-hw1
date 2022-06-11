@@ -40,30 +40,26 @@ bloggersRouter
         blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
     })
     .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
-        const {id} = req.params
-
-        if (!id) {
-            return res.send(404)
-        }
+        const id = +req.params.id!
 
         const {name, youtubeUrl} = req.body;
 
-        const blogger = await bloggersService.getBloggerById(+id)
+        const blogger = await bloggersService.getBloggerById(id)
 
         if (!blogger) {
             return res.status(404).send('Not found')
         }
 
-        const isUpdated = await bloggersService.updateBlogger(+id, name, youtubeUrl)
+        const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
 
         if (isUpdated) {
             res.status(204).send('Blogger is updated')
         }
     })
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const {id} = req.params
+        const id = +req.params.id!
 
-        const isDeleted = await bloggersService.deleteBlogger(+id)
+        const isDeleted = await bloggersService.deleteBlogger(id)
 
         if (isDeleted) {
             res.send(204)
