@@ -6,9 +6,11 @@ import {runDb} from "./db";
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
 import {globalCatch} from "./m5-catchErrors";
+import {usersRouter} from "./routes/users-router";
+import {authRouter} from "./routes/auth-router";
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 
 app.use(cors())
 app.use(express.json())
@@ -23,6 +25,8 @@ app.get('/', (req: Request, res: Response) => {
 // app.use('/posts', postsRouterWithMock)
 
 //with NativeMongo
+app.use('/users', usersRouter)
+app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 

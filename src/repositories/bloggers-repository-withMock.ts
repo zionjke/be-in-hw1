@@ -1,23 +1,24 @@
 import {BLOGGERS, BloggerType} from "../types";
+import uuid from "uuid";
 
 export const bloggersRepositoryWithMock = {
     geBloggers() {
         return BLOGGERS
     },
-    getBloggerById(id: number) {
+    getBloggerById(id: string) {
         const blogger = BLOGGERS.find(b => b.id === id)
         return blogger
     },
     createNewBlogger(name: string, youtubeUrl: string) {
         const newBlogger: BloggerType = {
-            id: +(new Date()),
+            id: uuid.v4(),
             name,
             youtubeUrl
         }
         BLOGGERS.push(newBlogger)
         return newBlogger
     },
-    updateBlogger(id: number, name: string, youtubeUrl: string) {
+    updateBlogger(id: string, name: string, youtubeUrl: string) {
         const blogger = BLOGGERS.find(b => b.id === id)
         if (blogger) {
             blogger.name = name,
@@ -27,7 +28,7 @@ export const bloggersRepositoryWithMock = {
             return false
         }
     },
-    deleteBlogger(id: number) {
+    deleteBlogger(id: string) {
         const bloggerIndex = BLOGGERS.findIndex(b => b.id === id)
         if (bloggerIndex >= 0) {
             BLOGGERS.splice(bloggerIndex, 1)

@@ -1,11 +1,5 @@
 import {Request, Response, Router} from "express";
-import {
-    contentValidation,
-    nameValidation,
-    shortDescriptionValidation,
-    titleValidation,
-    urlValidation
-} from "../middlewares/validationMiddleware";
+import {bloggerValidation, postValidation,} from "../middlewares/validationMiddleware";
 import {bloggersService} from "../domain/bloggers-service";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 import {authMiddleware} from "../middlewares/auth-middleware";
@@ -14,28 +8,31 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 export const bloggersRouter = Router()
 
 bloggersRouter
+
     .get('/', async (req: Request, res: Response) => {
-        const {SearchNameTerm} = req.query
+        const searchNameTerm = req.query.SearchNameTerm
 
-        const PageNumber: number = +req.query.PageNumber!
+        const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
 
-        const PageSize: number = +req.query.PageSize!
+        const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
-        const data = await bloggersService.getBloggers(SearchNameTerm?.toString(), PageNumber, PageSize)
+        const data = await bloggersService.getBloggers(searchNameTerm?.toString(), pageNumber, _pageSize)
 
         res.status(200).send(data)
     })
-    .post('/', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
+
+    .post('/', authMiddleware, bloggerValidation, validationMiddleware, async (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body;
 
         const blogger = await bloggersService.createNewBlogger(name, youtubeUrl)
 
         res.status(201).send(blogger)
     })
+
     .get('/:id', async (req: Request, res: Response) => {
         const {id} = req.params
 
-        const blogger = await bloggersService.getBloggerById(+id)
+        const blogger = await bloggersService.getBloggerById(id)
 
         if (blogger) {
             res.status(200).send(blogger)
@@ -44,8 +41,9 @@ bloggersRouter
         }
 
     })
-    .put('/:id', authMiddleware, nameValidation, urlValidation, validationMiddleware, async (req: Request, res: Response) => {
-        const id = +req.params.id
+
+    .put('/:id', authMiddleware, bloggerValidation, validationMiddleware, async (req: Request, res: Response) => {
+        const id = req.params.id
 
         const {name, youtubeUrl} = req.body;
 
@@ -64,8 +62,9 @@ bloggersRouter
             res.status(500).send('Not updated')
         }
     })
+
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const id = +req.params.id
+        const id = req.params.id
 
         const isDeleted = await bloggersService.deleteBlogger(id)
 
@@ -75,18 +74,19 @@ bloggersRouter
             res.sendStatus(404).send('Not found')
         }
     })
+
     .get('/:bloggerId/posts', async (req: Request, res: Response) => {
-        const bloggerId = +req.params.bloggerId
+        const bloggerId = req.params.bloggerId
 
-        const PageNumber: number = +req.query.PageNumber!
+        const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
 
-        const PageSize: number = +req.query.PageSize!
+        const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
 
         if (blogger) {
 
-            const data = await bloggersService.getAllBloggerPosts(bloggerId, PageNumber, PageSize)
+            const data = await bloggersService.getAllBloggerPosts(bloggerId, pageNumber, _pageSize)
 
             res.status(200).send(data)
         } else {
@@ -94,14 +94,13 @@ bloggersRouter
         }
 
     })
+
     .post('/:bloggerId/posts',
         authMiddleware,
-        titleValidation,
-        shortDescriptionValidation,
-        contentValidation,
+        postValidation,
         validationMiddleware,
         async (req: Request, res: Response) => {
-            const bloggerId = +req.params.bloggerId
+            const bloggerId = req.params.bloggerId
 
             const {title, shortDescription, content} = req.body
 

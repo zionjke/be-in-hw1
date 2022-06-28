@@ -1,25 +1,25 @@
 import {NextFunction, Request, Response} from "express";
 import {body, validationResult} from "express-validator";
-
-type ErrorsMessagesType = {
-    errorsMessages: [
-        {
-            message: string,
-            field: string,
-        }
-
-    ],
-    resultCode?: number
-}
+import { ErrorsMessagesType } from "../types";
 
 
-export const nameValidation = body('name').trim().isLength({max: 15}).withMessage('Name length should be max 15').isString().notEmpty();
-export const urlValidation = body('youtubeUrl').trim().matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/).isLength({max: 100}).notEmpty().isString();
-export const titleValidation = body('title').trim().notEmpty().isString().isLength({max: 30})
-export const shortDescriptionValidation = body('shortDescription').notEmpty().isString().isLength({max: 100})
-export const contentValidation = body('content').trim().notEmpty().isString().isLength({max: 1000})
-export const bloggerIdValidation = body('bloggerId').isNumeric().notEmpty()
+export const bloggerValidation = [
+ body('name').trim().isLength({max: 15}).withMessage('Name length should be max 15').isString().notEmpty(),
+ body('youtubeUrl').trim().matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/).isLength({max: 100}).notEmpty().isString()
+]
 
+export const postValidation = [
+ body('title').trim().notEmpty().isString().isLength({max: 30}),
+ body('shortDescription').notEmpty().isString().isLength({max: 100}),
+ body('content').trim().notEmpty().isString().isLength({max: 1000})
+]
+
+export const userValidation = [
+    body('login').isString().isLength({min: 3, max: 10}).notEmpty(),
+    body('password').isString().isLength({min: 6, max: 20}).notEmpty(),
+]
+
+export const bloggerIdValidation = body('bloggerId').isString().notEmpty()
 
 
 export const myValidationResult = validationResult.withDefaults({
@@ -45,7 +45,7 @@ export const validationMiddleware = (req: Request, res: Response, next: NextFunc
 
     if (!errors.isEmpty()) {
         res.status(400).json(sendError(errors))
-        return
+        return;
     } else {
         next()
     }

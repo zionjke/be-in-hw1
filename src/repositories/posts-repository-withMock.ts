@@ -1,14 +1,15 @@
 import {BLOGGERS, BloggerType, POSTS, PostType} from "../types";
+import uuid from "uuid";
 
 export const postsRepositoryWithMock = {
     getAllPosts() {
         return POSTS
     },
-    createPost(title: string, shortDescription: string, content: string, bloggerId: number) {
+    createPost(title: string, shortDescription: string, content: string, bloggerId: string) {
         const blogger = BLOGGERS.find(b => b.id === bloggerId)
         if (blogger) {
             const newPost: PostType = {
-                id: +(new Date()),
+                id: uuid.v4(),
                 title,
                 shortDescription,
                 content,
@@ -21,11 +22,11 @@ export const postsRepositoryWithMock = {
             throw new Error('123')
         }
     },
-    getPostById(id: number) {
+    getPostById(id: string) {
         const post = POSTS.find(p => p.id === id)
         return post
     },
-    updatePost(id: number, title: string, shortDescription: string, content: string, bloggerId: number) {
+    updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
         const post = POSTS.find(p => p.id === id)
         if (post) {
             post.title = title,
@@ -37,8 +38,8 @@ export const postsRepositoryWithMock = {
             return false
         }
     },
-    deletePost(id: number) {
-        const postIndex = POSTS.findIndex(p => p.id === +id)
+    deletePost(id: string) {
+        const postIndex = POSTS.findIndex(p => p.id === id)
         if (postIndex >= 0) {
             POSTS.splice(postIndex, 1)
             return true

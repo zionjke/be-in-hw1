@@ -1,16 +1,17 @@
+import {v4} from 'uuid'
 import {BloggerType, PostType, ResponseType} from "../types";
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {postsRepository} from "../repositories/posts-repository";
 
 export const bloggersService = {
-    async getBloggers(SearchNameTerm: string | undefined | null, PageNumber: number | undefined , PageSize: number | undefined ): Promise<ResponseType<BloggerType[]>> {
-        return bloggersRepository.getBloggers(SearchNameTerm, PageNumber, PageSize)
+    async getBloggers(searchNameTerm: string | undefined , pageNumber: number | undefined , _pageSize: number | undefined ): Promise<ResponseType<BloggerType[]>> {
+        return bloggersRepository.getBloggers(searchNameTerm, pageNumber, _pageSize)
     },
 
     async createNewBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
 
         const newBlogger: BloggerType = {
-            id: +(new Date()),
+            id: v4(),
             name,
             youtubeUrl
         }
@@ -18,26 +19,26 @@ export const bloggersService = {
         return await bloggersRepository.createNewBlogger(newBlogger)
     },
 
-    async getBloggerById(id: number): Promise<BloggerType | null> {
+    async getBloggerById(id: string): Promise<BloggerType | null> {
         return await bloggersRepository.getBloggerById(id)
     },
 
-    async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+    async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         return await bloggersRepository.updateBlogger(id, name, youtubeUrl)
     },
 
-    async deleteBlogger(id: number): Promise<boolean> {
+    async deleteBlogger(id: string): Promise<boolean> {
         return await bloggersRepository.deleteBlogger(id)
     },
 
-    async getAllBloggerPosts(bloggerId: number, PageNumber: number | undefined, PageSize: number | undefined): Promise<ResponseType<PostType[]>> {
-        return await bloggersRepository.getAllBloggerPosts(bloggerId, PageNumber, PageSize)
+    async getAllBloggerPosts(bloggerId: string, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+        return await bloggersRepository.getAllBloggerPosts(bloggerId, pageNumber, _pageSize)
     },
 
     async createNewBloggerPost(title: string, shortDescription: string, content: string, blogger: BloggerType) {
 
         const newPost: PostType = {
-            id: +(new Date()),
+            id: v4(),
             title,
             shortDescription,
             content,
