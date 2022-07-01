@@ -1,7 +1,8 @@
-import {BloggerType, PostType, ResponseType} from "../types";
+import {BloggerType, CommentType, PostType, ResponseType, UserType} from "../types";
 import {postsRepository} from "../repositories/posts-repository";
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {v4} from "uuid";
+import {usersService} from "./users-service";
 
 
 export const postsService = {
@@ -26,12 +27,34 @@ export const postsService = {
     async getPostById(id: string): Promise<PostType | null> {
         return await postsRepository.getPostById(id)
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, blogger:BloggerType): Promise<boolean> {
+    async updatePost(id: string, title: string, shortDescription: string, content: string, blogger: BloggerType): Promise<boolean> {
 
 
         return await postsRepository.updatePost(id, title, shortDescription, content, blogger)
     },
     async deletePost(id: string): Promise<boolean> {
         return await postsRepository.deletePost(id)
+    },
+
+    async createPostComment(content: string, user: UserType | null): Promise<CommentType | undefined> {
+
+        if (!user) {
+            return undefined;
+        }
+
+        const newComment = {
+            id: v4(),
+            content,
+            userId: user.id,
+            userLogin: user.login,
+            addedAt: new Date().toISOString()
+        }
+
+        return await postsRepository.createPostComment(newComment)
+
+    },
+
+    async getAllCommentsPost(pageNumber: number | undefined, _pageSize: number | undefined):Promise<ResponseType<CommentType[]>> {
+        return await postsRepository.getAllCommentsPost(pageNumber, _pageSize)
     }
 }

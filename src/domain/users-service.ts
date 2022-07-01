@@ -8,7 +8,14 @@ export const usersService = {
         return await usersRepository.getUsers(pageNumber, _pageSize)
     },
 
-    async createUser(login: string, password: string): Promise<UserType> {
+    async createUser(login: string, password: string): Promise<UserType | boolean> {
+
+        const existUser = await usersRepository.getUserByLogin(login)
+
+        if (existUser) {
+            return false
+        }
+
         const passwordSalt = await bcrypt.genSalt(10)
 
         const passwordHash = await this.generateHash(password, passwordSalt)
@@ -25,11 +32,16 @@ export const usersService = {
         return await usersRepository.deleteUser(id)
     },
 
-    async checkCredentials(login: string, password: string) {
+    async getUserByID(id: string): Promise<UserType | null> {
+        return await usersRepository.getUserById(id)
+    },
+
+    async checkCredentials(login: string, password: string): Promise<UserType | null> {
+
         const user = await usersRepository.getUserByLogin(login)
 
         if (!user) {
-            return;
+            return null;
         }
 
         const passwordSalt = user.passwordHash.split('.')[0]
@@ -37,14 +49,29 @@ export const usersService = {
         const passwordHash = await this.generateHash(password, passwordSalt)
 
         if (user.passwordHash !== passwordHash) {
-            return;
+            return null;
         }
+
+        // const passwordHash = user.passwordHash
+        //
+        // const isVerify = await this.verifyPassword(password,passwordHash)
+        //
+        // if (!isVerify) {
+        //     return null;
+        // }
 
         return user
     },
 
     async generateHash(password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
+
         return hash
+    },
+
+    async verifyPassword(password: string, hash: string) {
+        const isVerify = await bcrypt.compare(password, hash)
+
+        return isVerify
     }
 }

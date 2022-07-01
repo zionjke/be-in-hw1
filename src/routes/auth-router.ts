@@ -6,6 +6,7 @@ export const authRouter = Router();
 
 authRouter
     .post('/login', async (req: Request, res: Response) => {
+
         const {login, password} = req.body
 
         const user = await usersService.checkCredentials(login, password)
@@ -14,6 +15,6 @@ authRouter
             const token = await jwtService.createJWT(user)
             res.status(201).send(token)
         } else {
-            res.sendStatus(401)
+            res.status(401).send('password or login is wrong')
         }
     })

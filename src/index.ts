@@ -8,6 +8,7 @@ import {postsRouter} from "./routes/posts-router";
 import {globalCatch} from "./m5-catchErrors";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
+import {commentsRouter} from "./routes/comments-router";
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -29,6 +30,7 @@ app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
+app.use('/comments', commentsRouter)
 
 
 globalCatch()

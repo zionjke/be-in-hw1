@@ -23,7 +23,11 @@ usersRouter
 
         const user = await usersService.createUser(login, password)
 
-        res.status(201).send(user)
+        if (user) {
+            res.status(201).send(user)
+        } else {
+            res.status(401).send('User with this login already exists')
+        }
     })
 
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {

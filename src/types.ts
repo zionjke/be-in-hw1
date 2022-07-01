@@ -22,6 +22,14 @@ export type UserDBType =  UserType & {
     passwordHash:string,
 }
 
+export type CommentType = {
+    id: string,
+    content: string,
+    userId: string,
+    userLogin: string,
+    addedAt: string
+}
+
 
 export type ResponseType<T> = {
     pagesCount: number,

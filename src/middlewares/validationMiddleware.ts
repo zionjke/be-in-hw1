@@ -21,6 +21,8 @@ export const userValidation = [
 
 export const bloggerIdValidation = body('bloggerId').isString().notEmpty()
 
+export const commentValidation = body('content').isString().isLength({min:20, max:300})
+
 
 export const myValidationResult = validationResult.withDefaults({
     formatter: error => {

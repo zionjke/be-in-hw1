@@ -1,5 +1,5 @@
-import {ResponseType, PostType, BloggerType} from "../types";
-import {postsCollection} from "../db";
+import {ResponseType, PostType, BloggerType, CommentType} from "../types";
+import {commentsCollection, postsCollection} from "../db";
 import {pagination} from "../utils/pagination";
 
 export const postsRepository = {
@@ -8,19 +8,12 @@ export const postsRepository = {
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
-        // const page = pageNumber || 1
-        //
-        // pageSize = pageSize || 10
-        //
-        // const pagesCount = Math.ceil(totalCount / pageSize)
-        //
-        // const startFrom = (page - 1) * pageSize
-
         const posts = await postsCollection
-            .find({}, {projection: {_id:false}})
+            .find({}, {projection: {_id: false}})
             .skip(startFrom)
             .limit(pageSize)
             .toArray()
+
         return {
             pagesCount,
             page,
@@ -37,7 +30,7 @@ export const postsRepository = {
         const post: PostType | null = await postsCollection.findOne({id}, {projection: {_id: false}})
         return post
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, blogger:BloggerType): Promise<boolean> {
+    async updatePost(id: string, title: string, shortDescription: string, content: string, blogger: BloggerType): Promise<boolean> {
         const result = await postsCollection.updateOne(
             {id},
             {$set: {title, shortDescription, content, bloggerId: blogger.id, bloggerName: blogger.name}}
@@ -47,5 +40,31 @@ export const postsRepository = {
     async deletePost(id: string): Promise<boolean> {
         const result = await postsCollection.deleteOne({id})
         return result.deletedCount !== 0
+    },
+
+    async createPostComment(newComment: CommentType): Promise<CommentType> {
+        await commentsCollection.insertOne({...newComment})
+
+        return newComment
+    },
+
+    async getAllCommentsPost(pageNumber: number | undefined, _pageSize: number | undefined):Promise<ResponseType<CommentType[]>> {
+        const totalCount = await commentsCollection.count()
+
+        const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
+
+        const comments = await commentsCollection
+            .find({}, {projection: {_id: false}})
+            .skip(startFrom)
+            .limit(pageSize)
+            .toArray()
+
+        return {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items: comments
+        }
     }
 }
