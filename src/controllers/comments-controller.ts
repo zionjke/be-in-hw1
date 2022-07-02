@@ -27,6 +27,11 @@ export const commentsController = {
 
             const comment = await commentsService.getCommentById(commentId)
 
+            if (!comment) {
+                res.sendStatus(404)
+                return;
+            }
+
             if (user?.id !== comment?.userId) {
                 res.status(403).send('Comment does not belong to you')
                 return;
@@ -54,6 +59,11 @@ export const commentsController = {
             const user = req.user
 
             const comment = await commentsService.getCommentById(commentId)
+
+            if (!comment) {
+                res.sendStatus(404)
+                return;
+            }
 
             if (user?.id !== comment?.userId) {
                 res.status(403).send('Comment does not belong to you')
