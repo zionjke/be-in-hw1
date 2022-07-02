@@ -1,6 +1,7 @@
 import {BloggerType, PostType, ResponseType} from "../types";
 import {bloggersCollection, postsCollection} from "../db";
 import {pagination} from "../utils/pagination";
+import {v4} from "uuid";
 
 export const bloggersRepository = {
     async getBloggers(searchNameTerm: string | undefined, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<BloggerType[]>> {
@@ -14,14 +15,6 @@ export const bloggersRepository = {
         const totalCount = await bloggersCollection.find(filter).count()
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
-
-        // const page = pageNumber || 1
-        //
-        // pageSize = pageSize || 10
-        //
-        // const startFrom = (page - 1) * pageSize
-        //
-        // const pagesCount = Math.ceil(totalCount / pageSize)
 
         const bloggers = await bloggersCollection
             .find(filter, {projection: {_id: false}})
@@ -38,7 +31,13 @@ export const bloggersRepository = {
         }
     },
 
-    async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
+    async createNewBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
+
+        const newBlogger: BloggerType = {
+            id: v4(),
+            name,
+            youtubeUrl
+        }
 
         await bloggersCollection.insertOne({...newBlogger})
 
@@ -47,6 +46,7 @@ export const bloggersRepository = {
 
     async getBloggerById(id: string): Promise<BloggerType | null> {
         const blogger: BloggerType | null = await bloggersCollection.findOne({id}, {projection: {_id: false}})
+
         return blogger
     },
 
@@ -65,18 +65,10 @@ export const bloggersRepository = {
         return result.deletedCount !== 0;
     },
 
-    async getAllBloggerPosts(bloggerId: string, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+    async getBloggerPosts(bloggerId: string, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
         const totalCount = await postsCollection.find({bloggerId}).count()
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
-
-        // const page = PageNumber || 1
-        //
-        // const pageSize = PageSize || 10
-        //
-        // const startFrom = (page - 1) * pageSize
-        //
-        // const pagesCount = Math.ceil(totalCount / pageSize)
 
         const posts = await postsCollection
             .find({bloggerId}, {projection: {_id: false}})

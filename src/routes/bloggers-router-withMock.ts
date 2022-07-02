@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {bloggersRepositoryWithMock} from "../repositories/bloggers-repository-withMock";
 import {bloggerValidation, validationMiddleware} from "../middlewares/validationMiddleware";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authMiddlewareBasic} from "../middlewares/auth-middleware-basic";
 
 
 export const bloggersRouterWithMock = Router()
@@ -11,7 +11,7 @@ bloggersRouterWithMock
         const bloggers = bloggersRepositoryWithMock.geBloggers()
         res.status(200).send(bloggers)
     })
-    .post('/', authMiddleware, bloggerValidation, validationMiddleware, (req: Request, res: Response) => {
+    .post('/', authMiddlewareBasic, bloggerValidation, validationMiddleware, (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body;
 
         const newBlogger = bloggersRepositoryWithMock.createNewBlogger(name, youtubeUrl)
@@ -24,7 +24,7 @@ bloggersRouterWithMock
 
         blogger ? res.status(200).send(blogger) : res.status(404).send('Not found')
     })
-    .put('/:id', authMiddleware, bloggerValidation, validationMiddleware, (req: Request, res: Response) => {
+    .put('/:id', authMiddlewareBasic, bloggerValidation, validationMiddleware, (req: Request, res: Response) => {
         const {name, youtubeUrl} = req.body;
         const {id} = req.params
 
@@ -38,7 +38,7 @@ bloggersRouterWithMock
             res.status(404).send('Not found')
         }
     })
-    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
+    .delete('/:id', authMiddlewareBasic, (req: Request, res: Response) => {
         const {id} = req.params
 
         const isDeleted = bloggersRepositoryWithMock.deleteBlogger(id)

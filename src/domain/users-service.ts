@@ -44,21 +44,13 @@ export const usersService = {
             return null;
         }
 
-        const passwordSalt = user.passwordHash.split('.')[0]
+        const passwordHash = user.passwordHash
 
-        const passwordHash = await this.generateHash(password, passwordSalt)
+        const isVerify = await this.verifyPassword(password,passwordHash)
 
-        if (user.passwordHash !== passwordHash) {
+        if (!isVerify) {
             return null;
         }
-
-        // const passwordHash = user.passwordHash
-        //
-        // const isVerify = await this.verifyPassword(password,passwordHash)
-        //
-        // if (!isVerify) {
-        //     return null;
-        // }
 
         return user
     },

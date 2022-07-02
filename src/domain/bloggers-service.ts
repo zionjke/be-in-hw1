@@ -9,14 +9,7 @@ export const bloggersService = {
     },
 
     async createNewBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
-
-        const newBlogger: BloggerType = {
-            id: v4(),
-            name,
-            youtubeUrl
-        }
-
-        return await bloggersRepository.createNewBlogger(newBlogger)
+        return await bloggersRepository.createNewBlogger(name, youtubeUrl)
     },
 
     async getBloggerById(id: string): Promise<BloggerType | null> {
@@ -31,20 +24,11 @@ export const bloggersService = {
         return await bloggersRepository.deleteBlogger(id)
     },
 
-    async getAllBloggerPosts(bloggerId: string, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
-        return await bloggersRepository.getAllBloggerPosts(bloggerId, pageNumber, _pageSize)
+    async getBloggerPosts(bloggerId: string, pageNumber: number | undefined, _pageSize: number | undefined): Promise<ResponseType<PostType[]>> {
+        return await bloggersRepository.getBloggerPosts(bloggerId, pageNumber, _pageSize)
     },
 
-    async createNewBloggerPost(title: string, shortDescription: string, content: string, blogger: BloggerType) {
-
-        const newPost: PostType = {
-            id: v4(),
-            title,
-            shortDescription,
-            content,
-            bloggerId: blogger.id,
-            bloggerName: blogger.name
-        }
-        return await postsRepository.createPost(newPost)
+    async createNewBloggerPost(title: string, shortDescription: string, content: string, blogger: BloggerType): Promise<PostType> {
+        return await postsRepository.createPost(title, shortDescription, content, blogger)
     }
 }

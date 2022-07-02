@@ -3,7 +3,7 @@ import {CommentType} from "../types";
 
 export const commentsRepository = {
     async getCommentById(id: string): Promise<CommentType | null> {
-        const comment = await commentsCollection.findOne({id}, {projection: {_id: false}})
+        const comment = await commentsCollection.findOne({id}, {projection: {_id: false, postId: false}})
 
         return comment
     },
@@ -14,8 +14,8 @@ export const commentsRepository = {
         return result.deletedCount !== 0
     },
 
-    async updateComment(id: string, content:string): Promise<boolean> {
-        const result = await commentsCollection.updateOne({id},{$set:{content}})
+    async updateComment(id: string, content: string): Promise<boolean> {
+        const result = await commentsCollection.updateOne({id}, {$set: {content}})
 
         return result.matchedCount !== 0;
     }

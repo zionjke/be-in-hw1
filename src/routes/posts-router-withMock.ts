@@ -3,7 +3,7 @@ import {bloggerIdValidation, postValidation,} from "../middlewares/validationMid
 import {postsRepositoryWithMock} from "../repositories/posts-repository-withMock";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
 import {bloggersRepositoryWithMock} from "../repositories/bloggers-repository-withMock";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authMiddlewareBasic} from "../middlewares/auth-middleware-basic";
 
 export const postsRouterWithMock = Router()
 
@@ -14,7 +14,7 @@ postsRouterWithMock
     })
 
     .post('/',
-        authMiddleware,
+        authMiddlewareBasic,
         postValidation,
         bloggerIdValidation,
         validationMiddleware,
@@ -37,7 +37,7 @@ postsRouterWithMock
         }
     })
     .put('/:id',
-        authMiddleware,
+        authMiddlewareBasic,
         postValidation,
         bloggerIdValidation.custom((value) => {
             const blogger = bloggersRepositoryWithMock.getBloggerById(value)
@@ -60,7 +60,7 @@ postsRouterWithMock
             }
         })
 
-    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
+    .delete('/:id', authMiddlewareBasic, (req: Request, res: Response) => {
         const {id} = req.params
 
         const isDeleted = postsRepositoryWithMock.deletePost(id)

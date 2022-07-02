@@ -30,6 +30,10 @@ export type CommentType = {
     addedAt: string
 }
 
+export type CommentDBType = CommentType & {
+    postId:string
+}
+
 
 export type ResponseType<T> = {
     pagesCount: number,

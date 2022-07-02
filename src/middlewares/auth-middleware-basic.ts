@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddlewareBasic = (req: Request, res: Response, next: NextFunction) => {
 
     if (req.headers.authorization === undefined) {
         res.status(401).send('Please provide WWW-Authorization using BASIC in headers with base 64 encoding');

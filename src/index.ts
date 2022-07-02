@@ -11,14 +11,15 @@ import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 
 const app = express()
+
 const port = process.env.PORT || 5000
 
 app.use(cors())
+
 app.use(express.json())
 
-
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello: World!')
+    res.send(`SERVER  IS RUNNING ON ${port} PORT`)
 })
 
 //with Mockdata

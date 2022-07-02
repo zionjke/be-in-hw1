@@ -1,115 +1,23 @@
-import {Request, Response, Router} from "express";
+import {Router} from "express";
 import {bloggerValidation, postValidation,} from "../middlewares/validationMiddleware";
-import {bloggersService} from "../domain/bloggers-service";
 import {validationMiddleware} from "../middlewares/validationMiddleware";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authMiddlewareBasic} from "../middlewares/auth-middleware-basic";
+import {bloggersController} from "../controllers/bloggers-controller";
 
 
 export const bloggersRouter = Router()
 
 bloggersRouter
+    .get('/', bloggersController.getBloggers)
 
-    .get('/', async (req: Request, res: Response) => {
-        const searchNameTerm = req.query.SearchNameTerm
+    .post('/', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.createNewBlogger)
 
-        const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
+    .get('/:id', bloggersController.getBloggerById)
 
-        const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
+    .put('/:id', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.updateBlogger)
 
-        const data = await bloggersService.getBloggers(searchNameTerm?.toString(), pageNumber, _pageSize)
+    .delete('/:id', authMiddlewareBasic, bloggersController.deleteBlogger)
 
-        res.status(200).send(data)
-    })
+    .get('/:bloggerId/posts', bloggersController.getBloggerPosts)
 
-    .post('/', authMiddleware, bloggerValidation, validationMiddleware, async (req: Request, res: Response) => {
-        const {name, youtubeUrl} = req.body;
-
-        const blogger = await bloggersService.createNewBlogger(name, youtubeUrl)
-
-        res.status(201).send(blogger)
-    })
-
-    .get('/:id', async (req: Request, res: Response) => {
-        const {id} = req.params
-
-        const blogger = await bloggersService.getBloggerById(id)
-
-        if (blogger) {
-            res.status(200).send(blogger)
-        } else {
-            res.status(404).send('Not found')
-        }
-
-    })
-
-    .put('/:id', authMiddleware, bloggerValidation, validationMiddleware, async (req: Request, res: Response) => {
-        const id = req.params.id
-
-        const {name, youtubeUrl} = req.body;
-
-        const blogger = await bloggersService.getBloggerById(id)
-
-        if (!blogger) {
-            res.status(404).send('Not found')
-            return
-        }
-
-        const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
-
-        if (isUpdated) {
-            res.status(204).send('Blogger is updated')
-        } else {
-            res.status(500).send('Not updated')
-        }
-    })
-
-    .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const id = req.params.id
-
-        const isDeleted = await bloggersService.deleteBlogger(id)
-
-        if (isDeleted) {
-            res.send(204)
-        } else {
-            res.sendStatus(404).send('Not found')
-        }
-    })
-
-    .get('/:bloggerId/posts', async (req: Request, res: Response) => {
-        const bloggerId = req.params.bloggerId
-
-        const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
-
-        const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
-
-        const blogger = await bloggersService.getBloggerById(bloggerId)
-
-        if (blogger) {
-
-            const data = await bloggersService.getAllBloggerPosts(bloggerId, pageNumber, _pageSize)
-
-            res.status(200).send(data)
-        } else {
-            return res.status(404).send('blogger is not exists')
-        }
-
-    })
-
-    .post('/:bloggerId/posts',
-        authMiddleware,
-        postValidation,
-        validationMiddleware,
-        async (req: Request, res: Response) => {
-            const bloggerId = req.params.bloggerId
-
-            const {title, shortDescription, content} = req.body
-
-            const blogger = await bloggersService.getBloggerById(bloggerId)
-
-            if (blogger) {
-                const post = await bloggersService.createNewBloggerPost(title, shortDescription, content, blogger)
-                res.status(201).send(post)
-            } else {
-                res.status(404).send('blogger doesn\'t exists')
-            }
-        })
+    .post('/:bloggerId/posts', authMiddlewareBasic, postValidation, validationMiddleware, bloggersController.createNewBloggerPost)
