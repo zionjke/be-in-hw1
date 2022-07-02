@@ -11,7 +11,7 @@ export const authController = {
 
             if (user) {
                 const token = await jwtService.createJWT(user)
-                res.status(201).send({token})
+                res.status(200).send({token})
             } else {
                 res.status(401).send('password or login is wrong')
             }
