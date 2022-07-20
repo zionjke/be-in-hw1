@@ -26,12 +26,12 @@ export const usersRepository = {
     async createUser(user: UserDBType): Promise<UserType> {
         await usersCollection.insertOne({...user})
 
-        const {passwordHash, ...userData} = user
+        const {passwordHash, email, isActivated, confirmationCode, ...userData} = user
 
         return userData
     },
 
-    async deleteUser(id: string):Promise<boolean> {
+    async deleteUser(id: string): Promise<boolean> {
         const result = await usersCollection.deleteOne({id})
 
         return result.deletedCount !== 0
@@ -46,4 +46,24 @@ export const usersRepository = {
         const user: UserType | null = await usersCollection.findOne({id}, {projection: {_id: false}})
         return user
     },
+
+    async registration(user: UserDBType): Promise<UserDBType> {
+        await usersCollection.insertOne({...user})
+        return user
+    },
+
+    async checkUserConfirmationCode(code: string): Promise<boolean> {
+        const result = await usersCollection.updateOne(
+            {confirmationCode: code},
+            {$set: {isActivated: true}}
+        )
+
+        return result.matchedCount !== 0
+    },
+
+    async getUserByEmail(email: string): Promise<UserDBType | null> {
+        const user: UserDBType | null = await usersCollection.findOne({email}, {projection: {_id: false}})
+        return user
+    },
+
 }

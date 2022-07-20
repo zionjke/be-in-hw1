@@ -1,7 +1,8 @@
 import {MongoClient} from 'mongodb'
 import {BloggerType, CommentDBType, PostType, UserDBType} from "./types";
+import {SERVICE} from "./constants";
 
-const mongoUri = process.env.mongoURI || "mongodb+srv://admin:eok2Ydkm21249@cluster0.arx9w.mongodb.net/?retryWrites=true&w=majority";
+const mongoUri = process.env.mongoURI || SERVICE.URI;
 
 export const client = new MongoClient(mongoUri);
 

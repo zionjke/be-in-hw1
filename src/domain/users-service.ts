@@ -8,7 +8,7 @@ export const usersService = {
         return await usersRepository.getUsers(pageNumber, _pageSize)
     },
 
-    async createUser(login: string, password: string): Promise<UserType | boolean> {
+    async createUser(login: string, password: string, email: string): Promise<UserType | boolean> {
 
         const existUser = await usersRepository.getUserByLogin(login)
 
@@ -23,7 +23,8 @@ export const usersService = {
         const newUser: UserDBType = {
             id: v4(),
             login,
-            passwordHash,
+            email,
+            passwordHash
         }
         return await usersRepository.createUser(newUser)
     },

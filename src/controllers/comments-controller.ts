@@ -14,7 +14,8 @@ export const commentsController = {
             }
 
             res.status(200).send(comment)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get comment')
         }
     },
@@ -45,7 +46,8 @@ export const commentsController = {
             }
 
             res.sendStatus(204)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to delete comment')
         }
     },
@@ -78,7 +80,8 @@ export const commentsController = {
             }
 
             res.sendStatus(204)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to update comment')
         }
     }

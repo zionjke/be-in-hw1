@@ -17,11 +17,14 @@ export const postValidation = [
 export const userValidation = [
     body('login').isString().isLength({min: 3, max: 10}).notEmpty(),
     body('password').isString().isLength({min: 6, max: 20}).notEmpty(),
+    body('email', 'Enter valid email').isString().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).notEmpty()
 ]
 
 export const bloggerIdValidation = body('bloggerId').isString().notEmpty()
 
 export const commentValidation = body('content', 'Comment content length should be min 20 and max 300').isString().isLength({min:20, max:300})
+
+export const registrationCodeValidation = body('code').isString().notEmpty()
 
 
 export const myValidationResult = validationResult.withDefaults({

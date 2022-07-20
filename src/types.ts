@@ -20,7 +20,11 @@ export type UserType = {
 
 export type UserDBType =  UserType & {
     passwordHash:string,
+    email: string,
+    confirmationCode?: string
+    isActivated?: boolean
 }
+
 
 export type CommentType = {
     id: string,
@@ -28,6 +32,13 @@ export type CommentType = {
     userId: string,
     userLogin: string,
     addedAt: string
+}
+
+export type SendEmailType = {
+    emailTo:string,
+    subject:string,
+    text:string,
+    html:string
 }
 
 export type CommentDBType = CommentType & {

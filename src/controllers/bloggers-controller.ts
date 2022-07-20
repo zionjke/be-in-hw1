@@ -14,6 +14,7 @@ export const bloggersController = {
 
             res.status(200).send(data)
         } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get all bloggers')
         }
     },
@@ -26,6 +27,7 @@ export const bloggersController = {
 
             res.status(201).send(blogger)
         } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to create blogger')
         }
     },
@@ -41,7 +43,8 @@ export const bloggersController = {
             } else {
                 res.status(404).send('Blogger Not found')
             }
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get blogger')
         }
     },
@@ -59,7 +62,8 @@ export const bloggersController = {
             } else {
                 res.status(404).send('Blogger not found')
             }
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to update blogger')
         }
     },
@@ -75,7 +79,8 @@ export const bloggersController = {
             } else {
                 res.sendStatus(404).send('Blogger Not found')
             }
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to delete blogger')
         }
     },
@@ -98,7 +103,8 @@ export const bloggersController = {
             const data = await bloggersService.getBloggerPosts(bloggerId, pageNumber, _pageSize)
 
             res.status(200).send(data)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get blogger posts')
         }
     },
@@ -119,7 +125,8 @@ export const bloggersController = {
             const post = await bloggersService.createNewBloggerPost(title, shortDescription, content, blogger)
 
             res.status(201).send(post)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to create blogger posts')
         }
     }

@@ -12,7 +12,8 @@ export const postsController = {
             const data = await postsService.getPosts(pageNumber, _pageSize)
 
             res.status(200).send(data)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get posts')
         }
     },
@@ -31,7 +32,8 @@ export const postsController = {
             const newPost = await postsService.createPost(title, shortDescription, content, blogger)
 
             res.status(201).send(newPost)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to create post')
         }
     },
@@ -47,7 +49,8 @@ export const postsController = {
             } else {
                 res.status(404).send('Post Not found')
             }
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get post')
         }
     },
@@ -67,12 +70,14 @@ export const postsController = {
 
             const isUpdated = await postsService.updatePost(id, title, shortDescription, content, blogger)
 
-            if (isUpdated) {
-                res.sendStatus(204)
-            } else {
+            if (!isUpdated) {
                 res.status(404).send('Post not found')
+                return;
             }
-        } catch {
+
+            res.sendStatus(204)
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to update post')
         }
     },
@@ -83,12 +88,14 @@ export const postsController = {
 
             const isDeleted = await postsService.deletePost(id)
 
-            if (isDeleted) {
-                res.sendStatus(204)
-            } else {
+            if (!isDeleted) {
                 res.status(404).send('Post Not found')
+                return;
             }
-        } catch {
+
+            res.sendStatus(204)
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to delete post')
         }
     },
@@ -113,10 +120,11 @@ export const postsController = {
                 return;
             }
 
-            const comment = await postsService.createPostComment(content, postId, user )
+            const comment = await postsService.createPostComment(content, postId, user)
 
             res.status(201).send(comment)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to create post comments')
         }
     },
@@ -139,7 +147,8 @@ export const postsController = {
             const data = await postsService.getPostComments(pageNumber, _pageSize, postId)
 
             res.status(200).send(data)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get post comments')
         }
     }

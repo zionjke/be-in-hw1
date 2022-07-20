@@ -11,23 +11,25 @@ export const usersController = {
             const data = await usersService.getUsers(pageNumber, _pageSize)
 
             res.status(200).send(data)
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to get users')
         }
     },
 
     async createUser(req: Request, res: Response) {
         try {
-            const {login, password} = req.body
+            const {login, password, email} = req.body
 
-            const user = await usersService.createUser(login, password)
+            const user = await usersService.createUser(login, password, email)
 
             if (user) {
                 res.status(201).send(user)
             } else {
                 res.status(401).send('User with this login already exists')
             }
-        } catch {
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to create user')
         }
     },
@@ -38,12 +40,14 @@ export const usersController = {
 
             const isDeleted = await usersService.deleteUser(id)
 
-            if (isDeleted) {
-                res.send(204)
-            } else {
+            if (!isDeleted) {
                 res.sendStatus(404).send('User Not found')
+                return;
             }
-        } catch {
+
+            res.send(204)
+        } catch (error) {
+            console.log(error)
             res.status(500).send('Failed to delete user')
         }
     }
