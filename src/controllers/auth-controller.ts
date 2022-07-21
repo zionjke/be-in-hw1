@@ -84,13 +84,13 @@ export const authController = {
 
             const user = await usersRepository.getUserByEmail(email)
 
-            if (user?.email !== email) {
-                res.status(400).send(sendError('User email doesnt exist', 'email'))
+            if (user?.isActivated) {
+                res.status(400).send(sendError('Email already confirmed', 'email'))
                 return;
             }
 
-            if (user?.isActivated) {
-                res.status(400).send(sendError('Email already confirmed', 'email'))
+            if (user?.email !== email) {
+                res.status(400).send(sendError('User email doesnt exist', 'email'))
                 return;
             }
 
