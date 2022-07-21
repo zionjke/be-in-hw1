@@ -3,8 +3,6 @@ import {usersService} from "../domain/users-service";
 import {jwtService} from "../application/jwt-service";
 import {authService} from "../domain/auth-service";
 import {sendError} from "../middlewares/validationMiddleware";
-import {usersRepository} from "../repositories/users-repository";
-
 
 export const authController = {
     async login(req: Request, res: Response) {
@@ -82,24 +80,19 @@ export const authController = {
         try {
             const {email} = req.body
 
-            const user = await usersRepository.getUserByEmail(email)
+            const user = await usersService.getUserByEmail(email)
 
-            if (user?.isActivated) {
-                res.status(400).send(sendError('Email already confirmed', 'email'))
-                return;
-            }
-
-            if (user?.email !== email) {
+            if (!user) {
                 res.status(400).send(sendError('User email doesnt exist', 'email'))
                 return;
             }
 
-            const result = await authService.emailResending(email)
-
-            if (!result) {
-                res.sendStatus(404)
+            if (user.isActivated) {
+                res.status(400).send(sendError('Email already confirmed', 'email'))
                 return;
             }
+
+            await authService.emailResending(user)
 
             res.status(204).send('Email with confirmation code will be send to passed email address.')
         } catch (error) {

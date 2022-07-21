@@ -40,13 +40,7 @@ export const authService = {
         return  await usersRepository.checkUserConfirmationCode(code)
     },
 
-    async emailResending(email: string): Promise<boolean> {
-        const user = await usersRepository.getUserByEmail(email)
-
-        if (!user) {
-            return false
-        }
-
+    async emailResending(user: UserDBType) {
         try {
             await mailer.sendEmail({
                 emailTo: user.email,
@@ -54,10 +48,8 @@ export const authService = {
                 text: "Follow the link to confirm your registration",
                 html: `To verify your email, go to <a href="http://localhost:5000/auth/registration-confirmation?code=${user.confirmationCode}">by this link</a>`,
             })
-            return true
         } catch (error) {
             console.log(error)
-            return false
         }
     }
 }
