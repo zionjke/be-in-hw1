@@ -39,7 +39,7 @@ export const authController = {
             const existUserByEmail = await usersService.getUserByEmail(email)
 
             if (existUserByEmail) {
-                res.status(400).send(sendError('Пользователь с таким мейлом уже сущевствует', 'email'))
+                res.status(400).send(sendError('Пользователь с таким имейлом уже сущевствует', 'email'))
                 return;
             }
 

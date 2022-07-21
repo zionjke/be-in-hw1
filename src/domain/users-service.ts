@@ -24,7 +24,9 @@ export const usersService = {
             id: v4(),
             login,
             email,
-            passwordHash
+            passwordHash,
+            isActivated: false,
+            confirmationCode: v4()
         }
         return await usersRepository.createUser(newUser)
     },

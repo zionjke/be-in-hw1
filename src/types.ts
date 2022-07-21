@@ -21,8 +21,8 @@ export type UserType = {
 export type UserDBType =  UserType & {
     passwordHash:string,
     email: string,
-    confirmationCode?: string
-    isActivated?: boolean
+    confirmationCode: string
+    isActivated: boolean
 }
 
 
