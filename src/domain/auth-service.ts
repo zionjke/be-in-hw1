@@ -37,23 +37,13 @@ export const authService = {
     },
 
     async checkUserConfirmationCode(code: string): Promise<boolean> {
-        const user = await usersRepository.checkUserConfirmationCode(code)
-
-        if (!user) {
-            return false
-        }
-
-        return true
+        return  await usersRepository.checkUserConfirmationCode(code)
     },
 
     async emailResending(email: string): Promise<boolean> {
         const user = await usersRepository.getUserByEmail(email)
 
         if (!user) {
-            return false
-        }
-
-        if (user.isActivated) {
             return false
         }
 

@@ -2,6 +2,8 @@ import {Request, Response} from "express";
 import {usersService} from "../domain/users-service";
 import {jwtService} from "../application/jwt-service";
 import {authService} from "../domain/auth-service";
+import {sendError} from "../middlewares/validationMiddleware";
+import {usersRepository} from "../repositories/users-repository";
 
 
 export const authController = {
@@ -32,28 +34,14 @@ export const authController = {
             const existUserByLogin = await usersService.getUserByLogin(login)
 
             if (existUserByLogin) {
-                res.status(400).send({
-                    errorsMessages: [
-                        {
-                            message: "string",
-                            field: "login",
-                        }
-                    ]
-                })
+                res.status(400).send(sendError('Пользователь с таким логином уже сущевствует', 'login'))
                 return;
             }
 
             const existUserByEmail = await usersService.getUserByEmail(email)
 
             if (existUserByEmail) {
-                res.status(400).send({
-                    errorsMessages: [
-                        {
-                            message: "string",
-                            field: "email",
-                        }
-                    ]
-                })
+                res.status(400).send(sendError('Пользователь с таким мейлом уже сущевствует', 'email'))
                 return;
             }
 
@@ -80,7 +68,7 @@ export const authController = {
             const isActivated = await authService.checkUserConfirmationCode(code)
 
             if (!isActivated) {
-                res.status(404).send('Incorrect confirmation code')
+                res.status(400).send(sendError('Incorrect confirmation code', 'code'))
                 return;
             }
 
@@ -94,9 +82,21 @@ export const authController = {
         try {
             const {email} = req.body
 
-            const user = await authService.emailResending(email)
+            const user = await usersRepository.getUserByEmail(email)
 
-            if (!user) {
+            if (user?.email !== email) {
+                res.status(400).send(sendError('User email doesnt exist', 'email'))
+                return;
+            }
+
+            if (user?.isActivated) {
+                res.status(400).send(sendError('Email already confirmed', 'email'))
+                return;
+            }
+
+            const result = await authService.emailResending(email)
+
+            if (!result) {
                 res.sendStatus(404)
                 return;
             }
