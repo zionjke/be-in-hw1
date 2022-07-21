@@ -42,8 +42,18 @@ export const usersRepository = {
         return user
     },
 
+    async getUserByEmail(email: string): Promise<UserDBType | null> {
+        const user: UserDBType | null = await usersCollection.findOne({email}, {projection: {_id: false}})
+        return user
+    },
+
     async getUserById(id: string): Promise<UserType | null> {
         const user: UserType | null = await usersCollection.findOne({id}, {projection: {_id: false}})
+        return user
+    },
+
+    async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
+        const user: UserDBType | null = await usersCollection.findOne({$or: [{login}, {email}]})
         return user
     },
 
@@ -60,10 +70,4 @@ export const usersRepository = {
 
         return result.matchedCount !== 0
     },
-
-    async getUserByEmail(email: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({email}, {projection: {_id: false}})
-        return user
-    },
-
 }

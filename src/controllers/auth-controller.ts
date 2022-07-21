@@ -29,6 +29,13 @@ export const authController = {
         try {
             const {email, login, password} = req.body
 
+            const user = await usersService.getUserByLoginOrEmail(login, email)
+
+            if (user) {
+                res.sendStatus(400)
+                return;
+            }
+
             const isUserRegister = await authService.registration(login, email, password)
 
             if (!isUserRegister) {
@@ -67,7 +74,7 @@ export const authController = {
 
             const user = await authService.emailResending(email)
 
-            if(!user) {
+            if (!user) {
                 res.sendStatus(404)
                 return;
             }

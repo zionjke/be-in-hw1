@@ -37,6 +37,10 @@ export const usersService = {
         return await usersRepository.getUserById(id)
     },
 
+    async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
+        return await usersRepository.getUserByLoginOrEmail(login, email)
+    },
+
     async checkCredentials(login: string, password: string): Promise<UserType | null> {
 
         const user = await usersRepository.getUserByLogin(login)
@@ -47,7 +51,7 @@ export const usersService = {
 
         const passwordHash = user.passwordHash
 
-        const isVerify = await this.verifyPassword(password,passwordHash)
+        const isVerify = await this.verifyPassword(password, passwordHash)
 
         if (!isVerify) {
             return null;
