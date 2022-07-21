@@ -70,4 +70,11 @@ export const usersRepository = {
 
         return result.matchedCount !== 0
     },
+
+    async updateConfirmationCode(userId: string, code: string) {
+        await usersCollection.updateOne(
+            {id: userId},
+            {$set: {confirmationCode: code}}
+        )
+    }
 }

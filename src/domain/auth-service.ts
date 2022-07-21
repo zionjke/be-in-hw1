@@ -41,12 +41,17 @@ export const authService = {
     },
 
     async emailResending(user: UserDBType) {
+
+        const newConfirmationCode = v4()
+
+        await usersRepository.updateConfirmationCode(user.id, newConfirmationCode)
+
         try {
             await mailer.sendEmail({
                 emailTo: user.email,
                 subject: "Confirmation of registration",
                 text: "Follow the link to confirm your registration",
-                html: `To verify your email, go to <a href="http://localhost:5000/auth/registration-confirmation?code=${user.confirmationCode}">by this link</a>`,
+                html: `To verify your email, go to <a href="http://localhost:5000/auth/registration-confirmation?code=${newConfirmationCode}">by this link</a>`,
             })
         } catch (error) {
             console.log(error)

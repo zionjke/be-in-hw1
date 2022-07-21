@@ -25,7 +25,6 @@ export const usersService = {
             login,
             email,
             passwordHash,
-
         }
         return await usersRepository.createUser(newUser)
     },
