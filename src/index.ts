@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express'
 import cors from 'cors'
 
-import {runDb} from "./db";
+import {bloggersCollection, client, commentsCollection, postsCollection, runDb, usersCollection} from "./db";
 
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
@@ -34,6 +34,18 @@ app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)
+
+app.delete('/testing/all-data', async (req: Request, res: Response) => {
+    try {
+        await usersCollection.deleteMany({})
+        await bloggersCollection.deleteMany({})
+        await postsCollection.deleteMany({})
+        await commentsCollection.deleteMany({})
+        res.sendStatus(204)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 
 globalCatch()
