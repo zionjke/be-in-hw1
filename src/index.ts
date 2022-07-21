@@ -30,7 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //with NativeMongo
 app.use('/users', usersRouter)
-app.use('/auth', authLimiter, authRouter)
+app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)

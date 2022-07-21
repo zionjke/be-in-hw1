@@ -29,12 +29,34 @@ export const authController = {
         try {
             const {email, login, password} = req.body
 
-            const user = await usersService.getUserByLoginOrEmail(login, email)
+            const existUserByLogin = await usersService.getUserByLogin(login)
 
-            if (user?.length) {
-                res.sendStatus(400)
+            if (existUserByLogin) {
+                res.status(400).send({
+                    errorsMessages: [
+                        {
+                            message: "string",
+                            field: "login",
+                        }
+                    ]
+                })
                 return;
             }
+
+            const existUserByEmail = await usersService.getUserByEmail(email)
+
+            if (existUserByEmail) {
+                res.status(400).send({
+                    errorsMessages: [
+                        {
+                            message: "string",
+                            field: "email",
+                        }
+                    ]
+                })
+                return;
+            }
+
 
             const isUserRegister = await authService.registration(login, email, password)
 

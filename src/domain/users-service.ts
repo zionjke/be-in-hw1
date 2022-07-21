@@ -37,6 +37,14 @@ export const usersService = {
         return await usersRepository.getUserById(id)
     },
 
+    async getUserByEmail(email: string): Promise<UserDBType | null> {
+        return await usersRepository.getUserByEmail(email)
+    },
+
+    async getUserByLogin(email: string): Promise<UserDBType | null> {
+        return await usersRepository.getUserByLogin(email)
+    },
+
     async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType[] | null> {
         return await usersRepository.getUserByLoginOrEmail(login, email)
     },
