@@ -26,7 +26,7 @@ export const usersRepository = {
     async createUser(user: UserDBType): Promise<UserType> {
         await usersCollection.insertOne({...user})
 
-        const {passwordHash, email, isActivated, confirmationCode, ...userData} = user
+        const {passwordHash, email,  ...userData} = user
 
         return userData
     },
@@ -53,7 +53,7 @@ export const usersRepository = {
     },
 
     async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({$or: [{login}, {email}]})
+        const user: UserDBType | null = await usersCollection.findOne({$or: [{login}, {email}]}, {projection: {_id: false}})
         return user
     },
 
