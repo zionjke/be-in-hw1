@@ -45,6 +45,10 @@ export const usersService = {
         return await usersRepository.getUserByLogin(email)
     },
 
+    async getUserByConfirmationCode(code: string): Promise<UserDBType | null> {
+        return await usersRepository.getUserByConfirmationCode(code)
+    },
+
     async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType[] | null> {
         return await usersRepository.getUserByLoginOrEmail(login, email)
     },

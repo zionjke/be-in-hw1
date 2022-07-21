@@ -63,6 +63,13 @@ export const authController = {
         try {
             const {code} = req.body
 
+            const user = await usersService.getUserByConfirmationCode(code)
+
+            if (user?.isActivated) {
+                res.status(400).send(sendError('Code already confirmed', 'code'))
+                return;
+            }
+
             const isActivated = await authService.checkUserConfirmationCode(code)
 
             if (!isActivated) {
@@ -87,7 +94,7 @@ export const authController = {
                 return;
             }
 
-            if (user.isActivated === true) {
+            if (user.isActivated) {
                 res.status(400).send(sendError('Email already confirmed', 'email'))
                 return;
             }

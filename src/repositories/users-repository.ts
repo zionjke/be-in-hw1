@@ -52,6 +52,11 @@ export const usersRepository = {
         return user
     },
 
+    async getUserByConfirmationCode(code: string): Promise<UserDBType | null> {
+        const user: UserDBType | null = await usersCollection.findOne({confirmationCode:code}, {projection: {_id: false}})
+        return user
+    },
+
     async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType[] | null> {
         const user: UserDBType[] | null = await usersCollection.find({$or: [{login}, {email}]}, {projection: {_id: false}}).toArray()
         return user
