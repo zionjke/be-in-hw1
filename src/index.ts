@@ -9,7 +9,7 @@ import {globalCatch} from "./m5-catchErrors";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
-import {authLimiter} from "./utils/limiter";
+
 
 const app = express()
 
@@ -29,7 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //with NativeMongo
 app.use('/users', usersRouter)
-app.use('/auth', authLimiter, authRouter)
+app.use('/auth', authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)
