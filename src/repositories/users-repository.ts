@@ -52,8 +52,8 @@ export const usersRepository = {
         return user
     },
 
-    async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({$or: [{login}, {email}]}, {projection: {_id: false}})
+    async getUserByLoginOrEmail(login: string, email: string): Promise<UserDBType[] | null> {
+        const user: UserDBType[] | null = await usersCollection.find({$or: [{login}, {email}]}, {projection: {_id: false}}).toArray()
         return user
     },
 

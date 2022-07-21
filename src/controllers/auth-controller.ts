@@ -31,7 +31,7 @@ export const authController = {
 
             const user = await usersService.getUserByLoginOrEmail(login, email)
 
-            if (user) {
+            if (user?.length) {
                 res.sendStatus(400)
                 return;
             }
