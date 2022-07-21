@@ -87,7 +87,7 @@ export const authController = {
                 return;
             }
 
-            if (user.isActivated) {
+            if (user.isActivated === true) {
                 res.status(400).send(sendError('Email already confirmed', 'email'))
                 return;
             }

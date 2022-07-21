@@ -26,7 +26,7 @@ export const usersRepository = {
     async createUser(user: UserDBType): Promise<UserType> {
         await usersCollection.insertOne({...user})
 
-        const {passwordHash, email, isActivated, confirmationCode,  ...userData} = user
+        const {passwordHash, email, ...userData} = user
 
         return userData
     },
