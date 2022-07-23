@@ -15,7 +15,7 @@ export const authLimiter = rateLimit({
 
 type LimitType = {
     ip: string,
-    time: Date
+    createdAt: Date
 }
 
 const requests: LimitType[] = []
@@ -32,14 +32,14 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
 
     const dateFrom = addMilliseconds(currentDate, -maxLimitInterval);
 
-    const a = requests.filter(el => el.time > dateFrom)
+    const a = requests.filter(el => el.ip === ip && el.createdAt > dateFrom)
 
     if (a.length > maxRequest) {
         res.sendStatus(429)
         return;
     }
 
-    requests.push({ip, time: currentDate})
+    requests.push({ip, createdAt: currentDate})
 
     console.log(a)
 
