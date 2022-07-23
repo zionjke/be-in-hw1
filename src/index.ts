@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express'
 import cors from 'cors'
 
-import { runDb } from "./db";
+import {runDb} from "./db";
 
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
@@ -9,7 +9,7 @@ import {globalCatch} from "./m5-catchErrors";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
-import {authLimiter} from "./utils/limiter";
+import {authLimiter, checkLimitRequest} from "./utils/limiter";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
 
 
@@ -21,6 +21,11 @@ app.use(cors())
 
 app.use(express.json())
 
+app.get('/ip', (req, res) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    res.send({ip})
+})
+
 app.get('/', (req: Request, res: Response) => {
     res.send(`SERVER  IS RUNNING ON ${port} PORT`)
 })
@@ -31,7 +36,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //with NativeMongo
 app.use('/users', usersRouter)
-app.use('/auth', authLimiter, authRouter)
+app.use('/auth', checkLimitRequest, authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)

@@ -14,6 +14,8 @@ export const usersCollection = client.db('social-network').collection<UserDBType
 
 export const commentsCollection = client.db('social-network').collection<CommentDBType>('comments')
 
+export const limitsCollection = client.db('social-network').collection<CommentDBType>('limits')
+
 export async function runDb() {
     try {
         // Connect the client to the server
