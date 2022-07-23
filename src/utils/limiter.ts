@@ -20,19 +20,19 @@ type LimitType = {
 
 const requests: LimitType[] = []
 
-export const checkLimitRequest = (req: Request, res: Response, next: NextFunction) => {
+export const checkLimitRequest = async (req: Request, res: Response, next: NextFunction) => {
 
     const {ip} = req
 
     const maxLimitInterval = 10 * 1000;
 
-    let maxRequest = 5;
+    const maxRequest = 5;
 
     const currentDate = new Date();
 
     const dateFrom = addMilliseconds(currentDate, -maxLimitInterval);
 
-    const a = requests.filter(el => el.time === dateFrom)
+    const a = requests.filter(el => el.time > dateFrom)
 
     if (a.length > maxRequest) {
         res.sendStatus(429)
@@ -40,6 +40,8 @@ export const checkLimitRequest = (req: Request, res: Response, next: NextFunctio
     }
 
     requests.push({ip, time: currentDate})
+
+    console.log(a)
 
     next()
 }
