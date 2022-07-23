@@ -29,7 +29,7 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
         createdAt: {$lt: fromDate}
     })
 
-    if (count > 6) {
+    if (count > 4) {
         res.sendStatus(429)
         return;
     }
