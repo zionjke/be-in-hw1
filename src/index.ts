@@ -10,6 +10,7 @@ import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
+import {checkLimitRequest} from "./utils/limiter";
 
 
 const app = express()
