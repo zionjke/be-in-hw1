@@ -54,10 +54,11 @@ export type ResponseType<T> = {
     items: T
 }
 
-export type LimitType = {
-
+export type IpRequestType = {
+    ip: string,
+    endpoint: string
+    createdAt: Date
 }
-
 export const BLOGGERS: BloggerType[] = [
     {id: '0', name: 'Artem', youtubeUrl: 'https://www.youtube.com/c/satansdeer1'},
     {id: '1', name: 'Dima', youtubeUrl: 'https://www.youtube.com/c/satansdeer2'},
