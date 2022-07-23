@@ -1,8 +1,7 @@
 import {NextFunction, Response, Request} from "express";
 import {subSeconds} from "date-fns";
 import {limitsCollection} from "../db";
-import { IpRequestType } from "../types";
-
+import {IpRequestType} from "../types";
 
 
 export const checkLimitRequest = async (req: Request, res: Response, next: NextFunction) => {
@@ -14,6 +13,8 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
         endpoint: req.baseUrl + req.path + req.method,
         createdAt: currentDate
     }
+
+    console.log(ipRequest)
 
     await limitsCollection.insertOne(ipRequest)
 
