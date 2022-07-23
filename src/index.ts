@@ -9,7 +9,7 @@ import {globalCatch} from "./m5-catchErrors";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
-import {authLimiter, checkLimitRequest} from "./utils/limiter";
+import {checkLimitRequest} from "./utils/limiter";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
 
 

@@ -1,47 +1,38 @@
-import rateLimit from "express-rate-limit";
 import {NextFunction, Response, Request} from "express";
-import addMilliseconds from "date-fns/addMilliseconds";
+import {subSeconds} from "date-fns";
 
-export const authLimiter = rateLimit({
-    windowMs: 10000,
-    max: 5,
-    message:
-        'Too many accounts created from this IP, please try again after an 10 second',
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers,
-    skipFailedRequests: false,
-    skipSuccessfulRequests: true
-})
-
-type LimitType = {
+type ipRequest = {
     ip: string,
+    endpoint: string
     createdAt: Date
 }
 
-const requests: LimitType[] = []
+const requests: ipRequest[] = []
 
 export const checkLimitRequest = async (req: Request, res: Response, next: NextFunction) => {
 
-    const {ip} = req
+    const ipRequest: ipRequest = {
+        ip: req.ip,
+        endpoint: req.baseUrl + req.path,
+        createdAt: new Date()
+    }
 
-    const maxLimitInterval = 10 * 1000;
+    requests.push(ipRequest)
 
-    const maxRequest = 5;
+    console.log(requests)
 
     const currentDate = new Date();
 
-    const dateFrom = addMilliseconds(currentDate, -maxLimitInterval);
+    const fromDate = subSeconds(currentDate, 10);
 
-    const a = requests.filter(el => el.ip === ip && el.createdAt > dateFrom)
+    const limitsCount = requests.filter(el => el.ip === ipRequest.ip && el.endpoint === ipRequest.endpoint && el.createdAt > fromDate)
 
-    if (a.length > maxRequest) {
+    if (limitsCount.length > 5) {
         res.sendStatus(429)
         return;
     }
 
-    requests.push({ip, createdAt: currentDate})
-
-    console.log(a)
+    console.log(limitsCount)
 
     next()
 }
