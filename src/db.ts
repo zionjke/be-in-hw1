@@ -1,5 +1,5 @@
 import {MongoClient} from 'mongodb'
-import {BloggerType, CommentDBType, PostType, UserDBType} from "./types";
+import {BloggerType, CommentDBType, LimitType, PostType, UserDBType} from "./types";
 import {SERVICE} from "./constants";
 
 const mongoUri = process.env.mongoURI || SERVICE.URI;
@@ -14,7 +14,7 @@ export const usersCollection = client.db('social-network').collection<UserDBType
 
 export const commentsCollection = client.db('social-network').collection<CommentDBType>('comments')
 
-export const limitsCollection = client.db('social-network').collection<CommentDBType>('limits')
+export const limitsCollection = client.db('social-network').collection<LimitType>('limits')
 
 export async function runDb() {
     try {

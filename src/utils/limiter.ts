@@ -1,5 +1,6 @@
 import {NextFunction, Response, Request} from "express";
 import {subSeconds} from "date-fns";
+import {limitsCollection} from "../db";
 
 type ipRequest = {
     ip: string,
@@ -17,22 +18,32 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
         createdAt: new Date()
     }
 
-    requests.push(ipRequest)
+    // requests.push(ipRequest)
 
-    console.log(requests)
+    await limitsCollection.insertOne({...ipRequest})
 
     const currentDate = new Date();
 
     const fromDate = subSeconds(currentDate, 10);
 
-    const limitsCount = requests.filter(el => el.ip === ipRequest.ip && el.endpoint === ipRequest.endpoint && el.createdAt > fromDate)
+    const count = await limitsCollection.countDocuments({
+        ip: ipRequest.ip,
+        endpoint: ipRequest.endpoint,
+        createdAt: {$gte: fromDate, $lte: currentDate}
+    })
 
-    if (limitsCount.length > 5) {
+    await limitsCollection.deleteMany({
+        ip: ipRequest.ip,
+        endpoint: ipRequest.endpoint,
+        createdAt: {$lt: fromDate}
+    })
+
+    // const limitsCount = requests.filter(el => el.ip === ipRequest.ip && el.endpoint === ipRequest.endpoint && el.createdAt >= fromDate && el.createdAt <= currentDate)
+
+    if (count > 5) {
         res.sendStatus(429)
         return;
     }
-
-    console.log(limitsCount)
 
     next()
 }
