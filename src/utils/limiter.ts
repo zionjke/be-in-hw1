@@ -9,7 +9,7 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
     const currentDate = new Date();
 
     const ipRequest: IpRequestType = {
-        ip: req.ip,
+        ip: req.headers['x-forwarded-for'] as string,
         endpoint: req.baseUrl + req.path + req.method,
         createdAt: currentDate
     }
