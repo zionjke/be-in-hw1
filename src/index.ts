@@ -9,7 +9,6 @@ import {globalCatch} from "./m5-catchErrors";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
-import {checkLimitRequest} from "./utils/limiter";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
 
 
@@ -20,11 +19,6 @@ const port = process.env.PORT || 5000
 app.use(cors())
 
 app.use(express.json())
-
-app.get('/ip', (req, res) => {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    res.send({ip})
-})
 
 app.get('/', (req: Request, res: Response) => {
     res.send(`SERVER  IS RUNNING ON ${port} PORT`)

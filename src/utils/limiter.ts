@@ -15,7 +15,7 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
 
     await limitsCollection.insertOne(ipRequest)
 
-    const currentDate = new Date();
+    let currentDate = new Date();
 
     const fromDate = subSeconds(currentDate, 10);
 
@@ -24,8 +24,6 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
         endpoint: ipRequest.endpoint,
         createdAt: {$gte: fromDate, $lte: currentDate}
     })
-
-    console.log(count)
 
     await limitsCollection.deleteMany({
         ip: ipRequest.ip,
