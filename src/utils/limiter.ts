@@ -11,7 +11,7 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
 
     const ipRequest: IpRequestType = {
         ip: req.ip,
-        endpoint: req.baseUrl + req.path,
+        endpoint: req.baseUrl + req.path + req.method,
         createdAt: currentDate
     }
 
