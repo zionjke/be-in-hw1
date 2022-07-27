@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 import {runDb} from "./db";
 
@@ -10,7 +11,7 @@ import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
-import {checkLimitRequest} from "./utils/limiter";
+import {checkIp} from "./utils/limiter";
 
 
 const app = express()
@@ -23,6 +24,8 @@ app.set('trust-proxy', true)
 
 app.use(express.json())
 
+app.use(cookieParser())
+
 app.get('/', (req: Request, res: Response) => {
     res.send(`SERVER  IS RUNNING ON ${port} PORT`)
 })
@@ -33,7 +36,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //with NativeMongo
 app.use('/users', usersRouter)
-app.use('/auth', authRouter)
+app.use('/auth', checkIp, authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)

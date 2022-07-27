@@ -11,7 +11,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
 
     const [, token] = req.headers.authorization.split(' ')
 
-    const userId = await jwtService.getUserIdByToken(token)
+    const userId = jwtService.validateAccessToken(token)
 
     if (!userId) {
         res.sendStatus(401)

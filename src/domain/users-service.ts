@@ -53,24 +53,6 @@ export const usersService = {
         return await usersRepository.getUserByLoginOrEmail(login, email)
     },
 
-    async checkCredentials(login: string, password: string): Promise<UserType | null> {
-
-        const user = await usersRepository.getUserByLogin(login)
-
-        if (!user) {
-            return null;
-        }
-
-        const passwordHash = user.passwordHash
-
-        const isVerify = await this.verifyPassword(password, passwordHash)
-
-        if (!isVerify) {
-            return null;
-        }
-
-        return user
-    },
 
     async generateHash(password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)

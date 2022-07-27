@@ -14,7 +14,6 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
         createdAt: currentDate
     }
 
-    console.log(ipRequest)
 
     await limitsCollection.insertOne(ipRequest)
 
@@ -38,3 +37,29 @@ export const checkLimitRequest = async (req: Request, res: Response, next: NextF
     next()
 }
 
+let requests: IpRequestType[] = []
+
+export const checkIp = (req: Request, res: Response, next: NextFunction) => {
+    const currentDate = new Date();
+
+    const ipRequest: IpRequestType = {
+        ip: req.headers['x-forwarded-for'] as string,
+        endpoint: req.baseUrl + req.path + req.method,
+        createdAt: currentDate
+    }
+
+    const fromDate = subSeconds(currentDate, 10);
+
+    requests.push(ipRequest)
+
+    const limits = requests.filter(el => el.ip === ipRequest.ip && el.endpoint === ipRequest.endpoint && el.createdAt > fromDate)
+
+    requests = requests.filter(el => el.createdAt < fromDate)
+
+    if (limits.length > 5) {
+        res.sendStatus(429)
+        return;
+    }
+
+    next()
+}

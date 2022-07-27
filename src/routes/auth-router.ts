@@ -8,10 +8,16 @@ import {checkLimitRequest} from "../utils/limiter";
 export const authRouter = Router();
 
 authRouter
-    .post('/login', checkLimitRequest, authController.login)
+    .post('/login', authController.login)
 
-    .post('/registration', checkLimitRequest, userValidation, validationMiddleware, authController.registration)
+    .get('/me', authController.me)
 
-    .post('/registration-confirmation', checkLimitRequest, registrationCodeValidation, validationMiddleware, authController.confirmRegistration)
+    .post('/logout', authController.logOut)
 
-    .post('/registration-email-resending', checkLimitRequest, userValidation[2], validationMiddleware, authController.emailResending)
+    .post('/refresh-token', authController.refresh)
+
+    .post('/registration', userValidation, validationMiddleware, authController.registration)
+
+    .post('/registration-confirmation', registrationCodeValidation, validationMiddleware, authController.confirmRegistration)
+
+    .post('/registration-email-resending', userValidation[2], validationMiddleware, authController.emailResending)

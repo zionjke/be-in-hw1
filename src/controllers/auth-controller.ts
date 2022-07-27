@@ -3,22 +3,30 @@ import {usersService} from "../domain/users-service";
 import {jwtService} from "../application/jwt-service";
 import {authService} from "../domain/auth-service";
 import {sendError} from "../middlewares/validationMiddleware";
+import {SERVICE} from "../constants";
 
 export const authController = {
     async login(req: Request, res: Response) {
         try {
             const {login, password} = req.body
 
-            const user = await usersService.checkCredentials(login, password)
+            const user = await authService.checkCredentials(login, password)
 
             if (!user) {
                 res.status(401).send('password or login is wrong')
                 return;
             }
 
-            const token = await jwtService.createJWT(user)
+            const {accessToken, refreshToken} = await jwtService.generateToken(user.id)
 
-            res.status(200).send({token})
+            await jwtService.saveToken(user.id, refreshToken)
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: SERVICE.COOKIE_SECURE
+            })
+
+            res.status(200).send({accessToken})
         } catch (error) {
             console.log(error)
             res.status(500).send('Failed to login')
@@ -59,6 +67,7 @@ export const authController = {
         }
 
     },
+
     async confirmRegistration(req: Request, res: Response) {
         try {
             const {code} = req.body
@@ -83,6 +92,7 @@ export const authController = {
             res.status(500).send('Confirm Registration failed')
         }
     },
+
     async emailResending(req: Request, res: Response) {
         try {
             const {email} = req.body
@@ -106,5 +116,52 @@ export const authController = {
             console.log(error)
             res.status(500).send('Email resending failed')
         }
+    },
+
+    async logOut(req: Request, res: Response) {
+        try {
+            const {refreshToken} = req.cookies
+
+            await jwtService.deleteToken(refreshToken)
+
+            res.clearCookie('refreshToken')
+
+            res.status(204)
+        } catch (e) {
+            console.log(e)
+        }
+    },
+
+    async refresh(req: Request, res: Response) {
+        const {refreshToken} = req.cookies
+
+        if (!refreshToken) {
+            res.sendStatus(401)
+            return;
+        }
+
+        const userId = jwtService.validateRefreshToken(refreshToken)
+
+        const tokenFromDb = await jwtService.findToken(refreshToken)
+
+        if (!userId || !tokenFromDb) {
+            res.sendStatus(401)
+            return;
+        }
+
+        const tokens = await jwtService.generateToken(userId)
+
+        await jwtService.saveToken(userId, refreshToken)
+
+        res.cookie('refreshToken', tokens.refreshToken, {
+            httpOnly: true,
+            secure: SERVICE.COOKIE_SECURE
+        })
+
+        res.status(200).send({accessToken: tokens.accessToken})
+    },
+
+    async me() {
+
     }
 }

@@ -1,11 +1,32 @@
 import bcrypt from "bcrypt";
 import {usersService} from "./users-service";
 import {v4} from "uuid";
-import {mailer} from "../application/mailer";
 import {usersRepository} from "../repositories/users-repository";
-import {UserDBType} from "../types";
+import {UserDBType, UserType} from "../types";
+import mailService from '../application/mail-service'
+import {jwtService} from "../application/jwt-service";
 
 export const authService = {
+
+    async checkCredentials(login: string, password: string): Promise<UserType | null> {
+
+        const user = await usersRepository.getUserByLogin(login)
+
+        if (!user) {
+            return null;
+        }
+
+        const passwordHash = user.passwordHash
+
+        const isVerify = await usersService.verifyPassword(password, passwordHash)
+
+        if (!isVerify) {
+            return null;
+        }
+
+        return user
+    },
+
     async registration(login: string, email: string, password: string): Promise<boolean> {
         const passwordSalt = await bcrypt.genSalt(10)
 
@@ -23,12 +44,7 @@ export const authService = {
         const user = await usersRepository.registration(newUser)
 
         try {
-            await mailer.sendEmail({
-                emailTo: user.email,
-                subject: "Confirmation of registration",
-                text: "Follow the link to confirm your registration",
-                html: `To verify your email, go to <a href="http://localhost:5000/auth/registration-confirmation?code=${user.confirmationCode}">by this link</a>`,
-            })
+            await mailService.sendActivationMail(user.email, user.confirmationCode)
             return true
         } catch (error) {
             console.log(error)
@@ -37,7 +53,7 @@ export const authService = {
     },
 
     async checkUserConfirmationCode(code: string): Promise<boolean> {
-        return  await usersRepository.checkUserConfirmationCode(code)
+        return await usersRepository.checkUserConfirmationCode(code)
     },
 
     async emailResending(user: UserDBType) {
@@ -47,14 +63,17 @@ export const authService = {
         await usersRepository.updateConfirmationCode(user.id, newConfirmationCode)
 
         try {
-            await mailer.sendEmail({
-                emailTo: user.email,
-                subject: "Confirmation of registration",
-                text: "Follow the link to confirm your registration",
-                html: `To verify your email, go to <a href="http://localhost:5000/auth/registration-confirmation?code=${newConfirmationCode}">by this link</a>`,
-            })
+            await mailService.sendActivationMail(user.email, newConfirmationCode)
         } catch (error) {
             console.log(error)
         }
+    },
+
+    async logOut() {
+
+    },
+
+    async refreshToken(refreshToken: string) {
+
     }
 }

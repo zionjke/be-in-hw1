@@ -18,8 +18,8 @@ export type UserType = {
     login: string,
 }
 
-export type UserDBType =  UserType & {
-    passwordHash:string,
+export type UserDBType = UserType & {
+    passwordHash: string,
     email: string,
     confirmationCode?: string
     isActivated?: boolean
@@ -35,14 +35,14 @@ export type CommentType = {
 }
 
 export type SendEmailType = {
-    emailTo:string,
-    subject:string,
-    text:string,
-    html:string
+    emailTo: string,
+    subject: string,
+    text: string,
+    html: string
 }
 
 export type CommentDBType = CommentType & {
-    postId:string
+    postId: string
 }
 
 
@@ -59,6 +59,12 @@ export type IpRequestType = {
     endpoint: string
     createdAt: Date
 }
+
+export type TokenType = {
+    userId: string,
+    refreshToken: string
+}
+
 export const BLOGGERS: BloggerType[] = [
     {id: '0', name: 'Artem', youtubeUrl: 'https://www.youtube.com/c/satansdeer1'},
     {id: '1', name: 'Dima', youtubeUrl: 'https://www.youtube.com/c/satansdeer2'},
