@@ -147,10 +147,8 @@ export const authController = {
             //     res.sendStatus(401)
             //     return;
             // }
-            //
-            // await jwtService.deleteToken(refreshToken)
 
-            await jwtService.saveToken(userId, refreshToken)
+            // await jwtService.deleteToken(refreshToken)
 
             res.clearCookie('refreshToken')
 
@@ -182,12 +180,12 @@ export const authController = {
             return;
         }
 
-        const tokenFromDb = await jwtService.findToken(refreshToken)
-
-        if (tokenFromDb) {
-            res.sendStatus(401)
-            return;
-        }
+        // const tokenFromDb = await jwtService.findToken(refreshToken)
+        //
+        // if (!tokenFromDb) {
+        //     res.sendStatus(401)
+        //     return;
+        // }
 
         const tokens = await jwtService.generateToken(userId)
 
