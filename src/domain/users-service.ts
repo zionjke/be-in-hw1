@@ -33,7 +33,7 @@ export const usersService = {
         return await usersRepository.deleteUser(id)
     },
 
-    async getUserByID(id: string): Promise<UserType | null> {
+    async getUserByID(id: string): Promise<UserDBType | null> {
         return await usersRepository.getUserById(id)
     },
 

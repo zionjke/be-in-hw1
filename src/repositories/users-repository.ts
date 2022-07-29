@@ -47,8 +47,8 @@ export const usersRepository = {
         return user
     },
 
-    async getUserById(id: string): Promise<UserType | null> {
-        const user: UserType | null = await usersCollection.findOne({id}, {projection: {_id: false}})
+    async getUserById(id: string): Promise<UserDBType | null> {
+        const user: UserDBType | null = await usersCollection.findOne({id}, {projection: {_id: false}})
         return user
     },
 

@@ -3,6 +3,7 @@ import {Router} from "express";
 import {authController} from "../controllers/auth-controller";
 import {registrationCodeValidation, userValidation, validationMiddleware} from "../middlewares/validationMiddleware";
 import {checkLimitRequest} from "../utils/limiter";
+import {authMiddlewareBearer} from "../middlewares/auth-middleware-bearer";
 
 
 export const authRouter = Router();
@@ -10,7 +11,7 @@ export const authRouter = Router();
 authRouter
     .post('/login', authController.login)
 
-    .get('/me', authController.me)
+    .get('/me', authMiddlewareBearer, authController.me)
 
     .post('/logout', authController.logOut)
 

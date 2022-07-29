@@ -161,7 +161,22 @@ export const authController = {
         res.status(200).send({accessToken: tokens.accessToken})
     },
 
-    async me() {
+    async me(req: Request, res: Response) {
+        try {
+            const {user} = req
 
+            if (!user) {
+                res.sendStatus(401)
+                return;
+            }
+
+            res.status(200).json({
+                userId: user.id,
+                login: user.login,
+                email: user.email
+            })
+        } catch (e) {
+            res.status(500).send('Error getting user information')
+        }
     }
 }
