@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken'
-import {UserType} from "../types";
+import jwt, {decode, JwtPayload} from 'jsonwebtoken'
 import {SERVICE} from "../constants";
 import {tokensRepository} from "../repositories/tokens-repository";
 
@@ -51,6 +50,17 @@ export const jwtService = {
     async findToken(refreshToken: string) {
         const tokenData = await tokensRepository.findOneByToken(refreshToken)
         return tokenData
+    },
+
+    checkTokenExpired(token: string): boolean {
+        // @ts-ignore
+        const {exp} = decode(token)
+
+        if (Date.now() >= exp * 1000) {
+            return false;
+        } else {
+            return true
+        }
     }
 }
 

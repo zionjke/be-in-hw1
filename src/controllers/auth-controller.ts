@@ -127,6 +127,13 @@ export const authController = {
                 return;
             }
 
+            const isExpired = jwtService.checkTokenExpired(refreshToken)
+
+            if (!isExpired) {
+                res.sendStatus(401)
+                return;
+            }
+
             await jwtService.deleteToken(refreshToken)
 
             res.clearCookie('refreshToken')
@@ -141,6 +148,13 @@ export const authController = {
         const {refreshToken} = req.cookies
 
         if (!refreshToken) {
+            res.sendStatus(401)
+            return;
+        }
+
+        const isExpired = jwtService.checkTokenExpired(refreshToken)
+
+        if (!isExpired) {
             res.sendStatus(401)
             return;
         }
