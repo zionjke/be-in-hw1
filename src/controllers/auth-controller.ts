@@ -122,6 +122,11 @@ export const authController = {
         try {
             const {refreshToken} = req.cookies
 
+            if (!refreshToken) {
+                res.sendStatus(401)
+                return;
+            }
+
             await jwtService.deleteToken(refreshToken)
 
             res.clearCookie('refreshToken')
