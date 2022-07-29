@@ -122,23 +122,13 @@ export const authController = {
         try {
             const {refreshToken} = req.cookies
 
-            if (!refreshToken) {
-                res.sendStatus(401)
-                return;
-            }
-
             const isExpired = jwtService.checkTokenExpired(refreshToken)
-
-            if (!isExpired) {
-                res.sendStatus(401)
-                return;
-            }
 
             const userId = jwtService.validateRefreshToken(refreshToken)
 
             const tokenFromDb = await jwtService.findToken(refreshToken)
 
-            if (!userId || !tokenFromDb) {
+            if (!userId || !tokenFromDb || !refreshToken || !isExpired ) {
                 res.sendStatus(401)
                 return;
             }
@@ -156,23 +146,13 @@ export const authController = {
     async refresh(req: Request, res: Response) {
         const {refreshToken} = req.cookies
 
-        if (!refreshToken) {
-            res.sendStatus(401)
-            return;
-        }
-
         const isExpired = jwtService.checkTokenExpired(refreshToken)
-
-        if (!isExpired) {
-            res.sendStatus(401)
-            return;
-        }
 
         const userId = jwtService.validateRefreshToken(refreshToken)
 
         const tokenFromDb = await jwtService.findToken(refreshToken)
 
-        if (!userId || !tokenFromDb) {
+        if (!userId || !tokenFromDb || !refreshToken || !isExpired ) {
             res.sendStatus(401)
             return;
         }
