@@ -32,11 +32,11 @@ export const jwtService = {
     },
 
     async saveToken(userId: string, refreshToken: string) {
-        const tokenData = await tokensRepository.findOneByUserId(userId)
-
-        if (tokenData) {
-            await tokensRepository.updateUserToken(userId, refreshToken)
-        }
+        // const tokenData = await tokensRepository.findOneByUserId(userId)
+        //
+        // if (tokenData) {
+        //     await tokensRepository.updateUserToken(userId, refreshToken)
+        // }
 
         const token = await tokensRepository.create(userId, refreshToken)
 
