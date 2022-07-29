@@ -19,7 +19,7 @@ export const authController = {
 
             const {accessToken, refreshToken} = await jwtService.generateToken(user.id)
 
-            await jwtService.saveToken(user.id, refreshToken)
+            // await jwtService.saveToken(user.id, refreshToken)
 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
@@ -141,14 +141,16 @@ export const authController = {
                 return;
             }
 
-            const tokenFromDb = await jwtService.findToken(refreshToken)
+            // const tokenFromDb = await jwtService.findToken(refreshToken)
+            //
+            // if (!tokenFromDb) {
+            //     res.sendStatus(401)
+            //     return;
+            // }
+            //
+            // await jwtService.deleteToken(refreshToken)
 
-            if (!tokenFromDb) {
-                res.sendStatus(401)
-                return;
-            }
-
-            await jwtService.deleteToken(refreshToken)
+            await jwtService.saveToken(userId, refreshToken)
 
             res.clearCookie('refreshToken')
 
@@ -182,7 +184,7 @@ export const authController = {
 
         const tokenFromDb = await jwtService.findToken(refreshToken)
 
-        if (!tokenFromDb) {
+        if (tokenFromDb) {
             res.sendStatus(401)
             return;
         }
