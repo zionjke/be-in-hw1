@@ -134,6 +134,15 @@ export const authController = {
                 return;
             }
 
+            const userId = jwtService.validateRefreshToken(refreshToken)
+
+            const tokenFromDb = await jwtService.findToken(refreshToken)
+
+            if (!userId || !tokenFromDb) {
+                res.sendStatus(401)
+                return;
+            }
+
             await jwtService.deleteToken(refreshToken)
 
             res.clearCookie('refreshToken')
