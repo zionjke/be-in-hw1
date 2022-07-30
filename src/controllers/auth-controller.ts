@@ -190,11 +190,11 @@ export const authController = {
         // }
 
 
+        refreshToken.expires = new Date(+0)
+
         const tokens = await jwtService.generateTokens(userId)
 
         // await jwtService.saveToken(userId, refreshToken)
-
-        res.clearCookie('refreshToken', {expires: new Date(+0)})
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
