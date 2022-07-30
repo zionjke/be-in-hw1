@@ -152,9 +152,7 @@ export const authController = {
 
             // await jwtService.saveToken(userId, refreshToken)
 
-            res.clearCookie('refreshToken', {expires: new Date(+0)})
-
-            res.sendStatus(204)
+            res.status(204).clearCookie('refreshToken', {expires: new Date(+0)})
         } catch (e) {
             console.log(e)
         }
@@ -194,12 +192,18 @@ export const authController = {
 
         // await jwtService.saveToken(userId, refreshToken)
 
-        res.cookie('refreshToken', tokens.refreshToken, {
-            httpOnly: true,
-            secure: SERVICE.COOKIE_SECURE
-        })
+        // res.cookie('refreshToken', tokens.refreshToken, {
+        //     httpOnly: true,
+        //     secure: SERVICE.COOKIE_SECURE
+        // })
 
-        res.status(200).send({accessToken: tokens.accessToken})
+        res.status(200)
+            .clearCookie('refreshToken', {expires: new Date(+0)})
+            .send({accessToken: tokens.accessToken})
+            .cookie('refreshToken', tokens.refreshToken, {
+                httpOnly: true,
+                secure: SERVICE.COOKIE_SECURE
+            })
     },
 
     async me(req: Request, res: Response) {
