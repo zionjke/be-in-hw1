@@ -189,7 +189,6 @@ export const authController = {
         //     return;
         // }
 
-        res.clearCookie('refreshToken', {expires: new Date(+0)})
 
         const tokens = await jwtService.generateToken(userId)
 
