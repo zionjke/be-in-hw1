@@ -190,8 +190,6 @@ export const authController = {
         // }
 
 
-        refreshToken.expires = new Date(+0)
-
         const tokens = await jwtService.generateTokens(userId)
 
         // await jwtService.saveToken(userId, refreshToken)
