@@ -127,14 +127,14 @@ export const authController = {
                 return;
             }
 
-            const isExpired = jwtService.checkTokenExpired(refreshToken)
+            const isExpired = await jwtService.checkTokenExpired(refreshToken)
 
             if (!isExpired) {
                 res.sendStatus(401)
                 return;
             }
 
-            const userId = jwtService.validateRefreshToken(refreshToken)
+            const userId = await jwtService.validateRefreshToken(refreshToken)
 
             if (!userId) {
                 res.sendStatus(401)
@@ -154,7 +154,7 @@ export const authController = {
 
             res.clearCookie('refreshToken', {expires: new Date(+0)})
 
-            res.status(204)
+            res.sendStatus(204)
         } catch (e) {
             console.log(e)
         }
@@ -168,14 +168,14 @@ export const authController = {
             return;
         }
 
-        const isExpired = jwtService.checkTokenExpired(refreshToken)
+        const isExpired = await jwtService.checkTokenExpired(refreshToken)
 
         if (!isExpired) {
             res.sendStatus(401)
             return;
         }
 
-        const userId = jwtService.validateRefreshToken(refreshToken)
+        const userId = await jwtService.validateRefreshToken(refreshToken)
 
         if (!userId) {
             res.sendStatus(401)

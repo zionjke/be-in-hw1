@@ -30,11 +30,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send(`SERVER  IS RUNNING ON ${port} PORT`)
 })
 
-//with Mockdata
-// app.use('/bloggers', bloggersRouterWithMock)
-// app.use('/posts', postsRouterWithMock)
 
-//with NativeMongo
 app.use('/users', usersRouter)
 app.use('/auth', checkIp, authRouter)
 app.use('/bloggers', bloggersRouter)

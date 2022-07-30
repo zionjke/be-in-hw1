@@ -4,8 +4,8 @@ import {tokensRepository} from "../repositories/tokens-repository";
 
 export const jwtService = {
     async generateToken(userId: string) {
-        const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '10s'})
-        const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '20s'})
+        const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '30d'})
+        const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '30d'})
 
         return {
             accessToken,
@@ -13,7 +13,7 @@ export const jwtService = {
         }
     },
 
-    validateAccessToken(token: string) {
+    async validateAccessToken(token: string) {
         try {
             const result: any = jwt.verify(token, SERVICE.JWT_ACCESS_KEY)
             return result.userId
@@ -22,7 +22,7 @@ export const jwtService = {
         }
     },
 
-    validateRefreshToken(token: string) {
+    async validateRefreshToken(token: string) {
         try {
             const result: any = jwt.verify(token, SERVICE.JWT_REFRESH_KEY)
             return result.userId
@@ -52,7 +52,7 @@ export const jwtService = {
         return tokenData
     },
 
-    checkTokenExpired(token: string): boolean {
+    async checkTokenExpired(token: string) {
         // @ts-ignore
         const {exp} = decode(token)
 

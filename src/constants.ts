@@ -5,5 +5,5 @@ export const SERVICE = {
     NODEMAILER_SERVICE: 'gmail',
     NODEMAILER_AUTH_USER: "zionav89@gmail.com",
     NODEMAILER_AUTH_PASS: "zvoozitgjjhatvvf",
-    COOKIE_SECURE: true
+    COOKIE_SECURE: false
 }
