@@ -182,12 +182,12 @@ export const authController = {
             return;
         }
 
-        const tokenFromDb = await jwtService.findToken(refreshToken)
-
-        if (tokenFromDb) {
-            res.sendStatus(401)
-            return;
-        }
+        // const tokenFromDb = await jwtService.findToken(refreshToken)
+        //
+        // if (tokenFromDb) {
+        //     res.sendStatus(401)
+        //     return;
+        // }
 
         res.clearCookie('refreshToken', {expires: new Date(+0)})
 
