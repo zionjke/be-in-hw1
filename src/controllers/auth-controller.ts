@@ -167,16 +167,16 @@ export const authController = {
             return;
         }
 
-        const isExpired = await jwtService.checkTokenExpired(refreshToken)
+        const userId = await jwtService.validateRefreshToken(refreshToken)
 
-        if (!isExpired) {
+        if (!userId) {
             res.sendStatus(401)
             return;
         }
 
-        const userId = await jwtService.validateRefreshToken(refreshToken)
+        const isExpired = await jwtService.checkTokenExpired(refreshToken)
 
-        if (!userId) {
+        if (!isExpired) {
             res.sendStatus(401)
             return;
         }
