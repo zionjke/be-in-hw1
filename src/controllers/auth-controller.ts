@@ -190,9 +190,9 @@ export const authController = {
         }
 
 
-        const tokens = await jwtService.generateTokens(userId)
+        await jwtService.saveToken(userId, refreshToken)
 
-        // await jwtService.saveToken(userId, refreshToken)
+        const tokens = await jwtService.generateTokens(userId)
 
         // res.cookie('refreshToken', tokens.refreshToken, {
         //     httpOnly: true,
