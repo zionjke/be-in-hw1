@@ -199,13 +199,13 @@ export const authController = {
         //     secure: SERVICE.COOKIE_SECURE
         // })
 
-        res.status(200)
-            .clearCookie('refreshToken', {expires: new Date(+0)})
-            .send({accessToken: tokens.accessToken})
+        res
+            .status(200)
             .cookie('refreshToken', tokens.refreshToken, {
                 httpOnly: true,
                 secure: SERVICE.COOKIE_SECURE
             })
+            .send({accessToken: tokens.accessToken})
     },
 
     async me(req: Request, res: Response) {
