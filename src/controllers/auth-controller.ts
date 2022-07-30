@@ -150,7 +150,7 @@ export const authController = {
 
             // await jwtService.deleteToken(refreshToken)
 
-            await jwtService.saveToken(userId, refreshToken)
+            // await jwtService.saveToken(userId, refreshToken)
 
             res.clearCookie('refreshToken', {expires: new Date(+0)})
 
