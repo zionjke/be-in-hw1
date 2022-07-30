@@ -152,7 +152,7 @@ export const authController = {
 
             await jwtService.saveToken(userId, refreshToken)
 
-            res.clearCookie('refreshToken')
+            res.clearCookie('refreshToken', {expires: new Date(+0)})
 
             res.status(204)
         } catch (e) {
@@ -188,6 +188,8 @@ export const authController = {
             res.sendStatus(401)
             return;
         }
+
+        res.clearCookie('refreshToken', {expires: new Date(+0)})
 
         const tokens = await jwtService.generateToken(userId)
 
