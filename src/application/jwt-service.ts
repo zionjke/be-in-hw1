@@ -3,7 +3,7 @@ import {SERVICE} from "../constants";
 import {tokensRepository} from "../repositories/tokens-repository";
 
 export const jwtService = {
-    async generateToken(userId: string) {
+    async generateTokens(userId: string) {
         const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '10s'})
         const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '20s'})
 

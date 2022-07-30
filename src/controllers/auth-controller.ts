@@ -17,7 +17,7 @@ export const authController = {
                 return;
             }
 
-            const {accessToken, refreshToken} = await jwtService.generateToken(user.id)
+            const {accessToken, refreshToken} = await jwtService.generateTokens(user.id)
 
             // await jwtService.saveToken(user.id, refreshToken)
 
@@ -190,9 +190,11 @@ export const authController = {
         // }
 
 
-        const tokens = await jwtService.generateToken(userId)
+        const tokens = await jwtService.generateTokens(userId)
 
         // await jwtService.saveToken(userId, refreshToken)
+
+        res.clearCookie('refreshToken', {expires: new Date(+0)})
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
