@@ -4,14 +4,14 @@ import cookieParser from 'cookie-parser'
 
 import {runDb} from "./db";
 
-import {bloggersRouter} from "./routes/bloggers-router";
-import {postsRouter} from "./routes/posts-router";
-import {globalCatch} from "./m5-catchErrors";
-import {usersRouter} from "./routes/users-router";
-import {authRouter} from "./routes/auth-router";
-import {commentsRouter} from "./routes/comments-router";
+import {bloggersRouter} from "./entities/bloggers/bloggers-router";
+import {postsRouter} from "./entities/posts/posts-router";
+import {usersRouter} from "./entities/users/users-router";
+import {authRouter} from "./entities/auth/auth-router";
+import {commentsRouter} from "./entities/comments/comments-router";
 import {deleteAllDataFromDB} from "./utils/deleteAllDataFromDB";
-import {checkIp} from "./utils/limiter";
+import {errorMiddleware} from "./middlewares/error-middleware";
+import {checkRequestsLimit} from "./middlewares/requestsLimits-middleware";
 
 
 const app = express()
@@ -32,7 +32,7 @@ app.get('/', (req: Request, res: Response) => {
 
 
 app.use('/users', usersRouter)
-app.use('/auth', checkIp, authRouter)
+app.use('/auth', checkRequestsLimit, authRouter)
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/comments', commentsRouter)
@@ -47,7 +47,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
 })
 
 
-globalCatch()
+app.use(errorMiddleware)
+
+// globalCatch()
 
 const start = async () => {
     await runDb()

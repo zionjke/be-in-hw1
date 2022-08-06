@@ -1,8 +1,9 @@
-import jwt, {decode, JwtPayload} from 'jsonwebtoken'
+import jwt, {decode} from 'jsonwebtoken'
 import {SERVICE} from "../constants";
-import {tokensRepository} from "../repositories/tokens-repository";
+import {tokensRepository} from "../entities/tokens/tokens-repository";
 
 export const jwtService = {
+
     async generateTokens(userId: string) {
         const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '10s'})
         const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '20s'})
@@ -32,11 +33,6 @@ export const jwtService = {
     },
 
     async saveToken(userId: string, refreshToken: string) {
-        // const tokenData = await tokensRepository.findOneByUserId(userId)
-        //
-        // if (tokenData) {
-        //     await tokensRepository.updateUserToken(userId, refreshToken)
-        // }
 
         const token = await tokensRepository.create(userId, refreshToken)
 
@@ -53,8 +49,7 @@ export const jwtService = {
     },
 
     async checkTokenExpired(token: string) {
-        // @ts-ignore
-        const {exp} = decode(token)
+        const {exp}: any = decode(token)
 
         if (Date.now() >= exp * 1000) {
             return false;

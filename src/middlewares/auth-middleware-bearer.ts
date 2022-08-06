@@ -1,24 +1,31 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
-import {usersService} from "../domain/users-service";
+import {usersService} from "../entities/users/users-service";
+import { ApiError } from "../exceptions/api-error";
 
 export const authMiddlewareBearer = async (req: Request, res: Response, next: NextFunction) => {
+    try {
 
-    if (!req.headers.authorization) {
-        res.status(401).send('Log in please')
-        return;
+        if (!req.headers.authorization) {
+            return next(ApiError.UnauthorizedError())
+        }
+
+        const [, accessToken] = req.headers.authorization.split(' ')
+
+        if(!accessToken) {
+            return next(ApiError.UnauthorizedError())
+        }
+
+        const userId = await jwtService.validateAccessToken(accessToken)
+
+        if (!userId) {
+            return next(ApiError.UnauthorizedError())
+        }
+
+        req.user = await usersService.getUserByID(userId)
+
+        next()
+    } catch {
+        return next(ApiError.UnauthorizedError())
     }
-
-    const [, token] = req.headers.authorization.split(' ')
-
-    const userId = await jwtService.validateAccessToken(token)
-
-    if (!userId) {
-        res.sendStatus(401)
-        return;
-    }
-
-    req.user = await usersService.getUserByID(userId)
-
-    next()
 }

@@ -1,6 +1,11 @@
 import {MongoClient} from 'mongodb'
-import {BloggerType, CommentDBType, IpRequestType, PostType, TokenType, UserDBType} from "./types";
+import {IpRequestType,} from "./types";
 import {SERVICE} from "./constants";
+import { BloggerType } from './entities/bloggers/types';
+import { PostType } from './entities/posts/types';
+import { UserDBType } from './entities/users/types';
+import { CommentDBType } from './entities/comments/types';
+import {TokenType} from "./entities/tokens/types";
 
 const mongoUri = process.env.mongoURI || SERVICE.URI;
 
