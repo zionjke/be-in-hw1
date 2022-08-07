@@ -1,9 +1,8 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {commentsService} from "./comments-service";
-import {postsService} from "../posts/posts-service";
 
 export const commentsController = {
-    async getCommentById(req: Request, res: Response) {
+    async getCommentById(req: Request, res: Response, next: NextFunction) {
         try {
             const {id} = req.params
 
@@ -11,12 +10,11 @@ export const commentsController = {
 
             res.status(200).send(comment)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('Failed to get comment')
+            next(error)
         }
     },
 
-    async deleteCommentById(req: Request, res: Response) {
+    async deleteCommentById(req: Request, res: Response, next: NextFunction) {
         try {
             const {commentId} = req.params
 
@@ -26,12 +24,11 @@ export const commentsController = {
 
             res.sendStatus(204)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('Failed to delete comment')
+            next(error)
         }
     },
 
-    async updateComment(req: Request, res: Response) {
+    async updateComment(req: Request, res: Response, next: NextFunction) {
         try {
             const {commentId} = req.params
 
@@ -43,12 +40,11 @@ export const commentsController = {
 
             res.sendStatus(204)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('Failed to update comment')
+            next(error)
         }
     },
 
-    async createPostComment(req: Request, res: Response) {
+    async createPostComment(req: Request, res: Response, next: NextFunction) {
         try {
             const {postId} = req.params
 
@@ -60,12 +56,11 @@ export const commentsController = {
 
             res.status(201).send(comment)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('Failed to create post comments')
+            next(error)
         }
     },
 
-    async getPostComments(req: Request, res: Response) {
+    async getPostComments(req: Request, res: Response, next: NextFunction) {
         try {
             const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
 
@@ -77,8 +72,7 @@ export const commentsController = {
 
             res.status(200).send(data)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('Failed to get post comments')
+           next(error)
         }
     },
 }

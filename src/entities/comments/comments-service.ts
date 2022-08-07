@@ -67,6 +67,6 @@ export const commentsService = {
 
         const post = await postsService.getPostById(postId)
 
-        return await commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
+        return commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
     }
 }
