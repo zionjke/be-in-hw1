@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "../entities/users/users-service";
-import { ApiError } from "../exceptions/api-error";
+import {ApiError} from "../exceptions/api-error";
 
 export const authMiddlewareBearer = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,7 +12,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
 
         const [, accessToken] = req.headers.authorization.split(' ')
 
-        if(!accessToken) {
+        if (!accessToken) {
             return next(ApiError.UnauthorizedError())
         }
 
@@ -22,7 +22,13 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
             return next(ApiError.UnauthorizedError())
         }
 
-        req.user = await usersService.getUserByID(userId)
+        const user = await usersService.getUserByID(userId)
+
+        if (!user) {
+            return next(ApiError.UnauthorizedError())
+        }
+
+        req.user = user
 
         next()
     } catch {

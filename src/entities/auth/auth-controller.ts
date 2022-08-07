@@ -85,22 +85,17 @@ export const authController = {
         }
     },
 
-    async me(req: Request, res: Response) {
+    async me(req: Request, res: Response, next: NextFunction) {
         try {
             const {user} = req
-
-            if (!user) {
-                res.sendStatus(401)
-                return;
-            }
 
             res.status(200).json({
                 userId: user.id,
                 login: user.login,
                 email: user.email
             })
-        } catch (e) {
-            res.status(500).send('Error getting user information')
+        } catch (error) {
+            next(error)
         }
     }
 }
