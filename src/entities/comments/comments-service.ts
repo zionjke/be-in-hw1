@@ -3,8 +3,7 @@ import {CommentDBType, CommentsResponseType, CommentType} from "./types";
 import {postsService} from "../posts/posts-service";
 import {v4} from "uuid";
 import {UserType} from "../users/types";
-
-const ApiError = require('../../exceptions/api-error')
+import { ApiError } from "../../exceptions/api-error";
 
 export const commentsService = {
     async getCommentById(id: string): Promise<CommentType> {
