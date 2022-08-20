@@ -22,7 +22,10 @@ export const usersController = {
 
             const user = await usersService.createUser(login, password, email)
 
-            res.status(201).send(user)
+            res.status(201).send({
+                id: user.id,
+                login: user.login
+            })
         } catch (error) {
             next(error)
         }

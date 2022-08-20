@@ -1,27 +1,23 @@
-import {tokensCollection} from "../../db";
 import { TokenType } from "./types";
-
+import {Token} from "./model";
 
 export const tokensRepository = {
     async create(userId: string, refreshToken: string): Promise<TokenType> {
-        await tokensCollection.insertOne({userId, refreshToken})
+
+        const token = new Token({userId, refreshToken})
+
+        await token.save()
 
         return {userId, refreshToken}
     },
 
-    async findOneByUserId(userId: string): Promise<TokenType | null> {
-        return await tokensCollection.findOne({userId}, {projection: {_id: false}})
-    },
-
     async findOneByToken(refreshToken: string): Promise<TokenType | null> {
-        return await tokensCollection.findOne({refreshToken}, {projection: {_id: false}})
-    },
+        const token = await Token.findOne({refreshToken})
 
-    async updateUserToken(userId: string, refreshToken: string) {
-        await tokensCollection.updateOne({userId}, {$set: {refreshToken}})
+        return token
     },
 
     async deleteToken(refreshToken: string) {
-       return await tokensCollection.deleteOne({refreshToken})
+        await Token.deleteOne({refreshToken})
     }
 }

@@ -4,6 +4,7 @@ import { validationMiddleware} from "../../middlewares/validationMiddleware";
 import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
 import { userValidation } from "../users/validation";
 import {registrationCodeValidation} from "./validation";
+import {validateRefreshTokenMiddleware} from "../../middlewares/validateRefreshToken-middleware";
 
 
 export const authRouter = Router();
@@ -13,9 +14,9 @@ authRouter
 
     .get('/me', authMiddlewareBearer, authController.me)
 
-    .post('/logout', authController.logOut)
+    .post('/logout', validateRefreshTokenMiddleware, authController.logOut)
 
-    .post('/refresh-token', authController.refresh)
+    .post('/refresh-token', validateRefreshTokenMiddleware,  authController.refresh)
 
     .post('/registration', userValidation, validationMiddleware, authController.registration)
 

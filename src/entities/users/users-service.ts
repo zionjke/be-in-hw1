@@ -1,7 +1,7 @@
 import {usersRepository} from "./users-repository";
 import {v4} from "uuid";
 import bcrypt from 'bcrypt'
-import {UserDBType, UsersResponseType, UserType} from "./types";
+import {UsersResponseType, UserType} from "./types";
 import {ApiError} from "../../exceptions/api-error";
 
 export const usersService = {
@@ -15,11 +15,13 @@ export const usersService = {
 
         const passwordHash = await this.generateHash(password, passwordSalt)
 
-        const newUser: UserDBType = {
+        const newUser: UserType = {
             id: v4(),
             login,
             email,
             passwordHash,
+            confirmationCode: v4(),
+            isActivated: false
         }
 
         return usersRepository.createUser(newUser)
@@ -33,19 +35,19 @@ export const usersService = {
         }
     },
 
-    async getUserByID(id: string): Promise<UserDBType | null> {
-        return await usersRepository.getUserById(id)
+    async getUserByID(id: string): Promise<UserType | null> {
+        return usersRepository.getUserById(id)
     },
 
-    async getUserByEmail(email: string): Promise<UserDBType | null> {
-        return await usersRepository.getUserByEmail(email)
+    async getUserByEmail(email: string): Promise<UserType | null> {
+        return usersRepository.getUserByEmail(email)
     },
 
-    async getUserByLogin(email: string): Promise<UserDBType | null> {
-        return await usersRepository.getUserByLogin(email)
+    async getUserByLogin(email: string): Promise<UserType | null> {
+        return usersRepository.getUserByLogin(email)
     },
 
-    async getUserByConfirmationCode(code: string): Promise<UserDBType> {
+    async getUserByConfirmationCode(code: string): Promise<UserType> {
         const user = await usersRepository.getUserByConfirmationCode(code)
 
         if (!user) {

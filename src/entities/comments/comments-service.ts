@@ -56,10 +56,15 @@ export const commentsService = {
             userId: user.id,
             userLogin: user.login,
             postId: post.id,
-            addedAt: new Date().toISOString()
+            addedAt: new Date(),
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount:0,
+                myStatus: "None"
+            }
         }
 
-        return await commentsRepository.createPostComment(newComment)
+        return commentsRepository.createPostComment(newComment)
     },
 
     async getPostComments(postId: string, pageNumber?: number, _pageSize?: number,): Promise<CommentsResponseType> {

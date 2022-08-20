@@ -1,21 +1,15 @@
-import bcrypt from "bcrypt";
 import {usersService} from "../users/users-service";
 import {v4} from "uuid";
 import {usersRepository} from "../users/users-repository";
 import mailService from '../../application/mail-service'
-import {UserDBType, UserType} from "../users/types";
+import {UserType} from "../users/types";
 import {jwtService} from "../../application/jwt-service";
 import {ApiError} from "../../exceptions/api-error";
 
 
 export const authService = {
-
     async login(login: string, password: string) {
         const user = await this.checkCredentials(login, password)
-
-        if (!user) {
-            throw ApiError.UnauthorizedError()
-        }
 
         const {accessToken, refreshToken} = await jwtService.generateTokens(user.id)
 
@@ -24,12 +18,12 @@ export const authService = {
         return {accessToken, refreshToken}
     },
 
-    async checkCredentials(login: string, password: string): Promise<UserType | null> {
+    async checkCredentials(login: string, password: string): Promise<UserType> {
 
-        const user = await usersRepository.getUserByLogin(login)
+        const user = await usersService.getUserByLogin(login)
 
         if (!user) {
-            return null;
+            throw ApiError.UnauthorizedError()
         }
 
         const passwordHash = user.passwordHash
@@ -37,7 +31,7 @@ export const authService = {
         const isVerify = await usersService.verifyPassword(password, passwordHash)
 
         if (!isVerify) {
-            return null;
+            throw ApiError.UnauthorizedError()
         }
 
         return user
@@ -45,32 +39,20 @@ export const authService = {
 
     async registration(login: string, email: string, password: string) {
 
-        const existUserByLogin = await usersService.getUserByLogin(login)
+        const existLogin = await usersService.getUserByLogin(login)
 
-        if (existUserByLogin) {
+        if (existLogin) {
             throw ApiError.BadRequestError('User with this login already exists', 'login')
         }
 
-        const existUserByEmail = await usersService.getUserByEmail(email)
+        const existEmail = await usersService.getUserByEmail(email)
 
-        if (existUserByEmail) {
+        if (existEmail) {
             throw ApiError.BadRequestError('User with this email already exists', 'email')
         }
 
-        const passwordSalt = await bcrypt.genSalt(10)
 
-        const passwordHash = await usersService.generateHash(password, passwordSalt)
-
-        const newUser: UserDBType = {
-            id: v4(),
-            login,
-            email,
-            passwordHash,
-            isActivated: false,
-            confirmationCode: v4()
-        }
-
-        const user = await usersRepository.registration(newUser)
+        const user = await usersService.createUser(login, password, email)
 
         try {
             await mailService.sendActivationMail(user.email, user.confirmationCode)
@@ -116,58 +98,7 @@ export const authService = {
         }
     },
 
-    async logOut(refreshToken: string) {
-
-        if (!refreshToken) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const isExpired = await jwtService.checkTokenExpired(refreshToken)
-
-        if (!isExpired) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const userId = await jwtService.validateRefreshToken(refreshToken)
-
-        if (!userId) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const tokenFromDb = await jwtService.findToken(refreshToken)
-
-        if (!tokenFromDb) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        await jwtService.deleteToken(refreshToken)
-    },
-
-    async refreshToken(refreshToken: string) {
-
-        if (!refreshToken) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const userId = await jwtService.validateRefreshToken(refreshToken)
-
-        if (!userId) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const isExpired = await jwtService.checkTokenExpired(refreshToken)
-
-        if (!isExpired) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        const tokenFromDb = await jwtService.findToken(refreshToken)
-
-        if (!tokenFromDb) {
-            throw ApiError.UnauthorizedError()
-        }
-
-        await jwtService.deleteToken(tokenFromDb.refreshToken)
+    async refreshToken(userId:string) {
 
         const tokens = await jwtService.generateTokens(userId)
 

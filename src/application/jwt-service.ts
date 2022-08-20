@@ -5,8 +5,8 @@ import {tokensRepository} from "../entities/tokens/tokens-repository";
 export const jwtService = {
 
     async generateTokens(userId: string) {
-        const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '10s'})
-        const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '20s'})
+        const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '30d'})
+        const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '30d'})
 
         return {
             accessToken,
@@ -40,7 +40,7 @@ export const jwtService = {
     },
 
     async deleteToken(refreshToken: string) {
-        return await tokensRepository.deleteToken(refreshToken)
+        await tokensRepository.deleteToken(refreshToken)
     },
 
     async findToken(refreshToken: string) {

@@ -58,10 +58,6 @@ export const authController = {
 
     async logOut(req: Request, res: Response, next: NextFunction) {
         try {
-            const {refreshToken} = req.cookies
-
-            await authService.logOut(refreshToken)
-
             res.sendStatus(204).clearCookie('refreshToken', {expires: new Date(+0)})
         } catch (error) {
             next(error)
@@ -70,9 +66,9 @@ export const authController = {
 
     async refresh(req: Request, res: Response, next: NextFunction) {
         try {
-            const {refreshToken} = req.cookies
+            const user = req.user
 
-            const tokens = await authService.refreshToken(refreshToken)
+            const tokens = await authService.refreshToken(user.id)
 
             res.status(200)
                 .cookie('refreshToken', tokens.refreshToken, {

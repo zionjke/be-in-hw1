@@ -8,6 +8,7 @@ export const postsService = {
     async getPosts(pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
         return postsRepository.getPosts(pageNumber, _pageSize)
     },
+
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
@@ -18,7 +19,14 @@ export const postsService = {
             shortDescription,
             content,
             bloggerId: blogger.id,
-            bloggerName: blogger.name
+            bloggerName: blogger.name,
+            addedAt: new Date(),
+            extendedLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None",
+                newestLikes: []
+            }
         }
 
         return postsRepository.createPost(newPost)
@@ -40,7 +48,7 @@ export const postsService = {
             throw ApiError.NotFoundError('Blogger not found')
         }
 
-        const isUpdated = await postsRepository.updatePost(id, title, shortDescription, content, blogger)
+        const isUpdated = await postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
 
         if (!isUpdated) {
             throw ApiError.NotFoundError('Post not found')
@@ -63,18 +71,7 @@ export const postsService = {
     },
     async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
 
-        const blogger = await bloggersService.getBloggerById(bloggerId)
-
-        const newPost:PostType = {
-            id: v4(),
-            title,
-            shortDescription,
-            content,
-            bloggerId: blogger.id,
-            bloggerName: blogger.name
-        }
-
-        const post = await postsRepository.createPost(newPost)
+        const post = await this.createPost(title, shortDescription, content, bloggerId)
 
         return post
     },

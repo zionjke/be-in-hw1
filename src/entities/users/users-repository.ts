@@ -1,18 +1,25 @@
-import {usersCollection} from "../../db";
 import {pagination} from "../../utils/pagination";
-import {UserDBType, UsersResponseType, UserType} from "./types";
+import {UsersResponseType, UserType} from "./types";
+import {User} from "./model";
 
 export const usersRepository = {
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
-        const totalCount = await usersCollection.count()
+        const totalCount = await User.countDocuments()
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
-        const users = await usersCollection
-            .find({}, {projection: {_id: false, passwordHash: false}})
+        const users = await User
+            .find({}, {_id: false,
+                __v: false,
+                passwordHash: false,
+                email: false,
+                confirmationCode: false,
+                isActivated: false
+            })
             .skip(startFrom)
             .limit(pageSize)
-            .toArray()
+            .lean()
+
 
         return {
             pagesCount,
@@ -23,47 +30,42 @@ export const usersRepository = {
         }
     },
 
-    async createUser(user: UserDBType): Promise<UserType> {
-        await usersCollection.insertOne({...user})
+    async createUser(newUser: UserType): Promise<UserType> {
+        const user = new User(newUser)
 
-        const {passwordHash, email, ...userData} = user
+        await user.save()
 
-        return userData
+        return newUser
     },
 
     async deleteUser(id: string): Promise<boolean> {
-        const result = await usersCollection.deleteOne({id})
+        const result = await User.deleteOne({id})
 
         return result.deletedCount !== 0
     },
 
-    async getUserByLogin(login: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({login}, {projection: {_id: false}})
+    async getUserByLogin(login: string): Promise<UserType | null> {
+        const user: UserType | null = await User.findOne({login})
         return user
     },
 
-    async getUserByEmail(email: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({email}, {projection: {_id: false}})
+    async getUserByEmail(email: string): Promise<UserType | null> {
+        const user: UserType | null = await User.findOne({email})
         return user
     },
 
-    async getUserById(id: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({id}, {projection: {_id: false}})
+    async getUserById(id: string): Promise<UserType | null> {
+        const user: UserType | null = await User.findOne({id})
         return user
     },
 
-    async getUserByConfirmationCode(code: string): Promise<UserDBType | null> {
-        const user: UserDBType | null = await usersCollection.findOne({confirmationCode:code}, {projection: {_id: false}})
-        return user
-    },
-
-    async registration(user: UserDBType): Promise<UserDBType> {
-        await usersCollection.insertOne({...user})
+    async getUserByConfirmationCode(code: string): Promise<UserType | null> {
+        const user: UserType | null = await User.findOne({confirmationCode: code})
         return user
     },
 
     async checkUserConfirmationCode(code: string): Promise<boolean> {
-        const result = await usersCollection.updateOne(
+        const result = await User.updateOne(
             {confirmationCode: code},
             {$set: {isActivated: true}}
         )
@@ -72,7 +74,7 @@ export const usersRepository = {
     },
 
     async updateConfirmationCode(userId: string, code: string) {
-        await usersCollection.updateOne(
+        await User.updateOne(
             {id: userId},
             {$set: {confirmationCode: code}}
         )
