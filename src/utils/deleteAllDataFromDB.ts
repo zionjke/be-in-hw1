@@ -1,8 +1,11 @@
-import {bloggersCollection, commentsCollection, postsCollection, usersCollection} from "../db";
+import {User} from "../entities/users/model";
+import {Blogger} from "../entities/bloggers/model";
+import {Post} from "../entities/posts/model";
+import {Comment} from "../entities/comments/model";
 
 export const deleteAllDataFromDB = async () => {
-    await usersCollection.deleteMany({})
-    await bloggersCollection.deleteMany({})
-    await postsCollection.deleteMany({})
-    await commentsCollection.deleteMany({})
+    await User.deleteMany({})
+    await Blogger.deleteMany({})
+    await Post.deleteMany({})
+    await Comment.deleteMany({})
 }
