@@ -46,7 +46,7 @@ export const commentsService = {
         }
     },
 
-    async createPostComment(content: string, postId: string, user: UserType): Promise<CommentType> {
+    async createPostComment(content: string, postId: string, user: UserType): Promise<Omit<CommentType, "likesInfo">> {
 
         const post = await postsService.getPostById(postId)
 

@@ -9,7 +9,7 @@ export const postsService = {
         return postsRepository.getPosts(pageNumber, _pageSize)
     },
 
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
 
@@ -31,6 +31,7 @@ export const postsService = {
 
         return postsRepository.createPost(newPost)
     },
+
     async getPostById(id: string): Promise<PostType> {
         const post = await postsRepository.getPostById(id)
 
@@ -40,6 +41,7 @@ export const postsService = {
 
         return post
     },
+
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
@@ -54,6 +56,7 @@ export const postsService = {
             throw ApiError.NotFoundError('Post not found')
         }
     },
+
     async deletePost(id: string) {
         const isDeleted = await postsRepository.deletePost(id)
 
@@ -61,6 +64,7 @@ export const postsService = {
             throw ApiError.NotFoundError('Post not found')
         }
     },
+
     async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
@@ -69,7 +73,8 @@ export const postsService = {
 
         return data
     },
-    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
+
+    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
 
         const post = await this.createPost(title, shortDescription, content, bloggerId)
 

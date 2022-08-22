@@ -23,13 +23,13 @@ export const postsRepository = {
         }
     },
 
-    async getBloggerPosts(bloggerId: string, pageNumber?: number , _pageSize?: number ): Promise<PostsResponseType> {
+    async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments({bloggerId})
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const posts = await Post
-            .find({bloggerId}, { _id: false, __v: false})
+            .find({bloggerId}, {_id: false, __v: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
@@ -43,17 +43,25 @@ export const postsRepository = {
         }
     },
 
-    async createPost(newPost: PostType): Promise<PostType> {
+    async createPost(newPost: PostType): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
 
         const post = new Post(newPost)
 
         await post.save()
 
-        return newPost
+        const {addedAt, extendedLikesInfo, ...postData} = newPost
+
+        return postData
     },
 
     async getPostById(id: string): Promise<PostType | null> {
-        const post: PostType | null = await Post.findOne({id}, {_id: false, __v: false})
+        const post: PostType | null = await Post.findOne(
+            {id},
+            {
+                _id: false, __v: false,
+                addedAt: false,
+                extendedLikesInfo: false
+            })
 
         return post
     },
