@@ -72,7 +72,19 @@ export const commentsController = {
 
             res.status(200).send(data)
         } catch (error) {
-           next(error)
+            next(error)
+        }
+    },
+
+    async likeComment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const {commentId} = req.params
+
+            const {likesStatus} = req.body
+
+
+        } catch (error) {
+            next(error)
         }
     },
 }

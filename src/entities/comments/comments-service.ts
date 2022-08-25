@@ -1,5 +1,5 @@
 import {commentsRepository} from "./comments-repository";
-import {CommentDBType, CommentsResponseType, CommentType} from "./types";
+import {CommentsResponseType, CommentType} from "./types";
 import {postsService} from "../posts/posts-service";
 import {v4} from "uuid";
 import {UserType} from "../users/types";
@@ -46,11 +46,11 @@ export const commentsService = {
         }
     },
 
-    async createPostComment(content: string, postId: string, user: UserType): Promise<Omit<CommentType, "likesInfo">> {
+    async createPostComment(content: string, postId: string, user: UserType): Promise<Omit<CommentType, "likesInfo" | "postId">> {
 
         const post = await postsService.getPostById(postId)
 
-        const newComment: CommentDBType = {
+        const newComment: CommentType = {
             id: v4(),
             content,
             userId: user.id,
@@ -72,5 +72,11 @@ export const commentsService = {
         const post = await postsService.getPostById(postId)
 
         return commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
+    },
+
+    async likeComment(commentId:string, user:UserType) {
+        const comment = await this.getCommentById(commentId)
+
+
     }
 }

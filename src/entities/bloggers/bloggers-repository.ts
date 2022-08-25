@@ -30,7 +30,7 @@ export const bloggersRepository = {
         }
     },
 
-    async createNewBlogger(newBlogger:BloggerType): Promise<BloggerType> {
+    async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
         const blogger = new Blogger(newBlogger)
 
@@ -40,7 +40,7 @@ export const bloggersRepository = {
     },
 
     async getBloggerById(id: string): Promise<BloggerType | null> {
-        const blogger: BloggerType | null = await Blogger.findOne({id},  {_id: false, __v: false})
+        const blogger: BloggerType | null = await Blogger.findOne({id}, {_id: false, __v: false})
 
         return blogger
     },
@@ -48,7 +48,7 @@ export const bloggersRepository = {
     async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const result = await Blogger.updateOne(
             {id},
-            {$set: {name, youtubeUrl}}
+            {name, youtubeUrl}
         )
 
         return result.matchedCount !== 0;

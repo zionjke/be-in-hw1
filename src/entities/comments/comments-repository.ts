@@ -1,10 +1,11 @@
 import {pagination} from "../../utils/pagination";
-import {CommentDBType, CommentsResponseType, CommentType} from "./types";
+import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {Comment} from "./model";
 
 export const commentsRepository = {
     async getCommentById(id: string): Promise<CommentType | null> {
-        const comment:CommentType | null = await Comment.findOne(
+
+        const comment: CommentType | null = await Comment.findOne(
             {id},
             {
                 _id: false,
@@ -23,18 +24,18 @@ export const commentsRepository = {
     },
 
     async updateComment(id: string, content: string): Promise<boolean> {
-        const result = await Comment.updateOne({id}, {$set: {content}})
+        const result = await Comment.updateOne({id}, {content})
 
         return result.matchedCount !== 0;
     },
 
-    async createPostComment(newComment: CommentDBType): Promise<Omit<CommentType, "likesInfo">> {
+    async createPostComment(newComment: CommentType): Promise<Omit<CommentType, "likesInfo" | "postId">> {
 
         const comment = new Comment(newComment)
 
         await comment.save()
 
-        const {postId, ...commentData} = newComment
+        const {postId, likesInfo, ...commentData} = newComment
 
         return commentData
     },
@@ -57,5 +58,9 @@ export const commentsRepository = {
             totalCount,
             items: comments
         }
+    },
+
+    async likeComment(commentId:string, likeStatus:LikeStatusType ) {
+
     }
 }

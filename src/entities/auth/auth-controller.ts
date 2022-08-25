@@ -57,11 +57,7 @@ export const authController = {
     },
 
     async logOut(req: Request, res: Response, next: NextFunction) {
-        try {
-            res.sendStatus(204).clearCookie('refreshToken', {expires: new Date(+0)})
-        } catch (error) {
-            next(error)
-        }
+        res.sendStatus(204).clearCookie('refreshToken', {expires: new Date(+0)})
     },
 
     async refresh(req: Request, res: Response, next: NextFunction) {
@@ -82,16 +78,12 @@ export const authController = {
     },
 
     async me(req: Request, res: Response, next: NextFunction) {
-        try {
-            const {user} = req
+        const {user} = req
 
-            res.status(200).json({
-                userId: user.id,
-                login: user.login,
-                email: user.email
-            })
-        } catch (error) {
-            next(error)
-        }
+        res.status(200).json({
+            userId: user.id,
+            login: user.login,
+            email: user.email
+        })
     }
 }

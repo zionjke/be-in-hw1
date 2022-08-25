@@ -58,7 +58,8 @@ export const postsRepository = {
         const post: PostType | null = await Post.findOne(
             {id},
             {
-                _id: false, __v: false,
+                _id: false,
+                __v: false,
                 addedAt: false,
                 extendedLikesInfo: false
             })
@@ -69,7 +70,7 @@ export const postsRepository = {
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const result = await Post.updateOne(
             {id},
-            {$set: {title, shortDescription, content, bloggerId}}
+            {title, shortDescription, content, bloggerId}
         )
         return result.matchedCount !== 0
     },

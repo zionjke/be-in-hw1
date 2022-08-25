@@ -5,12 +5,9 @@ export type CommentType = {
     content: string,
     userId: string,
     userLogin: string,
+    postId: string
     addedAt: Date,
     likesInfo: LikesInfoType
-}
-
-export type CommentDBType = CommentType & {
-    postId: string
 }
 
 type LikesInfoType = {
@@ -19,6 +16,6 @@ type LikesInfoType = {
     myStatus: LikeStatusType
 }
 
-type LikeStatusType = "None" | "Like" | "Dislike"
+export type LikeStatusType = "None" | "Like" | "Dislike"
 
 export type CommentsResponseType = ResponseType<CommentType[]>
