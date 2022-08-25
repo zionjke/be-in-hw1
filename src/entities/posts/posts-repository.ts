@@ -43,15 +43,13 @@ export const postsRepository = {
         }
     },
 
-    async createPost(newPost: PostType): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
+    async createPost(newPost: PostType): Promise<PostType> {
 
         const post = new Post(newPost)
 
         await post.save()
 
-        const {addedAt, extendedLikesInfo, ...postData} = newPost
-
-        return postData
+        return newPost
     },
 
     async getPostById(id: string): Promise<PostType | null> {
@@ -60,8 +58,6 @@ export const postsRepository = {
             {
                 _id: false,
                 __v: false,
-                addedAt: false,
-                extendedLikesInfo: false
             })
 
         return post
@@ -74,6 +70,7 @@ export const postsRepository = {
         )
         return result.matchedCount !== 0
     },
+
     async deletePost(id: string): Promise<boolean> {
         const result = await Post.deleteOne({id})
 

@@ -9,7 +9,7 @@ export const postsService = {
         return postsRepository.getPosts(pageNumber, _pageSize)
     },
 
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
 
@@ -74,7 +74,7 @@ export const postsService = {
         return data
     },
 
-    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "addedAt" | "extendedLikesInfo">> {
+    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
 
         const post = await this.createPost(title, shortDescription, content, bloggerId)
 

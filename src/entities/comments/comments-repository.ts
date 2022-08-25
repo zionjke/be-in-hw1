@@ -11,7 +11,6 @@ export const commentsRepository = {
                 _id: false,
                 postId: false,
                 __v: false,
-                likesInfo: false
             })
 
         return comment
@@ -29,13 +28,13 @@ export const commentsRepository = {
         return result.matchedCount !== 0;
     },
 
-    async createPostComment(newComment: CommentType): Promise<Omit<CommentType, "likesInfo" | "postId">> {
+    async createPostComment(newComment: CommentType): Promise<Omit<CommentType, "postId">> {
 
         const comment = new Comment(newComment)
 
         await comment.save()
 
-        const {postId, likesInfo, ...commentData} = newComment
+        const {postId, ...commentData} = newComment
 
         return commentData
     },
@@ -46,7 +45,7 @@ export const commentsRepository = {
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const comments = await Comment
-            .find({postId}, {_id: false, postId: false, __v: false, likesInfo: false})
+            .find({postId}, {_id: false, postId: false, __v: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
