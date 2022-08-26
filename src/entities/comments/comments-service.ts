@@ -3,10 +3,10 @@ import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {postsService} from "../posts/posts-service";
 import {v4} from "uuid";
 import {UserType} from "../users/types";
-import { ApiError } from "../../exceptions/api-error";
+import {ApiError} from "../../exceptions/api-error";
 
 export const commentsService = {
-    async getCommentById(id: string): Promise<CommentType> {
+    async getCommentById(id: string, userId?:string): Promise<CommentType> {
         const comment = await commentsRepository.getCommentById(id)
 
         if (!comment) {
@@ -59,7 +59,7 @@ export const commentsService = {
             addedAt: new Date(),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount:0,
+                dislikesCount: 0,
                 myStatus: "None"
             },
             info: []
@@ -68,17 +68,17 @@ export const commentsService = {
         return commentsRepository.createPostComment(newComment)
     },
 
-    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number,): Promise<CommentsResponseType> {
+    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number): Promise<CommentsResponseType> {
 
         const post = await postsService.getPostById(postId)
 
         return commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
     },
 
-    async likeComment(commentId:string, likesStatus: LikeStatusType, user:UserType) {
-        const isLiked = await commentsRepository.likeComment(commentId,likesStatus, user)
+    async likeComment(commentId: string, likesStatus: LikeStatusType, user: UserType) {
+        const isLiked = await commentsRepository.likeComment(commentId, likesStatus, user)
 
-        if(!isLiked) {
+        if (!isLiked) {
             throw ApiError.NotFoundError('Comment not found')
         }
     }
