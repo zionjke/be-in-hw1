@@ -8,12 +8,20 @@ export type CommentType = {
     postId: string
     addedAt: Date,
     likesInfo: LikesInfoType
+    info: InfoType[]
 }
 
 type LikesInfoType = {
     likesCount: number,
     dislikesCount: number,
     myStatus: LikeStatusType
+}
+
+type InfoType = {
+    addedAt: Date,
+    userId: string,
+    login: string,
+    likeStatus: LikeStatusType
 }
 
 export type LikeStatusType = "None" | "Like" | "Dislike"

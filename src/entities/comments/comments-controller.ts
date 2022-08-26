@@ -82,7 +82,11 @@ export const commentsController = {
 
             const {likesStatus} = req.body
 
+            const user = req.user
 
+            await commentsService.likeComment(commentId, likesStatus, user)
+
+            res.sendStatus(204)
         } catch (error) {
             next(error)
         }

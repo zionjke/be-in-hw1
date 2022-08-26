@@ -1,5 +1,5 @@
 import {commentsRepository} from "./comments-repository";
-import {CommentsResponseType, CommentType} from "./types";
+import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {postsService} from "../posts/posts-service";
 import {v4} from "uuid";
 import {UserType} from "../users/types";
@@ -46,7 +46,7 @@ export const commentsService = {
         }
     },
 
-    async createPostComment(content: string, postId: string, user: UserType): Promise<Omit<CommentType, "postId">> {
+    async createPostComment(content: string, postId: string, user: UserType): Promise<Omit<CommentType, "postId" | "info">> {
 
         const post = await postsService.getPostById(postId)
 
@@ -61,7 +61,8 @@ export const commentsService = {
                 likesCount: 0,
                 dislikesCount:0,
                 myStatus: "None"
-            }
+            },
+            info: []
         }
 
         return commentsRepository.createPostComment(newComment)
@@ -74,9 +75,11 @@ export const commentsService = {
         return commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
     },
 
-    async likeComment(commentId:string, user:UserType) {
-        const comment = await this.getCommentById(commentId)
+    async likeComment(commentId:string, likesStatus: LikeStatusType, user:UserType) {
+        const isLiked = await commentsRepository.likeComment(commentId,likesStatus, user)
 
-
+        if(!isLiked) {
+            throw ApiError.NotFoundError('Comment not found')
+        }
     }
 }

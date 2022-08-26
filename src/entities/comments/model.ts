@@ -11,7 +11,13 @@ const commentSchema = new mongoose.Schema<CommentType>({
         likesCount: Number,
         dislikesCount: Number,
         myStatus: String,
-    }
+    },
+    info: [{
+        addedAt: Date,
+        userId: String,
+        login: String,
+        likeStatus: String
+    }]
 })
 
 export const Comment = model<CommentType>('Comment', commentSchema)
