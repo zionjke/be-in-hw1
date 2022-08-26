@@ -6,9 +6,7 @@ export const commentsController = {
         try {
             const {id} = req.params
 
-            const user = req.user
-
-            const comment = await commentsService.getCommentById(id, user.id)
+            const comment = await commentsService.getCommentById(id)
 
             res.status(200).send(comment)
         } catch (error) {

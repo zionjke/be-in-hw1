@@ -4,7 +4,7 @@ import {Comment} from "./model";
 import {UserType} from "../users/types";
 
 export const commentsRepository = {
-    async getCommentById(id: string, userId?: string): Promise<CommentType | null> {
+    async getCommentById(id: string): Promise<CommentType | null> {
 
         const comment: CommentType | null = await Comment.findOne(
             {id},
@@ -14,13 +14,6 @@ export const commentsRepository = {
                 __v: false,
                 info: false
             })
-
-        if (userId && comment) {
-            const userLikeStatus = comment.info.find(({userId}) => userId === userId)
-            if (userLikeStatus) {
-                comment.likesInfo.myStatus = userLikeStatus.likeStatus
-            }
-        }
 
         return comment
     },
