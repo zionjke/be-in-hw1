@@ -72,7 +72,9 @@ export const commentsService = {
 
         const post = await postsService.getPostById(postId)
 
-        return commentsRepository.getPostComments(post.id, pageNumber, _pageSize, userId)
+        const data = await commentsRepository.getPostComments(post.id, pageNumber, _pageSize, userId)
+
+        return data
     },
 
     async likeComment(commentId: string, likeStatus: LikeStatusType, user: UserType) {
