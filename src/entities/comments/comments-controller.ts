@@ -6,9 +6,9 @@ export const commentsController = {
         try {
             const {id} = req.params
 
-            const user = req.user
+            const userId = req.user?.id
 
-            const comment = await commentsService.getCommentById(id, user.id)
+            const comment = await commentsService.getCommentById(id, userId)
 
             res.status(200).send(comment)
         } catch (error) {
@@ -36,9 +36,9 @@ export const commentsController = {
 
             const {content} = req.body
 
-            const userId = req.user?.id
+            const user = req.user
 
-            await commentsService.updateComment(commentId, content, userId)
+            await commentsService.updateComment(commentId, content, user.id)
 
             res.sendStatus(204)
         } catch (error) {
