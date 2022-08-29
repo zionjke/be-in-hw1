@@ -6,6 +6,7 @@ import {postsController} from "./posts-controller";
 import {bloggerIdValidation, postValidation} from "./validation";
 import {commentsController} from "../comments/comments-controller";
 import {commentValidation} from "../comments/validation";
+import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 
 export const postsRouter = Router()
 
@@ -22,4 +23,4 @@ postsRouter
 
     .post('/:postId/comments', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.createPostComment)
 
-    .get('/:postId/comments', commentsController.getPostComments)
+    .get('/:postId/comments', checkUserMiddleware, commentsController.getPostComments)

@@ -6,8 +6,8 @@ import {UserType} from "../users/types";
 import {ApiError} from "../../exceptions/api-error";
 
 export const commentsService = {
-    async getCommentById(id: string): Promise<CommentType> {
-        const comment = await commentsRepository.getCommentById(id)
+    async getCommentById(id: string, userId?: string): Promise<CommentType> {
+        const comment = await commentsRepository.getCommentById(id, userId)
 
         if (!comment) {
             throw ApiError.NotFoundError('Comment not found')
@@ -68,11 +68,11 @@ export const commentsService = {
         return commentsRepository.createPostComment(newComment)
     },
 
-    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number): Promise<CommentsResponseType> {
+    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<CommentsResponseType> {
 
         const post = await postsService.getPostById(postId)
 
-        return commentsRepository.getPostComments(post.id, pageNumber, _pageSize)
+        return commentsRepository.getPostComments(post.id, pageNumber, _pageSize, userId)
     },
 
     async likeComment(commentId: string, likesStatus: LikeStatusType, user: UserType) {

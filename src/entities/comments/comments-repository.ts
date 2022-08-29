@@ -4,7 +4,7 @@ import {Comment} from "./model";
 import {UserType} from "../users/types";
 
 export const commentsRepository = {
-    async getCommentById(id: string): Promise<CommentType | null> {
+    async getCommentById(id: string, userId?: string): Promise<CommentType | null> {
 
         const comment: CommentType | null = await Comment.findOne(
             {id},
@@ -14,6 +14,17 @@ export const commentsRepository = {
                 __v: false,
                 info: false
             })
+
+        if (!comment) {
+            return null
+        }
+
+        if (userId) {
+            const userLikeStatus = comment.info.find(({userId}) => userId === userId)
+            if (userLikeStatus) {
+                comment.likesInfo.myStatus = userLikeStatus.likeStatus
+            }
+        }
 
         return comment
     },
@@ -41,16 +52,25 @@ export const commentsRepository = {
         return commentData
     },
 
-    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number): Promise<CommentsResponseType> {
+    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<CommentsResponseType> {
         const totalCount = await Comment.countDocuments({postId})
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const comments = await Comment
-            .find({postId}, {_id: false, postId: false, __v: false})
+            .find({postId}, {_id: false, postId: false, __v: false, info: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
+
+        comments.forEach((p: CommentType) => {
+            if (userId) {
+                const userLikeStatus = p.info.find(({userId}) => userId === userId)
+                if (userLikeStatus) {
+                    p.likesInfo.myStatus = userLikeStatus.likeStatus
+                }
+            }
+        })
 
         return {
             pagesCount,

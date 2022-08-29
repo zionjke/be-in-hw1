@@ -4,11 +4,12 @@ import {validationMiddleware} from "../../middlewares/validationMiddleware";
 import {commentsController} from "./comments-controller";
 import {commentValidation} from "./validation";
 import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
+import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 
 export const commentsRouter = Router()
 
 commentsRouter
-    .get('/:id', commentsController.getCommentById)
+    .get('/:id', checkUserMiddleware, commentsController.getCommentById)
 
     .delete('/:commentId', authMiddlewareBearer, commentsController.deleteCommentById)
 
