@@ -84,11 +84,11 @@ export const commentsController = {
         try {
             const {commentId} = req.params
 
-            const {likesStatus} = req.body
+            const {likeStatus} = req.body
 
             const user = req.user
 
-            await commentsService.likeComment(commentId, likesStatus, user)
+            await commentsService.likeComment(commentId, likeStatus, user)
 
             res.sendStatus(204)
         } catch (error) {

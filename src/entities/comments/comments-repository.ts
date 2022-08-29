@@ -12,7 +12,6 @@ export const commentsRepository = {
                 _id: false,
                 postId: false,
                 __v: false,
-                info: false
             })
 
         if (!comment) {

@@ -75,8 +75,8 @@ export const commentsService = {
         return commentsRepository.getPostComments(post.id, pageNumber, _pageSize, userId)
     },
 
-    async likeComment(commentId: string, likesStatus: LikeStatusType, user: UserType) {
-        const isLiked = await commentsRepository.likeComment(commentId, likesStatus, user)
+    async likeComment(commentId: string, likeStatus: LikeStatusType, user: UserType) {
+        const isLiked = await commentsRepository.likeComment(commentId, likeStatus, user)
 
         if (!isLiked) {
             throw ApiError.NotFoundError('Comment not found')
