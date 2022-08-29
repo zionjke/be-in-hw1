@@ -6,7 +6,7 @@ import {UserType} from "../users/types";
 import {ApiError} from "../../exceptions/api-error";
 
 export const commentsService = {
-    async getCommentById(id: string, userId?: string): Promise<CommentType> {
+    async getCommentById(id: string, userId?: string): Promise<Omit<CommentType, "info">> {
         const comment = await commentsRepository.getCommentById(id, userId)
 
         if (!comment) {
