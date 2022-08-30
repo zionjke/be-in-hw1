@@ -20,7 +20,8 @@ const postSchema = new mongoose.Schema<PostType>({
                 login: String
             }
         ]
-    }
+    },
+    info: [{addedAt: Date, userId: String, login: String, likeStatus: String}]
 })
 
 export const Post = model<PostType>('Post', postSchema)

@@ -9,6 +9,7 @@ export type PostType = {
     bloggerName: string
     addedAt: Date,
     extendedLikesInfo: ExtendedLikesInfoType
+    info: InfoType[]
 }
 
 type ExtendedLikesInfoType = {
@@ -22,6 +23,13 @@ type LikeType = {
     addedAt: Date,
     userId: string,
     login: string
+}
+
+type InfoType = {
+    addedAt: Date,
+    userId: string,
+    login: string,
+    likeStatus: LikeStatusType
 }
 
 type LikeStatusType = "None" | "Like" | "Dislike"

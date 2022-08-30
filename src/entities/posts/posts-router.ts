@@ -7,6 +7,7 @@ import {bloggerIdValidation, postValidation} from "./validation";
 import {commentsController} from "../comments/comments-controller";
 import {commentValidation} from "../comments/validation";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
+import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
 
 export const postsRouter = Router()
 
@@ -15,7 +16,7 @@ postsRouter
 
     .post('/', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.createPost)
 
-    .get('/:id', postsController.getPostById)
+    .get('/:id', checkUserMiddleware, postsController.getPostById)
 
     .put('/:id', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.updatePost)
 
@@ -24,3 +25,5 @@ postsRouter
     .post('/:postId/comments', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.createPostComment)
 
     .get('/:postId/comments', checkUserMiddleware, commentsController.getPostComments)
+
+    .put('/:postId/like-status', authMiddlewareBearer, validateLikesValueMiddleware, validationMiddleware, postsController.likePost)

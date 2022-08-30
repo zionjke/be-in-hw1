@@ -32,7 +32,9 @@ export const postsController = {
         try {
             const {id} = req.params
 
-            const post = await postsService.getPostById(id)
+            const userId = req.user?.id
+
+            const post = await postsService.getPostById(id, userId)
 
             res.status(200).send(post)
         } catch (error) {
@@ -91,6 +93,22 @@ export const postsController = {
             const post = await postsService.createNewBloggerPost(title, shortDescription, content, bloggerId)
 
             res.status(201).send(post)
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async likePost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const {postId} = req.params
+
+            const {likeStatus} = req.body
+
+            const user = req.user
+
+            await postsService.likePost(postId, likeStatus, user)
+
+            res.sendStatus(204)
         } catch (error) {
             next(error)
         }

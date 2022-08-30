@@ -3,13 +3,15 @@ import {PostsResponseType, PostType} from "./types";
 import {bloggersService} from "../bloggers/bloggers-service";
 import {v4} from "uuid";
 import {ApiError} from "../../exceptions/api-error";
+import {LikeStatusType} from "../comments/types";
+import {UserType} from "../users/types";
 
 export const postsService = {
     async getPosts(pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
         return postsRepository.getPosts(pageNumber, _pageSize)
     },
 
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "info">> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
 
@@ -26,14 +28,15 @@ export const postsService = {
                 dislikesCount: 0,
                 myStatus: "None",
                 newestLikes: []
-            }
+            },
+            info: []
         }
 
         return postsRepository.createPost(newPost)
     },
 
-    async getPostById(id: string): Promise<PostType> {
-        const post = await postsRepository.getPostById(id)
+    async getPostById(id: string, userId?: string): Promise<Omit<PostType, "info">> {
+        const post = await postsRepository.getPostById(id, userId)
 
         if (!post) {
             throw ApiError.NotFoundError('Post not found')
@@ -74,10 +77,18 @@ export const postsService = {
         return data
     },
 
-    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType> {
+    async createNewBloggerPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "info">> {
 
         const post = await this.createPost(title, shortDescription, content, bloggerId)
 
         return post
     },
+
+    async likePost(postId: string, likeStatus: LikeStatusType, user: UserType) {
+        const isLiked = await postsRepository.likePost(postId, likeStatus, user)
+
+        if (!isLiked) {
+            throw ApiError.NotFoundError('Post not found')
+        }
+    }
 }
