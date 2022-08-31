@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {pagination} from "../../utils/pagination";
 import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {Comment} from "./model";
@@ -12,7 +11,6 @@ export const commentsRepository = {
             {
                 _id: false,
                 postId: false,
-                __v: false,
             })
             .lean()
 
@@ -61,20 +59,28 @@ export const commentsRepository = {
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const comments = await Comment
-            .find({postId}, {_id: false, postId: false, __v: false})
+            .find({postId}, {_id: false, postId: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
 
-        comments.forEach((p: CommentType) => {
-            if (userId) {
-                const userLikeStatus = p.info.find(({userId}) => userId === userId)
+        if (userId) {
+            comments.forEach(item => {
+                const userLikeStatus = item.info.find(item => item.userId === userId)
                 if (userLikeStatus) {
-                    p.likesInfo.myStatus = userLikeStatus.likeStatus
+                    item.likesInfo.myStatus = userLikeStatus.likeStatus
                 }
-            }
-            delete p.info
-        })
+            })
+        }
+
+        // comments.forEach(item => {
+        //     if (userId) {
+        //         const userLikeStatus = item.info.find(item => item.userId === userId)
+        //         if (userLikeStatus) {
+        //             item.likesInfo.myStatus = userLikeStatus.likeStatus
+        //         }
+        //     }
+        // })
 
         return {
             pagesCount,

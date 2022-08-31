@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema<PostType>({
         newestLikes: [likeInfoSchema]
     },
     info: [{addedAt: Date, userId: String, login: String, likeStatus: String}]
-})
+}, {versionKey: false})
 
 
 export const Post = model<PostType>('Post', postSchema)

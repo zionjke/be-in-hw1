@@ -68,7 +68,7 @@ export const commentsService = {
         return commentsRepository.createPostComment(newComment)
     },
 
-    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<CommentsResponseType> {
+    async getPostComments(postId: string, pageNumber?: number, _pageSize?: number, userId?: string):Promise<CommentsResponseType> {
 
         const post = await postsService.getPostById(postId)
 

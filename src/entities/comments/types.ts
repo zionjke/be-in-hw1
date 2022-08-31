@@ -26,4 +26,4 @@ type InfoType = {
 
 export type LikeStatusType = "None" | "Like" | "Dislike"
 
-export type CommentsResponseType = ResponseType<CommentType[]>
+export type CommentsResponseType = ResponseType<Omit<CommentType, "info">[]>
