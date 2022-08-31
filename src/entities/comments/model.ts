@@ -18,6 +18,6 @@ const commentSchema = new mongoose.Schema<CommentType>({
         login: String,
         likeStatus: String
     }]
-})
+},{versionKey: false})
 
 export const Comment = model<CommentType>('Comment', commentSchema)
