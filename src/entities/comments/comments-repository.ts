@@ -22,6 +22,8 @@ export const commentsRepository = {
             const userLikeStatus = comment.info.find(({userId}) => userId === userId)
             if (userLikeStatus) {
                 comment.likesInfo.myStatus = userLikeStatus.likeStatus
+            } else {
+                comment.likesInfo.myStatus = 'None'
             }
         }
 
@@ -64,14 +66,14 @@ export const commentsRepository = {
             .limit(pageSize)
             .lean()
 
-        comments.forEach(item => {
-            if(userId) {
+        if (userId) {
+            comments.forEach(item => {
                 const userLikeStatus = item.info.find(el => el.userId === userId)
                 if (userLikeStatus) {
                     item.likesInfo.myStatus = userLikeStatus.likeStatus
                 }
-            }
-        })
+            })
+        }
 
         const items = comments.map(({info, ...rest}) => {
             return rest
