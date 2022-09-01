@@ -64,6 +64,15 @@ export const commentsRepository = {
             .limit(pageSize)
             .lean()
 
+        if (userId) {
+            comments.forEach(item => {
+                const userLikeStatus = item.info.find(el => el.userId === userId)
+                if (userLikeStatus) {
+                    item.likesInfo.myStatus = userLikeStatus.likeStatus
+                }
+            })
+        }
+
         return {
             pagesCount,
             page,
