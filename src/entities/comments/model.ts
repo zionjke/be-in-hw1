@@ -6,6 +6,7 @@ const commentSchema = new mongoose.Schema<CommentType>({
     content: {type: String, required: true},
     userId: {type: String, required: true},
     userLogin: {type: String, required: true},
+    postId: String,
     addedAt: Date,
     likesInfo: {
         likesCount: Number,

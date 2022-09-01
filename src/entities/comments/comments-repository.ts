@@ -59,28 +59,10 @@ export const commentsRepository = {
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const comments = await Comment
-            .find({postId}, {_id: false, postId: false})
+            .find({postId}, {_id: false, postId: false, info: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
-
-        if (userId) {
-            comments.forEach(item => {
-                const userLikeStatus = item.info.find(item => item.userId === userId)
-                if (userLikeStatus) {
-                    item.likesInfo.myStatus = userLikeStatus.likeStatus
-                }
-            })
-        }
-
-        // comments.forEach(item => {
-        //     if (userId) {
-        //         const userLikeStatus = item.info.find(item => item.userId === userId)
-        //         if (userLikeStatus) {
-        //             item.likesInfo.myStatus = userLikeStatus.likeStatus
-        //         }
-        //     }
-        // })
 
         return {
             pagesCount,
