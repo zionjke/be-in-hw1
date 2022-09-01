@@ -1,4 +1,3 @@
-//@ts-nocheck
 import {pagination} from "../../utils/pagination";
 import {PostsResponseType, PostType} from "./types";
 import {Post} from "./model";
@@ -23,20 +22,19 @@ export const postsRepository = {
                 if (userLikeStatus) {
                     item.extendedLikesInfo.myStatus = userLikeStatus.likeStatus
                 }
-                delete item.info
             })
         }
 
-        // const items = posts.map(({info, ...rest}) => {
-        //     return rest
-        // })
+        const items = posts.map(({info, ...rest}) => {
+            return rest
+        })
 
         return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items:posts
+            items
         }
     },
 
@@ -57,20 +55,19 @@ export const postsRepository = {
                 if (userLikeStatus) {
                     item.extendedLikesInfo.myStatus = userLikeStatus.likeStatus
                 }
-                delete item.info
             })
         }
 
-        // const items = posts.map(({info, ...rest}) => {
-        //     return rest
-        // })
+        const items = posts.map(({info, ...rest}) => {
+            return rest
+        })
 
         return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items:posts
+            items
         }
     },
 
@@ -105,11 +102,9 @@ export const postsRepository = {
             }
         }
 
-        delete post.info
+        const {info, ...postData} = post
 
-        // const {info, ...postData} = post
-
-        return post
+        return postData
     },
 
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
