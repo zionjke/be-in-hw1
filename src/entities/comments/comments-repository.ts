@@ -59,7 +59,7 @@ export const commentsRepository = {
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const comments = await Comment
-            .find({postId}, {_id: false, postId: false, info: false})
+            .find({postId}, {_id: false, postId: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
@@ -73,12 +73,16 @@ export const commentsRepository = {
             })
         }
 
+        const commentsData = comments.map(({info, ...rest}) => {
+            return rest
+        })
+
         return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items: comments
+            items: commentsData
         }
     },
 
