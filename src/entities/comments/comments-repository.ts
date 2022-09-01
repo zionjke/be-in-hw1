@@ -98,8 +98,10 @@ export const commentsRepository = {
         if (!currentUserLikeStatus) {
             if (likeStatus === "Like") {
                 comment.likesInfo.likesCount++
+                comment.likesInfo.myStatus = 'None'
             } else if (likeStatus === "Dislike") {
                 comment.likesInfo.dislikesCount++
+                comment.likesInfo.myStatus = 'None'
             }
         } else {
             if (currentUserLikeStatus.likeStatus === "Like" && likeStatus !== "Like") {
