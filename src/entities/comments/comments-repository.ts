@@ -114,9 +114,9 @@ export const commentsRepository = {
                 comment.likesInfo.dislikesCount++
             }
 
-            // const currentIndex = comment.info.indexOf(currentUserLikeStatus)
-            //
-            // comment.info.splice(currentIndex, 1)
+            const currentIndex = comment.info.indexOf(currentUserLikeStatus)
+
+            comment.info.splice(currentIndex, 1)
         }
 
         comment.info.push({
