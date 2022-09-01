@@ -73,7 +73,7 @@ export const commentsRepository = {
             })
         }
 
-        const commentsData = comments.map(({info, ...rest}) => {
+        const items = comments.map(({info, ...rest}) => {
             return rest
         })
 
@@ -82,7 +82,7 @@ export const commentsRepository = {
             page,
             pageSize,
             totalCount,
-            items: commentsData
+            items
         }
     },
 

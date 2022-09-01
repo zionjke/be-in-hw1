@@ -34,4 +34,4 @@ type InfoType = {
 
 type LikeStatusType = "None" | "Like" | "Dislike"
 
-export type PostsResponseType = ResponseType<PostType[]>
+export type PostsResponseType = ResponseType<Omit<PostType, "info">[]>

@@ -8,7 +8,9 @@ export const postsController = {
 
             const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
-            const data = await postsService.getPosts(pageNumber, _pageSize)
+            const userId = req.user?.id
+
+            const data = await postsService.getPosts(pageNumber, _pageSize, userId)
 
             res.status(200).send(data)
         } catch (error) {
@@ -76,7 +78,9 @@ export const postsController = {
 
             const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
-            const data = await postsService.getBloggerPosts(bloggerId, pageNumber, _pageSize)
+            const userId = req.user?.id
+
+            const data = await postsService.getBloggerPosts(bloggerId, pageNumber, _pageSize, userId)
 
             res.status(200).send(data)
         } catch (error) {

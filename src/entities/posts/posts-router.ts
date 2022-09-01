@@ -12,7 +12,7 @@ import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue
 export const postsRouter = Router()
 
 postsRouter
-    .get('/', postsController.getPosts)
+    .get('/', checkUserMiddleware, postsController.getPosts)
 
     .post('/', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.createPost)
 

@@ -7,8 +7,8 @@ import {LikeStatusType} from "../comments/types";
 import {UserType} from "../users/types";
 
 export const postsService = {
-    async getPosts(pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
-        return postsRepository.getPosts(pageNumber, _pageSize)
+    async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
+        return postsRepository.getPosts(pageNumber, _pageSize, userId)
     },
 
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<Omit<PostType, "info">> {
@@ -68,11 +68,11 @@ export const postsService = {
         }
     },
 
-    async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
+    async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number, userId?:string): Promise<PostsResponseType> {
 
         const blogger = await bloggersService.getBloggerById(bloggerId)
 
-        const data = await postsRepository.getBloggerPosts(blogger.id, pageNumber, _pageSize)
+        const data = await postsRepository.getBloggerPosts(blogger.id, pageNumber, _pageSize, userId)
 
         return data
     },

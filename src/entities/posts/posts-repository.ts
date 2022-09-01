@@ -5,43 +5,69 @@ import {LikeStatusType} from "../comments/types";
 import {UserType} from "../users/types";
 
 export const postsRepository = {
-    async getPosts(pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
+    async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments()
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const posts = await Post
-            .find({}, {_id: false, __v: false, info: false})
+            .find({}, {_id: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
+
+        if (userId) {
+            posts.forEach(item => {
+                const userLikeStatus = item.info.find(el => el.userId === userId)
+                if (userLikeStatus) {
+                    item.extendedLikesInfo.myStatus = userLikeStatus.likeStatus
+                }
+            })
+        }
+
+        const items = posts.map(({info, ...rest}) => {
+            return rest
+        })
 
         return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items: posts
+            items
         }
     },
 
-    async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number): Promise<PostsResponseType> {
+    async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments({bloggerId})
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const posts = await Post
-            .find({bloggerId}, {_id: false, __v: false, info: false})
+            .find({bloggerId}, {_id: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
+
+        if (userId) {
+            posts.forEach(item => {
+                const userLikeStatus = item.info.find(el => el.userId === userId)
+                if (userLikeStatus) {
+                    item.extendedLikesInfo.myStatus = userLikeStatus.likeStatus
+                }
+            })
+        }
+
+        const items = posts.map(({info, ...rest}) => {
+            return rest
+        })
 
         return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items: posts
+            items
         }
     },
 

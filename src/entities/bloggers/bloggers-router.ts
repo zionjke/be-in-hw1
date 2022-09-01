@@ -5,6 +5,7 @@ import {bloggersController} from "./bloggers-controller";
 import {postsController} from "../posts/posts-controller";
 import {bloggerValidation} from "./validation";
 import {postValidation} from "../posts/validation";
+import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 
 
 export const bloggersRouter = Router()
@@ -20,6 +21,6 @@ bloggersRouter
 
     .delete('/:id', authMiddlewareBasic, bloggersController.deleteBlogger)
 
-    .get('/:bloggerId/posts', postsController.getBloggerPosts)
+    .get('/:bloggerId/posts',checkUserMiddleware, postsController.getBloggerPosts)
 
     .post('/:bloggerId/posts', authMiddlewareBasic, postValidation, validationMiddleware, postsController.createNewBloggerPost)
