@@ -69,6 +69,8 @@ export const commentsRepository = {
                 const userLikeStatus = item.info.find(el => el.userId === userId)
                 if (userLikeStatus) {
                     item.likesInfo.myStatus = userLikeStatus.likeStatus
+                } else {
+                    item.likesInfo.myStatus = 'None'
                 }
             })
         }
@@ -98,10 +100,8 @@ export const commentsRepository = {
         if (!currentUserLikeStatus) {
             if (likeStatus === "Like") {
                 comment.likesInfo.likesCount++
-                comment.likesInfo.myStatus = 'None'
             } else if (likeStatus === "Dislike") {
                 comment.likesInfo.dislikesCount++
-                comment.likesInfo.myStatus = 'None'
             }
         } else {
             if (currentUserLikeStatus.likeStatus === "Like" && likeStatus !== "Like") {
