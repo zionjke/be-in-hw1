@@ -96,7 +96,7 @@ export const postsRepository = {
         }
 
         if (userId) {
-            const userLikeStatus = post.info.find(({userId}) => userId === userId)
+            const userLikeStatus = post.info.find(({userId: currentUserId}) => currentUserId === userId)
             if (userLikeStatus) {
                 post.extendedLikesInfo.myStatus = userLikeStatus.likeStatus
             }
