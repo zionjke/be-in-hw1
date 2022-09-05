@@ -19,7 +19,7 @@ export const commentsRepository = {
         }
 
         if (userId) {
-            const userLikeStatus = comment.info.find(({userId: currentUserId}) => currentUserId === userId)
+            const userLikeStatus = comment.info.find(el => el.userId === userId)
             if (userLikeStatus) {
                 comment.likesInfo.myStatus = userLikeStatus.likeStatus || 'None'
             }
