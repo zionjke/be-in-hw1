@@ -7,8 +7,8 @@ import {userValidation} from "./validation";
 export const usersRouter = Router();
 
 usersRouter
-    .get('/', usersController.getUsers)
+    .get('/', usersController.getUsers.bind(usersController))
 
-    .post('/', authMiddlewareBasic, userValidation, validationMiddleware, usersController.createUser)
+    .post('/', authMiddlewareBasic, userValidation, validationMiddleware, usersController.createUser.bind(usersController))
 
-    .delete('/:id', authMiddlewareBasic, usersController.deleteUser)
+    .delete('/:id', authMiddlewareBasic, usersController.deleteUser.bind(usersController))

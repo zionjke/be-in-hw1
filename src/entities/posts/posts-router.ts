@@ -12,18 +12,18 @@ import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue
 export const postsRouter = Router()
 
 postsRouter
-    .get('/', checkUserMiddleware, postsController.getPosts)
+    .get('/', checkUserMiddleware, postsController.getPosts.bind(postsController))
 
-    .post('/', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.createPost)
+    .post('/', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.createPost.bind(postsController))
 
-    .get('/:id', checkUserMiddleware, postsController.getPostById)
+    .get('/:id', checkUserMiddleware, postsController.getPostById.bind(postsController))
 
-    .put('/:id', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.updatePost)
+    .put('/:id', authMiddlewareBasic, postValidation, bloggerIdValidation, validationMiddleware, postsController.updatePost.bind(postsController))
 
-    .delete('/:id', authMiddlewareBasic, postsController.deletePost)
+    .delete('/:id', authMiddlewareBasic, postsController.deletePost.bind(postsController))
 
-    .post('/:postId/comments', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.createPostComment)
+    .post('/:postId/comments', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.createPostComment.bind(commentsController))
 
-    .get('/:postId/comments', checkUserMiddleware, commentsController.getPostComments)
+    .get('/:postId/comments', checkUserMiddleware, commentsController.getPostComments.bind(commentsController))
 
-    .put('/:postId/like-status', authMiddlewareBearer, validateLikesValueMiddleware, validationMiddleware, postsController.likePost)
+    .put('/:postId/like-status', authMiddlewareBearer, validateLikesValueMiddleware, validationMiddleware, postsController.likePost.bind(postsController))

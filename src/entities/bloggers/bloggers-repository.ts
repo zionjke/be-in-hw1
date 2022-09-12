@@ -2,7 +2,7 @@ import {pagination} from "../../utils/pagination";
 import {BloggersResponseType, BloggerType} from "./types";
 import {Blogger} from "./model";
 
-export const bloggersRepository = {
+export class BloggersRepository  {
     async getBloggers(searchNameTerm?: string, pageNumber?: number, _pageSize?: number): Promise<BloggersResponseType> {
 
         const filter: any = {}
@@ -16,7 +16,7 @@ export const bloggersRepository = {
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
 
         const bloggers = await Blogger
-            .find(filter, {_id: false, __v: false})
+            .find(filter, {_id: false})
             .skip(startFrom)
             .limit(pageSize)
             .lean()
@@ -28,7 +28,7 @@ export const bloggersRepository = {
             totalCount,
             items: bloggers
         }
-    },
+    }
 
     async createNewBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
@@ -37,13 +37,13 @@ export const bloggersRepository = {
         await blogger.save()
 
         return newBlogger
-    },
+    }
 
     async getBloggerById(id: string): Promise<BloggerType | null> {
-        const blogger: BloggerType | null = await Blogger.findOne({id}, {_id: false, __v: false})
+        const blogger: BloggerType | null = await Blogger.findOne({id}, {_id: false})
 
         return blogger
-    },
+    }
 
     async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const result = await Blogger.updateOne(
@@ -52,11 +52,12 @@ export const bloggersRepository = {
         )
 
         return result.matchedCount !== 0;
-    },
+    }
 
     async deleteBlogger(id: string): Promise<boolean> {
         const result = await Blogger.deleteOne({id})
 
         return result.deletedCount !== 0;
-    },
+    }
 }
+

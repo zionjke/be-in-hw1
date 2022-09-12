@@ -1,26 +1,33 @@
 import {NextFunction, Request, Response} from "express";
-import {usersService} from "./users-service";
+import {UsersService} from "./users-service";
 
-export const usersController = {
+
+class UsersController {
+    usersService: UsersService
+
+    constructor() {
+        this.usersService = new UsersService()
+    }
+
     async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const pageNumber = req.query.PageNumber ? +req.query.PageNumber : undefined
 
             const _pageSize = req.query.PageSize ? +req.query.PageSize : undefined
 
-            const data = await usersService.getUsers(pageNumber, _pageSize)
+            const data = await this.usersService.getUsers(pageNumber, _pageSize)
 
             res.status(200).send(data)
         } catch (error) {
             next(error)
         }
-    },
+    }
 
     async createUser(req: Request, res: Response, next: NextFunction) {
         try {
             const {login, password, email} = req.body
 
-            const user = await usersService.createUser(login, password, email)
+            const user = await this.usersService.createUser(login, password, email)
 
             res.status(201).send({
                 id: user.id,
@@ -29,13 +36,13 @@ export const usersController = {
         } catch (error) {
             next(error)
         }
-    },
+    }
 
     async deleteUser(req: Request, res: Response, next: NextFunction) {
         try {
             const {id} = req.params
 
-            await usersService.deleteUser(id)
+            await this.usersService.deleteUser(id)
 
             res.send(204)
         } catch (error) {
@@ -43,3 +50,5 @@ export const usersController = {
         }
     }
 }
+
+export const usersController = new UsersController()

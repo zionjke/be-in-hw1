@@ -4,7 +4,7 @@ import {Post} from "./model";
 import {LikeStatusType} from "../comments/types";
 import {UserType} from "../users/types";
 
-export const postsRepository = {
+export class PostsRepository {
     async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments()
 
@@ -36,7 +36,7 @@ export const postsRepository = {
             totalCount,
             items
         }
-    },
+    }
 
     async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments({bloggerId})
@@ -69,7 +69,7 @@ export const postsRepository = {
             totalCount,
             items
         }
-    },
+    }
 
     async createPost(newPost: PostType): Promise<Omit<PostType, "info">> {
 
@@ -80,7 +80,7 @@ export const postsRepository = {
         const {info, ...postData} = newPost
 
         return postData
-    },
+    }
 
     async getPostById(id: string, userId?: string): Promise<Omit<PostType, "info"> | null> {
         const post: PostType | null = await Post.findOne(
@@ -105,7 +105,7 @@ export const postsRepository = {
         const {info, ...postData} = post
 
         return postData
-    },
+    }
 
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const result = await Post.updateOne(
@@ -113,13 +113,13 @@ export const postsRepository = {
             {title, shortDescription, content, bloggerId}
         )
         return result.matchedCount !== 0
-    },
+    }
 
     async deletePost(id: string): Promise<boolean> {
         const result = await Post.deleteOne({id})
 
         return result.deletedCount !== 0
-    },
+    }
 
     async likePost(postId: string, likeStatus: LikeStatusType, user: UserType): Promise<boolean> {
         const post = await Post.findOne({id: postId})

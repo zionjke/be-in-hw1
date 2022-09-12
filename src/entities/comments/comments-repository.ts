@@ -3,7 +3,7 @@ import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {Comment} from "./model";
 import {UserType} from "../users/types";
 
-export const commentsRepository = {
+export class CommentsRepository  {
     async getCommentById(id: string, userId?: string): Promise<Omit<CommentType, "info"> | null> {
 
         const comment: CommentType | null = await Comment.findOne(
@@ -28,19 +28,19 @@ export const commentsRepository = {
         const {info, ...commentData} = comment
 
         return commentData
-    },
+    }
 
     async deleteCommentById(commentId: string): Promise<boolean> {
         const result = await Comment.deleteOne({id: commentId})
 
         return result.deletedCount !== 0
-    },
+    }
 
     async updateComment(id: string, content: string): Promise<boolean> {
         const result = await Comment.updateOne({id}, {content})
 
         return result.matchedCount !== 0;
-    },
+    }
 
     async createPostComment(newComment: CommentType): Promise<Omit<CommentType, "postId" | "info">> {
 
@@ -51,9 +51,9 @@ export const commentsRepository = {
         const {postId, info, ...commentData} = newComment
 
         return commentData
-    },
+    }
 
-    getPostComments: async function (postId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<CommentsResponseType> {
+    async getPostComments (postId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<CommentsResponseType> {
         const totalCount = await Comment.countDocuments({postId})
 
         const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
@@ -84,7 +84,7 @@ export const commentsRepository = {
             totalCount,
             items
         }
-    },
+    }
 
     async likeComment(commentId: string, likeStatus: LikeStatusType, user: UserType): Promise<boolean> {
         const comment = await Comment.findOne({id: commentId})

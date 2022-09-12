@@ -8,6 +8,6 @@ const userSchema = new mongoose.Schema<UserType>({
     email: {type: String, required: true},
     confirmationCode: {type: String, required: true},
     isActivated: Boolean
-})
+}, {versionKey: false})
 
 export const User = model<UserType>('User', userSchema)

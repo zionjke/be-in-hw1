@@ -9,10 +9,10 @@ import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 export const commentsRouter = Router()
 
 commentsRouter
-    .get('/:id', checkUserMiddleware, commentsController.getCommentById)
+    .get('/:id', checkUserMiddleware, commentsController.getCommentById.bind(commentsController))
 
-    .delete('/:commentId', authMiddlewareBearer, commentsController.deleteCommentById)
+    .delete('/:commentId', authMiddlewareBearer, commentsController.deleteCommentById.bind(commentsController))
 
-    .put('/:commentId', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.updateComment)
+    .put('/:commentId', authMiddlewareBearer, commentValidation, validationMiddleware, commentsController.updateComment.bind(commentsController))
 
-    .put('/:commentId/like-status', authMiddlewareBearer, validateLikesValueMiddleware, validationMiddleware, commentsController.likeComment)
+    .put('/:commentId/like-status', authMiddlewareBearer, validateLikesValueMiddleware, validationMiddleware, commentsController.likeComment.bind(commentsController))

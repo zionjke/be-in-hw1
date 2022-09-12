@@ -2,7 +2,7 @@ import {pagination} from "../../utils/pagination";
 import {UsersResponseType, UserType} from "./types";
 import {User} from "./model";
 
-export const usersRepository = {
+export class UsersRepository {
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
         const totalCount = await User.countDocuments()
 
@@ -10,7 +10,6 @@ export const usersRepository = {
 
         const users = await User
             .find({}, {_id: false,
-                __v: false,
                 passwordHash: false,
                 email: false,
                 confirmationCode: false,
@@ -28,7 +27,7 @@ export const usersRepository = {
             totalCount,
             items: users
         }
-    },
+    }
 
     async createUser(newUser: UserType): Promise<UserType> {
         const user = new User(newUser)
@@ -36,47 +35,47 @@ export const usersRepository = {
         await user.save()
 
         return newUser
-    },
+    }
 
     async deleteUser(id: string): Promise<boolean> {
         const result = await User.deleteOne({id})
 
         return result.deletedCount !== 0
-    },
+    }
 
     async getUserByLogin(login: string): Promise<UserType | null> {
         const user: UserType | null = await User.findOne({login})
         return user
-    },
+    }
 
     async getUserByEmail(email: string): Promise<UserType | null> {
         const user: UserType | null = await User.findOne({email})
         return user
-    },
+    }
 
     async getUserById(id: string): Promise<UserType | null> {
         const user: UserType | null = await User.findOne({id})
         return user
-    },
+    }
 
     async getUserByConfirmationCode(code: string): Promise<UserType | null> {
         const user: UserType | null = await User.findOne({confirmationCode: code})
         return user
-    },
+    }
 
     async checkUserConfirmationCode(code: string): Promise<boolean> {
         const result = await User.updateOne(
             {confirmationCode: code},
-            {$set: {isActivated: true}}
+            {isActivated: true}
         )
 
         return result.matchedCount !== 0
-    },
+    }
 
     async updateConfirmationCode(userId: string, code: string) {
         await User.updateOne(
             {id: userId},
-            {$set: {confirmationCode: code}}
+            {confirmationCode: code}
         )
     }
 }

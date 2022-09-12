@@ -11,16 +11,16 @@ import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 export const bloggersRouter = Router()
 
 bloggersRouter
-    .get('/', bloggersController.getBloggers)
+    .get('/', bloggersController.getBloggers.bind(bloggersController))
 
-    .post('/', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.createNewBlogger)
+    .post('/', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.createNewBlogger.bind(bloggersController))
 
-    .get('/:id', bloggersController.getBloggerById)
+    .get('/:id', bloggersController.getBloggerById.bind(bloggersController))
 
-    .put('/:id', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.updateBlogger)
+    .put('/:id', authMiddlewareBasic, bloggerValidation, validationMiddleware, bloggersController.updateBlogger.bind(bloggersController))
 
-    .delete('/:id', authMiddlewareBasic, bloggersController.deleteBlogger)
+    .delete('/:id', authMiddlewareBasic, bloggersController.deleteBlogger.bind(bloggersController))
 
-    .get('/:bloggerId/posts',checkUserMiddleware, postsController.getBloggerPosts)
+    .get('/:bloggerId/posts',checkUserMiddleware, postsController.getBloggerPosts.bind(postsController))
 
-    .post('/:bloggerId/posts', authMiddlewareBasic, postValidation, validationMiddleware, postsController.createNewBloggerPost)
+    .post('/:bloggerId/posts', authMiddlewareBasic, postValidation, validationMiddleware, postsController.createNewBloggerPost.bind(postsController))
