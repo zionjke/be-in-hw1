@@ -1,11 +1,10 @@
 import {Router} from "express";
 import {validationMiddleware} from "../../middlewares/validationMiddleware";
 import {authMiddlewareBasic} from "../../middlewares/auth-middleware-basic";
-import {bloggersController} from "./bloggers-controller";
-import {postsController} from "../posts/posts-controller";
 import {bloggerValidation} from "./validation";
 import {postValidation} from "../posts/validation";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
+import {bloggersController, postsController} from "../../composition-root";
 
 
 export const bloggersRouter = Router()

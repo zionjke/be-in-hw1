@@ -1,10 +1,10 @@
 import {Router} from "express";
 import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
 import {validationMiddleware} from "../../middlewares/validationMiddleware";
-import {commentsController} from "./comments-controller";
 import {commentValidation} from "./validation";
 import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
+import { commentsController } from "../../composition-root";
 
 export const commentsRouter = Router()
 

@@ -1,11 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {CommentsService} from "./comments-service";
 
-class CommentsController {
-    commentsService: CommentsService
-
-    constructor() {
-        this.commentsService = new CommentsService()
+export class CommentsController {
+    constructor(protected commentsService: CommentsService) {
     }
 
     async getCommentById(req: Request, res: Response, next: NextFunction) {
@@ -103,4 +100,3 @@ class CommentsController {
     }
 }
 
-export const commentsController = new CommentsController()

@@ -2,11 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {UsersService} from "./users-service";
 
 
-class UsersController {
-    usersService: UsersService
-
-    constructor() {
-        this.usersService = new UsersService()
+export class UsersController {
+    constructor(protected usersService: UsersService) {
     }
 
     async getUsers(req: Request, res: Response, next: NextFunction) {
@@ -51,4 +48,3 @@ class UsersController {
     }
 }
 
-export const usersController = new UsersController()

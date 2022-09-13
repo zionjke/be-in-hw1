@@ -5,10 +5,7 @@ import {ApiError} from "../../exceptions/api-error";
 import {UsersRepository} from "./users-repository";
 
 export class UsersService {
-    usersRepository: UsersRepository
-
-    constructor() {
-        this.usersRepository = new UsersRepository()
+    constructor(protected usersRepository: UsersRepository) {
     }
 
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
@@ -60,6 +57,14 @@ export class UsersService {
         }
 
         return user
+    }
+
+    async checkUserConfirmationCode(code:string):Promise<boolean> {
+        return this.usersRepository.checkUserConfirmationCode(code)
+    }
+
+    async updateUserConfirmationCode(userId: string, code: string) {
+        return  this.usersRepository.updateUserConfirmationCode(userId, code)
     }
 
 

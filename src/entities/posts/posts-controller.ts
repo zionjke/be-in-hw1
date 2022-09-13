@@ -1,11 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import {PostsService} from "./posts-service";
 
-class PostsController {
-     postsService: PostsService
+export class PostsController {
+     constructor(protected postsService: PostsService) {
 
-     constructor() {
-         this.postsService = new PostsService()
      }
 
     async getPosts(req: Request, res: Response, next: NextFunction) {
@@ -125,4 +123,3 @@ class PostsController {
     }
 }
 
-export const postsController = new PostsController()

@@ -72,7 +72,7 @@ export class UsersRepository {
         return result.matchedCount !== 0
     }
 
-    async updateConfirmationCode(userId: string, code: string) {
+    async updateUserConfirmationCode(userId: string, code: string) {
         await User.updateOne(
             {id: userId},
             {confirmationCode: code}

@@ -1,25 +1,25 @@
 import {Router} from "express";
-import {authController} from "./auth-controller";
 import { validationMiddleware} from "../../middlewares/validationMiddleware";
 import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
 import { userValidation } from "../users/validation";
 import {registrationCodeValidation} from "./validation";
 import {validateRefreshTokenMiddleware} from "../../middlewares/validateRefreshToken-middleware";
+import {authController} from "../../composition-root";
 
 
 export const authRouter = Router();
 
 authRouter
-    .post('/login', authController.login)
+    .post('/login', authController.login.bind(authController))
 
-    .get('/me', authMiddlewareBearer, authController.me)
+    .get('/me', authMiddlewareBearer, authController.me.bind(authController))
 
-    .post('/logout', validateRefreshTokenMiddleware, authController.logOut)
+    .post('/logout', validateRefreshTokenMiddleware, authController.logOut.bind(authController))
 
-    .post('/refresh-token', validateRefreshTokenMiddleware,  authController.refresh)
+    .post('/refresh-token', validateRefreshTokenMiddleware,  authController.refresh.bind(authController))
 
-    .post('/registration', userValidation, validationMiddleware, authController.registration)
+    .post('/registration', userValidation, validationMiddleware, authController.registration.bind(authController))
 
-    .post('/registration-confirmation', registrationCodeValidation, validationMiddleware, authController.confirmRegistration)
+    .post('/registration-confirmation', registrationCodeValidation, validationMiddleware, authController.confirmRegistration.bind(authController))
 
-    .post('/registration-email-resending', userValidation[2], validationMiddleware, authController.emailResending)
+    .post('/registration-email-resending', userValidation[2], validationMiddleware, authController.emailResending.bind(authController))

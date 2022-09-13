@@ -1,11 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "./bloggers-service";
 
-class BloggersController  {
-    bloggersService: BloggersService
-
-    constructor() {
-        this.bloggersService = new BloggersService()
+export class BloggersController  {
+    constructor(protected bloggersService: BloggersService) {
     }
 
     async getBloggers(req: Request, res: Response, next: NextFunction) {
@@ -75,4 +72,3 @@ class BloggersController  {
     }
 }
 
-export const bloggersController = new BloggersController()

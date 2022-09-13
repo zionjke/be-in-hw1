@@ -4,10 +4,7 @@ import {BloggersResponseType, BloggerType} from './types';
 import {BloggersRepository} from "./bloggers-repository";
 
 export class BloggersService  {
-    bloggersRepository: BloggersRepository
-
-    constructor() {
-        this.bloggersRepository = new BloggersRepository()
+    constructor(protected bloggersRepository: BloggersRepository) {
     }
 
     async getBloggers(searchNameTerm?: string, pageNumber?: number, _pageSize?: number): Promise<BloggersResponseType> {

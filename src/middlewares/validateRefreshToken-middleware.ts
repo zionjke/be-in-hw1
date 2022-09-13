@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ApiError} from "../exceptions/api-error";
 import {jwtService} from "../application/jwt-service";
-import {usersService} from "../entities/users/users-service";
+import { usersService } from "../composition-root";
 
 export const validateRefreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {

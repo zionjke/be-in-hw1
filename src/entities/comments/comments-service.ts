@@ -6,12 +6,7 @@ import {CommentsRepository} from "./comments-repository";
 import {PostsService} from "../posts/posts-service";
 
 export class CommentsService {
-    commentsRepository: CommentsRepository
-    postsService: PostsService
-
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
-        this.postsService = new PostsService()
+    constructor(protected commentsRepository: CommentsRepository, protected postsService: PostsService ) {
     }
 
     async getCommentById(id: string, userId?: string): Promise<Omit<CommentType, "info">> {

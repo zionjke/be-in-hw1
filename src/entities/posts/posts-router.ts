@@ -2,12 +2,11 @@ import {Router} from "express";
 import {validationMiddleware} from "../../middlewares/validationMiddleware";
 import {authMiddlewareBasic} from "../../middlewares/auth-middleware-basic";
 import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
-import {postsController} from "./posts-controller";
 import {bloggerIdValidation, postValidation} from "./validation";
-import {commentsController} from "../comments/comments-controller";
 import {commentValidation} from "../comments/validation";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
+import {commentsController, postsController } from "../../composition-root";
 
 export const postsRouter = Router()
 

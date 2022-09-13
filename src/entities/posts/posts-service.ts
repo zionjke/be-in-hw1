@@ -7,12 +7,7 @@ import {UserType} from "../users/types";
 import {BloggersService} from "../bloggers/bloggers-service";
 
 export class PostsService {
-    postsRepository: PostsRepository
-    bloggersService: BloggersService
-
-    constructor() {
-        this.postsRepository = new PostsRepository()
-        this.bloggersService = new BloggersService()
+    constructor(protected postsRepository: PostsRepository, protected bloggersService: BloggersService) {
     }
 
     async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
