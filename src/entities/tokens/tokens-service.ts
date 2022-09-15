@@ -1,7 +1,7 @@
 import { TokenType } from "./types";
 import {Token} from "./model";
 
-export class TokensRepository {
+export class TokensService {
     async create(userId: string, refreshToken: string): Promise<TokenType> {
 
         const token = new Token({userId, refreshToken})

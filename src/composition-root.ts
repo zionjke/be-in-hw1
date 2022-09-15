@@ -14,10 +14,10 @@ import {AuthService} from "./entities/auth/auth-service";
 import {AuthController} from "./entities/auth/auth-controller";
 import {JwtService} from "./application/jwt-service";
 import {MailService} from "./application/mail-service";
-import {TokensRepository} from "./entities/tokens/tokens-repository";
+import {TokensService} from "./entities/tokens/tokens-service";
 
-export const tokensRepository = new TokensRepository()
-export const jwtService = new JwtService(tokensRepository)
+export const tokensService = new TokensService()
+export const jwtService = new JwtService(tokensService)
 export const mailService = new MailService()
 
 const bloggersRepository = new BloggersRepository()
@@ -31,7 +31,6 @@ export const postsController = new PostsController(postsService)
 const commentsRepository = new CommentsRepository()
 const commentsService = new CommentsService(commentsRepository, postsService )
 export const commentsController = new CommentsController(commentsService)
-
 
 const usersRepository = new UsersRepository()
 export const usersService = new UsersService(usersRepository)

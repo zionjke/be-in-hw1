@@ -1,10 +1,9 @@
 import jwt, {decode} from 'jsonwebtoken'
 import {SERVICE} from "../constants";
-import {tokensRepository} from "../composition-root";
-import {TokensRepository} from "../entities/tokens/tokens-repository";
+import {TokensService} from "../entities/tokens/tokens-service";
 
 export class JwtService {
-    constructor(protected tokensRepository: TokensRepository) {
+    constructor(protected tokensService: TokensService) {
     }
     async generateTokens(userId: string) {
         const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '30d'})
@@ -36,17 +35,17 @@ export class JwtService {
 
     async saveToken(userId: string, refreshToken: string) {
 
-        const token = await this.tokensRepository.create(userId, refreshToken)
+        const token = await this.tokensService.create(userId, refreshToken)
 
         return token
     }
 
     async deleteToken(refreshToken: string) {
-        await this.tokensRepository.deleteToken(refreshToken)
+        await this.tokensService.deleteToken(refreshToken)
     }
 
     async findToken(refreshToken: string) {
-        const tokenData = await this.tokensRepository.findOneByToken(refreshToken)
+        const tokenData = await this.tokensService.findOneByToken(refreshToken)
         return tokenData
     }
 
