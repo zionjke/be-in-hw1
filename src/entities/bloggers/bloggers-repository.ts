@@ -1,4 +1,4 @@
-import {pagination} from "../../utils/pagination";
+import {usePagination} from "../../utils/usePagination";
 import {BloggersResponseType, BloggerType} from "./types";
 import {Blogger} from "./model";
 
@@ -13,7 +13,7 @@ export class BloggersRepository  {
 
         const totalCount = await Blogger.countDocuments(filter)
 
-        const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
+        const {page, pageSize, startFrom, pagesCount} = usePagination(pageNumber, _pageSize, totalCount)
 
         const bloggers = await Blogger
             .find(filter, {_id: false})

@@ -1,21 +1,24 @@
 import {v4} from "uuid";
-import mailService from '../../application/mail-service'
+import {MailService} from '../../application/mail-service'
 import {UserType} from "../users/types";
-import {jwtService} from "../../application/jwt-service";
+import {JwtService} from "../../application/jwt-service";
 import {ApiError} from "../../exceptions/api-error";
 import {UsersService} from "../users/users-service";
 
 
 export class AuthService {
-    constructor(protected usersService: UsersService) {
+    constructor(
+        protected usersService: UsersService,
+        protected jwtService: JwtService,
+        protected mailService: MailService) {
     }
 
     async login(login: string, password: string) {
         const user = await this.checkCredentials(login, password)
 
-        const {accessToken, refreshToken} = await jwtService.generateTokens(user.id)
+        const {accessToken, refreshToken} = await this.jwtService.generateTokens(user.id)
 
-        await jwtService.saveToken(user.id, refreshToken)
+        await this.jwtService.saveToken(user.id, refreshToken)
 
         return {accessToken, refreshToken}
     }
@@ -57,7 +60,7 @@ export class AuthService {
         const user = await this.usersService.createUser(login, password, email)
 
         try {
-            await mailService.sendActivationMail(user.email, user.confirmationCode)
+            await this.mailService.sendActivationMail(user.email, user.confirmationCode)
         } catch (error) {
             console.log(error)
         }
@@ -94,17 +97,17 @@ export class AuthService {
         await this.usersService.updateUserConfirmationCode(user.id, newConfirmationCode)
 
         try {
-            await mailService.sendActivationMail(user.email, newConfirmationCode)
+            await this.mailService.sendActivationMail(user.email, newConfirmationCode)
         } catch (error) {
             console.log(error)
         }
     }
 
-    async refreshToken(userId:string) {
+    async refreshToken(userId: string) {
 
-        const tokens = await jwtService.generateTokens(userId)
+        const tokens = await this.jwtService.generateTokens(userId)
 
-        await jwtService.saveToken(userId, tokens.refreshToken)
+        await this.jwtService.saveToken(userId, tokens.refreshToken)
 
         return tokens
     }

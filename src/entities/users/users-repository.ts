@@ -1,4 +1,4 @@
-import {pagination} from "../../utils/pagination";
+import {usePagination} from "../../utils/usePagination";
 import {UsersResponseType, UserType} from "./types";
 import {User} from "./model";
 
@@ -6,7 +6,7 @@ export class UsersRepository {
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
         const totalCount = await User.countDocuments()
 
-        const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
+        const {page, pageSize, startFrom, pagesCount} = usePagination(pageNumber, _pageSize, totalCount)
 
         const users = await User
             .find({}, {_id: false,

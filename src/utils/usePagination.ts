@@ -1,4 +1,4 @@
-export const pagination = (pageNumber: number  | undefined, _pageSize: number | undefined, totalCount: number) => {
+export const usePagination = (pageNumber: number  | undefined, _pageSize: number | undefined, totalCount: number) => {
     const page = pageNumber || 1
 
     const pageSize = _pageSize || 10

@@ -1,4 +1,4 @@
-import {pagination} from "../../utils/pagination";
+import {usePagination} from "../../utils/usePagination";
 import {PostsResponseType, PostType} from "./types";
 import {Post} from "./model";
 import {LikeStatusType} from "../comments/types";
@@ -8,7 +8,7 @@ export class PostsRepository {
     async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments()
 
-        const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
+        const {page, pageSize, startFrom, pagesCount} = usePagination(pageNumber, _pageSize, totalCount)
 
         const posts = await Post
             .find({}, {_id: false})
@@ -41,7 +41,7 @@ export class PostsRepository {
     async getBloggerPosts(bloggerId: string, pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments({bloggerId})
 
-        const {page, pageSize, startFrom, pagesCount} = pagination(pageNumber, _pageSize, totalCount)
+        const {page, pageSize, startFrom, pagesCount} = usePagination(pageNumber, _pageSize, totalCount)
 
         const posts = await Post
             .find({bloggerId}, {_id: false})

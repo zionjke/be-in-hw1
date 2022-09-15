@@ -12,6 +12,13 @@ import {UsersService} from "./entities/users/users-service";
 import {UsersController} from "./entities/users/users-contoller";
 import {AuthService} from "./entities/auth/auth-service";
 import {AuthController} from "./entities/auth/auth-controller";
+import {JwtService} from "./application/jwt-service";
+import {MailService} from "./application/mail-service";
+import {TokensRepository} from "./entities/tokens/tokens-repository";
+
+export const tokensRepository = new TokensRepository()
+export const jwtService = new JwtService(tokensRepository)
+export const mailService = new MailService()
 
 const bloggersRepository = new BloggersRepository()
 const bloggersService = new BloggersService(bloggersRepository)
@@ -30,5 +37,5 @@ const usersRepository = new UsersRepository()
 export const usersService = new UsersService(usersRepository)
 export const usersController = new UsersController(usersService)
 
-const authService = new AuthService(usersService)
+const authService = new AuthService(usersService, jwtService, mailService)
 export const authController = new AuthController(authService)

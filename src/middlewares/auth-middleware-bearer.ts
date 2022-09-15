@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../application/jwt-service";
-import { usersService } from "../composition-root";
+import {jwtService, usersService } from "../composition-root";
 import {ApiError} from "../exceptions/api-error";
 
 export const authMiddlewareBearer = async (req: Request, res: Response, next: NextFunction) => {

@@ -2,8 +2,8 @@ import nodemailer, {Transporter} from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import {SERVICE} from "../constants";
 
-class MailService {
-    private transporter: Transporter<SMTPTransport.SentMessageInfo>;
+export class MailService {
+    transporter: Transporter<SMTPTransport.SentMessageInfo>;
 
     constructor() {
         this.transporter = nodemailer.createTransport({
@@ -27,4 +27,3 @@ class MailService {
 
 }
 
-export default new MailService()
