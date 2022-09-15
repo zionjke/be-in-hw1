@@ -1,7 +1,7 @@
 import {Router} from "express";
-import { validationMiddleware} from "../../middlewares/validationMiddleware";
+import {validationMiddleware} from "../../middlewares/validationMiddleware";
 import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
-import { userValidation } from "../users/validation";
+import {userValidation} from "../users/validation";
 import {registrationCodeValidation} from "./validation";
 import {validateRefreshTokenMiddleware} from "../../middlewares/validateRefreshToken-middleware";
 import {authController} from "../../composition-root";
@@ -16,7 +16,7 @@ authRouter
 
     .post('/logout', validateRefreshTokenMiddleware, authController.logOut.bind(authController))
 
-    .post('/refresh-token', validateRefreshTokenMiddleware,  authController.refresh.bind(authController))
+    .post('/refresh-token', validateRefreshTokenMiddleware, authController.refresh.bind(authController))
 
     .post('/registration', userValidation, validationMiddleware, authController.registration.bind(authController))
 

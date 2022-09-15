@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import {BloggersRepository} from "./entities/bloggers/bloggers-repository";
 import {BloggersService} from "./entities/bloggers/bloggers-service";
 import {BloggersController} from "./entities/bloggers/bloggers-controller";
@@ -15,10 +16,13 @@ import {AuthController} from "./entities/auth/auth-controller";
 import {JwtService} from "./application/jwt-service";
 import {MailService} from "./application/mail-service";
 import {TokensService} from "./entities/tokens/tokens-service";
+import {Container} from "inversify";
 
-export const tokensService = new TokensService()
+export const container = new Container()
+
+const tokensService = new TokensService()
 export const jwtService = new JwtService(tokensService)
-export const mailService = new MailService()
+const mailService = new MailService()
 
 const bloggersRepository = new BloggersRepository()
 const bloggersService = new BloggersService(bloggersRepository)
@@ -38,3 +42,5 @@ export const usersController = new UsersController(usersService)
 
 const authService = new AuthService(usersService, jwtService, mailService)
 export const authController = new AuthController(authService)
+
+
