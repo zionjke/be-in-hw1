@@ -5,7 +5,9 @@ import {ApiError} from "../../exceptions/api-error";
 import {LikeStatusType} from "../comments/types";
 import {UserType} from "../users/types";
 import {BloggersService} from "../bloggers/bloggers-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsService {
     constructor(protected postsRepository: PostsRepository, protected bloggersService: BloggersService) {
     }

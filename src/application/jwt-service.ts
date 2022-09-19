@@ -1,10 +1,13 @@
 import jwt, {decode} from 'jsonwebtoken'
 import {SERVICE} from "../constants";
 import {TokensService} from "../entities/tokens/tokens-service";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class JwtService {
-    constructor(protected tokensService: TokensService) {
+    constructor(@inject(TokensService) protected tokensService: TokensService) {
     }
+
     async generateTokens(userId: string) {
         const accessToken = jwt.sign({userId: userId}, SERVICE.JWT_ACCESS_KEY, {expiresIn: '30d'})
         const refreshToken = jwt.sign({userId: userId}, SERVICE.JWT_REFRESH_KEY, {expiresIn: '30d'})

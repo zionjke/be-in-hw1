@@ -1,7 +1,9 @@
 import {usePagination} from "../../utils/usePagination";
 import {UsersResponseType, UserType} from "./types";
 import {User} from "./model";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersRepository {
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
         const totalCount = await User.countDocuments()

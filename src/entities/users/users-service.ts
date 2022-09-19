@@ -3,9 +3,11 @@ import bcrypt from 'bcrypt'
 import {UsersResponseType, UserType} from "./types";
 import {ApiError} from "../../exceptions/api-error";
 import {UsersRepository} from "./users-repository";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class UsersService {
-    constructor(protected usersRepository: UsersRepository) {
+    constructor(@inject(UsersRepository) protected usersRepository: UsersRepository) {
     }
 
     async getUsers(pageNumber?: number, _pageSize?: number): Promise<UsersResponseType> {
@@ -18,7 +20,7 @@ export class UsersService {
 
         const passwordHash = await this.generateHash(password, passwordSalt)
 
-        const newUser = new UserType(v4(), login, email, passwordHash, v4(), false)
+        const newUser = new UserType(v4(), login, passwordHash, email,  v4(), false)
 
 
         return this.usersRepository.createUser(newUser)
@@ -36,13 +38,9 @@ export class UsersService {
         return this.usersRepository.getUserById(id)
     }
 
-
-
     async getUserByEmail(email: string): Promise<UserType | null> {
         return this.usersRepository.getUserByEmail(email)
     }
-
-
 
     async getUserByLogin(email: string): Promise<UserType | null> {
         return this.usersRepository.getUserByLogin(email)
@@ -59,12 +57,12 @@ export class UsersService {
         return user
     }
 
-    async checkUserConfirmationCode(code:string):Promise<boolean> {
+    async checkUserConfirmationCode(code: string): Promise<boolean> {
         return this.usersRepository.checkUserConfirmationCode(code)
     }
 
     async updateUserConfirmationCode(userId: string, code: string) {
-        return  this.usersRepository.updateUserConfirmationCode(userId, code)
+        return this.usersRepository.updateUserConfirmationCode(userId, code)
     }
 
 

@@ -1,10 +1,11 @@
 import {NextFunction, Request, Response} from "express";
 import {SERVICE} from "../../constants";
 import {AuthService} from "./auth-service";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class AuthController {
-    constructor(protected authService: AuthService) {
-
+    constructor(@inject(AuthService) protected authService: AuthService) {
     }
 
     async login(req: Request, res: Response, next: NextFunction) {

@@ -2,7 +2,9 @@ import {v4} from "uuid";
 import {ApiError} from "../../exceptions/api-error";
 import {BloggersResponseType, BloggerType} from './types';
 import {BloggersRepository} from "./bloggers-repository";
+import {injectable} from "inversify";
 
+@injectable()
 export class BloggersService  {
     constructor(protected bloggersRepository: BloggersRepository) {
     }

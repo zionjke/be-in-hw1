@@ -4,8 +4,10 @@ import {authMiddlewareBearer} from "../../middlewares/auth-middleware-bearer";
 import {userValidation} from "../users/validation";
 import {registrationCodeValidation} from "./validation";
 import {validateRefreshTokenMiddleware} from "../../middlewares/validateRefreshToken-middleware";
-import {authController} from "../../composition-root";
+import {container} from "../../composition-root";
+import {AuthController} from "./auth-controller";
 
+const authController = container.resolve(AuthController)
 
 export const authRouter = Router();
 

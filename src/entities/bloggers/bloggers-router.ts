@@ -4,8 +4,12 @@ import {authMiddlewareBasic} from "../../middlewares/auth-middleware-basic";
 import {bloggerValidation} from "./validation";
 import {postValidation} from "../posts/validation";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
-import {bloggersController, postsController} from "../../composition-root";
+import {container} from "../../composition-root";
+import {BloggersController} from "./bloggers-controller";
+import {PostsController} from "../posts/posts-controller";
 
+const bloggersController = container.resolve(BloggersController)
+const postsController = container.resolve(PostsController)
 
 export const bloggersRouter = Router()
 
@@ -20,6 +24,6 @@ bloggersRouter
 
     .delete('/:id', authMiddlewareBasic, bloggersController.deleteBlogger.bind(bloggersController))
 
-    .get('/:bloggerId/posts',checkUserMiddleware, postsController.getBloggerPosts.bind(postsController))
+    .get('/:bloggerId/posts', checkUserMiddleware, postsController.getBloggerPosts.bind(postsController))
 
     .post('/:bloggerId/posts', authMiddlewareBasic, postValidation, validationMiddleware, postsController.createNewBloggerPost.bind(postsController))

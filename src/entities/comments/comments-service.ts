@@ -4,7 +4,9 @@ import {UserType} from "../users/types";
 import {ApiError} from "../../exceptions/api-error";
 import {CommentsRepository} from "./comments-repository";
 import {PostsService} from "../posts/posts-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsService {
     constructor(protected commentsRepository: CommentsRepository, protected postsService: PostsService ) {
     }

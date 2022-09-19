@@ -2,7 +2,9 @@ import {usePagination} from "../../utils/usePagination";
 import {CommentsResponseType, CommentType, LikeStatusType} from "./types";
 import {Comment} from "./model";
 import {UserType} from "../users/types";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository  {
     async getCommentById(id: string, userId?: string): Promise<Omit<CommentType, "info"> | null> {
 

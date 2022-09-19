@@ -1,9 +1,15 @@
 import {NextFunction, Request, Response} from "express";
 import {ApiError} from "../exceptions/api-error";
-import {jwtService, usersService} from "../composition-root";
+import {container} from "../composition-root";
+import {UsersService} from "../entities/users/users-service";
+import {JwtService} from "../application/jwt-service";
 
 export const validateRefreshTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const usersService = container.get(UsersService)
+
+        const jwtService = container.get(JwtService)
+
         const {refreshToken} = req.cookies
 
         if (!refreshToken) {

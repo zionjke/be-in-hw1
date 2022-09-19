@@ -1,7 +1,9 @@
 import {usePagination} from "../../utils/usePagination";
 import {BloggersResponseType, BloggerType} from "./types";
 import {Blogger} from "./model";
+import {injectable} from "inversify";
 
+@injectable()
 export class BloggersRepository  {
     async getBloggers(searchNameTerm?: string, pageNumber?: number, _pageSize?: number): Promise<BloggersResponseType> {
 

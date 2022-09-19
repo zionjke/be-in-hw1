@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response} from "express";
 import {UsersService} from "./users-service";
+import {inject, injectable} from "inversify";
 
-
+@injectable()
 export class UsersController {
-    constructor(protected usersService: UsersService) {
+    constructor(@inject(UsersService) protected usersService: UsersService) {
     }
 
     async getUsers(req: Request, res: Response, next: NextFunction) {

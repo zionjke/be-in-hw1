@@ -1,7 +1,9 @@
 import nodemailer, {Transporter} from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import {SERVICE} from "../constants";
+import {injectable} from "inversify";
 
+@injectable()
 export class MailService {
     transporter: Transporter<SMTPTransport.SentMessageInfo>;
 

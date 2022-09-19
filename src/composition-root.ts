@@ -20,27 +20,52 @@ import {Container} from "inversify";
 
 export const container = new Container()
 
-const tokensService = new TokensService()
-export const jwtService = new JwtService(tokensService)
-const mailService = new MailService()
+container.bind<BloggersRepository>(BloggersRepository).to(BloggersRepository)
+container.bind<BloggersService>(BloggersService).to(BloggersService)
+container.bind<BloggersController>(BloggersController).to(BloggersController)
 
-const bloggersRepository = new BloggersRepository()
-const bloggersService = new BloggersService(bloggersRepository)
-export const bloggersController = new BloggersController(bloggersService)
+container.bind<PostsRepository>(PostsRepository).to(PostsRepository)
+container.bind<PostsService>(PostsService).to(PostsService)
+container.bind<PostsController>(PostsController).to(PostsController)
 
-const postsRepository = new PostsRepository()
-const postsService = new PostsService(postsRepository, bloggersService )
-export const postsController = new PostsController(postsService)
+container.bind<CommentsRepository>(CommentsRepository).to(CommentsRepository)
+container.bind<CommentsService>(CommentsService).to(CommentsService)
+container.bind<CommentsController>(CommentsController).to(CommentsController)
 
-const commentsRepository = new CommentsRepository()
-const commentsService = new CommentsService(commentsRepository, postsService )
-export const commentsController = new CommentsController(commentsService)
+container.bind<UsersRepository>(UsersRepository).to(UsersRepository)
+container.bind<UsersService>(UsersService).to(UsersService)
+container.bind<UsersController>(UsersController).to(UsersController)
 
-const usersRepository = new UsersRepository()
-export const usersService = new UsersService(usersRepository)
-export const usersController = new UsersController(usersService)
+container.bind<AuthService>(AuthService).to(AuthService)
+container.bind<AuthController>(AuthController).to(AuthController)
 
-const authService = new AuthService(usersService, jwtService, mailService)
-export const authController = new AuthController(authService)
+container.bind<TokensService>(TokensService).to(TokensService)
+
+container.bind<JwtService>(JwtService).to(JwtService)
+
+container.bind<MailService>(MailService).to(MailService)
+
+// const tokensService = new TokensService()
+// export const jwtService = new JwtService(tokensService)
+// const mailService = new MailService()
+
+// const bloggersRepository = new BloggersRepository()
+// const bloggersService = new BloggersService(bloggersRepository)
+// export const bloggersController = new BloggersController(bloggersService)
+
+// const postsRepository = new PostsRepository()
+// const postsService = new PostsService(postsRepository, bloggersService )
+// export const postsController = new PostsController(postsService)
+
+// const commentsRepository = new CommentsRepository()
+// const commentsService = new CommentsService(commentsRepository, postsService )
+// export const commentsController = new CommentsController(commentsService)
+
+// const usersRepository = new UsersRepository()
+// export const usersService = new UsersService(usersRepository)
+// export const usersController = new UsersController(usersService)
+
+// const authService = new AuthService(usersService, jwtService, mailService)
+// export const authController = new AuthController(authService)
 
 

@@ -3,7 +3,9 @@ import {PostsResponseType, PostType} from "./types";
 import {Post} from "./model";
 import {LikeStatusType} from "../comments/types";
 import {UserType} from "../users/types";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsRepository {
     async getPosts(pageNumber?: number, _pageSize?: number, userId?: string): Promise<PostsResponseType> {
         const totalCount = await Post.countDocuments()

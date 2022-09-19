@@ -6,7 +6,12 @@ import {bloggerIdValidation, postValidation} from "./validation";
 import {commentValidation} from "../comments/validation";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
 import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
-import {commentsController, postsController } from "../../composition-root";
+import {container} from "../../composition-root";
+import {PostsController} from "./posts-controller";
+import {CommentsController} from "../comments/comments-controller";
+
+const postsController = container.resolve(PostsController)
+const commentsController = container.resolve(CommentsController)
 
 export const postsRouter = Router()
 

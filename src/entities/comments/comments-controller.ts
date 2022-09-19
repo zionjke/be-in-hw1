@@ -1,6 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {CommentsService} from "./comments-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsController {
     constructor(protected commentsService: CommentsService) {
     }

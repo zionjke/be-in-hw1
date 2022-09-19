@@ -4,14 +4,14 @@ import {UserType} from "../users/types";
 import {JwtService} from "../../application/jwt-service";
 import {ApiError} from "../../exceptions/api-error";
 import {UsersService} from "../users/users-service";
+import {inject, injectable} from "inversify";
 
-
+@injectable()
 export class AuthService {
     constructor(
-        protected usersService: UsersService,
-        protected jwtService: JwtService,
-        protected mailService: MailService) {
-    }
+        @inject(UsersService) protected usersService: UsersService,
+        @inject(JwtService) protected jwtService: JwtService,
+        @inject(MailService) protected mailService: MailService) {}
 
     async login(login: string, password: string) {
         const user = await this.checkCredentials(login, password)
@@ -26,6 +26,8 @@ export class AuthService {
     async checkCredentials(login: string, password: string): Promise<UserType> {
 
         const user = await this.usersService.getUserByLogin(login)
+
+        console.log('USER',user)
 
         if (!user) {
             throw ApiError.UnauthorizedError()
@@ -55,7 +57,6 @@ export class AuthService {
         if (existEmail) {
             throw ApiError.BadRequestError('User with this email already exists', 'email')
         }
-
 
         const user = await this.usersService.createUser(login, password, email)
 

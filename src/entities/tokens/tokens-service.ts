@@ -1,6 +1,8 @@
 import { TokenType } from "./types";
 import {Token} from "./model";
+import {injectable} from "inversify";
 
+@injectable()
 export class TokensService {
     async create(userId: string, refreshToken: string): Promise<TokenType> {
 

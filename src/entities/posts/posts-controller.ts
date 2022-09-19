@@ -1,10 +1,10 @@
 import {NextFunction, Request, Response} from "express";
 import {PostsService} from "./posts-service";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsController {
-     constructor(protected postsService: PostsService) {
-
-     }
+     constructor(protected postsService: PostsService) {}
 
     async getPosts(req: Request, res: Response, next: NextFunction) {
         try {

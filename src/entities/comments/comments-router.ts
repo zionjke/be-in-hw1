@@ -4,7 +4,10 @@ import {validationMiddleware} from "../../middlewares/validationMiddleware";
 import {commentValidation} from "./validation";
 import {validateLikesValueMiddleware} from "../../middlewares/validateLikesValue-middleware";
 import {checkUserMiddleware} from "../../middlewares/checkUser-middleware";
-import { commentsController } from "../../composition-root";
+import {container} from "../../composition-root";
+import {CommentsController} from "./comments-controller";
+
+const commentsController = container.resolve(CommentsController)
 
 export const commentsRouter = Router()
 
